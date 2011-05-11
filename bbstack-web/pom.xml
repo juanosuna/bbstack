@@ -1,0 +1,167 @@
+<!--
+  ~ BROWN BAG CONFIDENTIAL
+  ~
+  ~ Brown Bag Consulting LLC
+  ~ Copyright (c) 2011. All Rights Reserved.
+  ~
+  ~ NOTICE:  All information contained herein is, and remains
+  ~ the property of Brown Bag Consulting LLC and its suppliers,
+  ~ if any.  The intellectual and technical concepts contained
+  ~ herein are proprietary to Brown Bag Consulting LLC
+  ~ and its suppliers and may be covered by U.S. and Foreign Patents,
+  ~ patents in process, and are protected by trade secret or copyright law.
+  ~ Dissemination of this information or reproduction of this material
+  ~ is strictly forbidden unless prior written permission is obtained
+  ~ from Brown Bag Consulting LLC.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.brownbag</groupId>
+        <artifactId>bbstack-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../bbstack-parent/pom.xml</relativePath>
+    </parent>
+
+    <description>BBStack Web Application</description>
+    <groupId>com.brownbag</groupId>
+    <artifactId>bbstack-web</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>BBSTACK :: WEB APPLICATION</name>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.brownbag</groupId>
+            <artifactId>sample-domain</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-servlet_2.5_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jsp_2.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>bbstack-web</finalName>
+        <plugins>
+
+            <!-- Compiles your custom GWT components with the GWT compiler -->
+            <!-- A hosted mode browser for client-side widget debugging can be run with the goal gwt:run after uncommenting the
+ correct line below. A remote debugger can then be connected to port 8998. Note that e.g. a Jetty server should be running
+ with the server side parts - use the goal jetty:run . -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <configuration>
+                    <!-- if you don't specify any modules, the plugin will find them -->
+                    <!-- <modules> <module>com.brownbag.gwt.ColorPickerWidgetSet</module> </modules> -->
+                    <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets
+                    </webappDirectory>
+                    <!-- On Mac running Snow Leopard, add "-d32" -->
+                    <!-- This causes error messages (but build works) in phase "package": two processes would use the same debug
+                   port -->
+                    <!--extraJvmArgs>-Xmx512M -Xss1024k -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8998</extraJvmArgs -->
+                    <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+                    <runTarget>sample</runTarget>
+                    <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+                    <noServer>true</noServer>
+                    <port>7001</port>
+                    <soyc>false</soyc>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>resources</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <!-- if you don't specify any modules, the plugin will find them -->
+                            <!--<modules>-->
+                                <!--<module>com.brownbag.core.ui.MyAppWidgetSet</module>-->
+                            <!--</modules>-->
+                        </configuration>
+                        <goals>
+                            <goal>update-widgetset</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+
+                    <stopPort>9999</stopPort>
+                    <stopKey>sample</stopKey>
+                    <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <!-- make sure Jetty also finds the widgetset -->
+
+                    <webAppConfig>
+                        <contextPath>/sample</contextPath>
+
+                        <resourceBases implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+                            <resourceBase>src/main/webapp</resourceBase>
+                            <resourceBase>${project.build.directory}/${project.build.finalName}</resourceBase>
+                        </resourceBases>
+                    </webAppConfig>
+                    <systemProperties>
+                        <!--<systemProperty>-->
+                        <!--<name>http.proxyHost</name>-->
+                        <!--<value>proxy.brownbag.com</value>-->
+                        <!--</systemProperty>-->
+                        <!--<systemProperty>-->
+                        <!--<name>http.proxyPort</name>-->
+                        <!--<value>8080</value>-->
+                        <!--</systemProperty>-->
+                        <systemProperty>
+                            <name>jetty.port</name>
+                            <value>7001</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>DB</name>
+                            <value>${DB}</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

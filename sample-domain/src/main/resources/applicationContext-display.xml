@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ BROWN BAG CONFIDENTIAL
+  ~
+  ~ Brown Bag Consulting LLC
+  ~ Copyright (c) 2011. All Rights Reserved.
+  ~
+  ~ NOTICE:  All information contained herein is, and remains
+  ~ the property of Brown Bag Consulting LLC and its suppliers,
+  ~ if any.  The intellectual and technical concepts contained
+  ~ herein are proprietary to Brown Bag Consulting LLC
+  ~ and its suppliers and may be covered by U.S. and Foreign Patents,
+  ~ patents in process, and are protected by trade secret or copyright law.
+  ~ Dissemination of this information or reproduction of this material
+  ~ is strictly forbidden unless prior written permission is obtained
+  ~ from Brown Bag Consulting LLC.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="personFormConfig" class="com.brownbag.core.ui.FormConfig"
+          p:columns="3" p:rows="5">
+
+        <property name="fieldConfigs">
+            <list>
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="firstName"
+                      p:label="First Name"
+                      p:columnStart="0"
+                      p:rowStart="0"
+                        />
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="lastName"
+                      p:label="Last Name"
+                      p:columnStart="1"
+                      p:rowStart="0"
+                        />
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="birthDate"
+                      p:label="Birth Date"
+                      p:columnStart="0"
+                      p:rowStart="1"
+                        />
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="socialSecurityNumber"
+                      p:label="Social Security Number"
+                      p:columnStart="1"
+                      p:rowStart="1"
+                        />
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="address.street"
+                      p:label="Street"
+                      p:columnStart="0"
+                      p:rowStart="2"
+                        />
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="address.city"
+                      p:label="City"
+                      p:columnStart="1"
+                      p:rowStart="2"
+                        />
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="address.state"
+                      p:label="State"
+                      p:columnStart="0"
+                      p:rowStart="3"
+                        />
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="address.zipCode"
+                      p:label="Zip Code"
+                      p:columnStart="1"
+                      p:rowStart="3"
+                        />
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="address.country"
+                      p:label="Country"
+                      p:columnStart="0"
+                      p:rowStart="4"
+                        />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="personSearchFormConfig" class="com.brownbag.core.ui.FormConfig"
+          p:columns="3" p:rows="1">
+
+        <property name="fieldConfigs">
+            <list>
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="lastName"
+                      p:label="Last Name"
+                      p:columnStart="0"
+                      p:rowStart="0"
+                        />
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="state"
+                      p:label="State"
+                      p:columnStart="1"
+                      p:rowStart="0"
+                        />
+                <bean class="com.brownbag.core.ui.FieldConfig"
+                      p:propertyId="country"
+                      p:label="Country"
+                      p:columnStart="2"
+                      p:rowStart="0"
+                        />
+            </list>
+        </property>
+    </bean>
+
+</beans>
