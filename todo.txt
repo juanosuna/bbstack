@@ -1,0 +1,27 @@
+boolean checkboxes
+one-to-manys
+multi-select box for searching things like multiple states/countries
+multi- short list with ajax
+high-volume popup wit clear button, editable/non-editable
+
+audit trail
+
+roles/permissions
+admin, create users, roles, reference entities
+active/deactivate users
+pw reset
+
+I18N, localization, currency conversion
+user-specific locale
+
+
+UI Design Improvements
+Fonts
+Change tabs when selected, e.g. make a bit bigger
+Small icon for collapsing, expanding widgets
+Sorting icon that switches direction
+Result set navigation icons
+clear icon for many-to-ones
+breadcrumbs
+
+

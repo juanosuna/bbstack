@@ -31,7 +31,8 @@
         <form-login login-page="/mvc/login.do" authentication-failure-url="/mvc/login.do?login_error=1"
                     default-target-url="/app" always-use-default-target="true"/>
         <http-basic/>
-        <logout logout-url="/mvc/login.do" invalidate-session="true" logout-success-url="/mvc/login.do" delete-cookies="JSESSIONID"/>
+        <logout logout-url="/mvc/login.do" invalidate-session="true" logout-success-url="/mvc/login.do"
+                delete-cookies="JSESSIONID"/>
         <remember-me data-source-ref="developmentDataSource"/>
 
         <session-management invalid-session-url="/mvc/login.do"/>

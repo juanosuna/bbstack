@@ -1,0 +1,114 @@
+/*
+ * BROWN BAG CONFIDENTIAL
+ *
+ * Brown Bag Consulting LLC
+ * Copyright (c) 2011. All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Brown Bag Consulting LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Brown Bag Consulting LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Brown Bag Consulting LLC.
+ */
+
+package com.brownbag.core.view.entity;
+
+import com.brownbag.core.view.MainApplication;
+import com.vaadin.event.Action;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+
+/**
+ * User: Juan
+ * Date: 5/7/11
+ * Time: 5:27 PM
+ */
+public abstract class EntityResultsManySelect<T> extends EntityResultsComponent {
+
+    private Window popupWindow;
+
+    private EntityQuery entityQuery;
+
+    private Button addButton;
+
+    protected EntityResultsManySelect() {
+        super();
+    }
+
+    public abstract EntitySelect getEntitySelect();
+
+    EntityQuery getEntityQuery() {
+        return entityQuery;
+    }
+
+    void setEntityQuery(EntityQuery entityQuery) {
+        this.entityQuery = entityQuery;
+    }
+
+    public void postConstruct() {
+        super.postConstruct();
+
+        addButton = new Button(getUiMessageSource().getMessage("entityResults.add"), this, "add");
+        getButtonPanel().addComponent(addButton);
+
+        getEntityTable().addActionHandler(new ContextMenu());
+    }
+
+    public void add() {
+        popupWindow = new Window("Select Entity");
+        VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
+        layout.setMargin(true);
+        layout.setSpacing(true);
+        layout.setSizeUndefined();
+        popupWindow.setModal(true);
+        popupWindow.addComponent(getEntitySelect());
+        popupWindow.setClosable(true);
+        getEntitySelect().getEntityResults().addSelectButtonListener(this, "itemSelected");
+        MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
+    }
+
+    public void itemSelected() {
+        close();
+        Object selectedValue = getEntitySelect().getEntityResults().getSelectedValue();
+        valueSelected(selectedValue);
+    }
+
+    public abstract void valueSelected(Object value);
+
+    public void setAddButtonEnabled(boolean isEnabled) {
+        addButton.setEnabled(isEnabled);
+    }
+
+    public void close() {
+        MainApplication.getInstance().getMainWindow().removeWindow(popupWindow);
+    }
+
+    public void remove() {
+        Object selectedValue = getSelectedValue();
+        valueRemoved(selectedValue);
+    }
+
+    public abstract void valueRemoved(Object value);
+
+    public class ContextMenu implements Action.Handler {
+        private Action removeAction = new Action(getUiMessageSource().getMessage("entityResults.remove"));
+        private Action[] allActions = new Action[]{removeAction};
+
+        @Override
+        public Action[] getActions(Object target, Object sender) {
+            return allActions;
+        }
+
+        @Override
+        public void handleAction(Action action, Object sender, Object target) {
+            if (removeAction == action) {
+                remove();
+            }
+        }
+    }
+}

@@ -28,8 +28,6 @@ import java.util.UUID;
 @EntityListeners({WritableEntity.WritableEntityListener.class})
 public abstract class WritableEntity {
 
-    private static final long serialVersionUID = 1L;
-
     public static final String SCHEMA = "SAMPLE";
     public static final String SYSTEM_USER = "system";
 
@@ -38,7 +36,7 @@ public abstract class WritableEntity {
                 && SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null) {
             org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User)
                     SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                    return user.getUsername();
+            return user.getUsername();
         } else {
             return SYSTEM_USER;
         }
@@ -60,7 +58,7 @@ public abstract class WritableEntity {
     private Date lastModified;
 
     @Column(nullable = false)
-    private String lastModifiedBy;
+    private String modifiedBy;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
@@ -94,11 +92,11 @@ public abstract class WritableEntity {
     }
 
     public String getLastModifiedBy() {
-        return lastModifiedBy;
+        return modifiedBy;
     }
 
     public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
+        this.modifiedBy = lastModifiedBy;
     }
 
     public Date getCreated() {
@@ -152,13 +150,13 @@ public abstract class WritableEntity {
             writableEntity.lastModified = writableEntity.created;
 
             writableEntity.createdBy = getCurrentUser();
-            writableEntity.lastModifiedBy = writableEntity.createdBy;
+            writableEntity.modifiedBy = writableEntity.createdBy;
         }
 
         @PreUpdate
         public void onPreUpdate(WritableEntity writableEntity) {
             writableEntity.lastModified = new Date();
-            writableEntity.lastModifiedBy = getCurrentUser();
+            writableEntity.modifiedBy = getCurrentUser();
         }
     }
 }

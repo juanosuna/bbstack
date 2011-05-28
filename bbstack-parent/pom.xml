@@ -29,7 +29,9 @@
         <DB>h2</DB>
         <spring.version>3.0.5.RELEASE</spring.version>
         <spring.security.version>3.1.0.RC2</spring.security.version>
-        <hibernate.version>3.6.3.Final</hibernate.version>
+        <hibernate.version>3.6.4.Final</hibernate.version>
+        <vaadin.version>6.6.0</vaadin.version>
+        <gwt.version>2.3.0</gwt.version>
     </properties>
 
     <repositories>
@@ -183,25 +185,25 @@
             <dependency>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin</artifactId>
-                <version>6.5.7</version>
+                <version>${vaadin.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.google.gwt</groupId>
                 <artifactId>gwt-user</artifactId>
-                <version>2.1.1</version>
+                <version>${gwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.vaadin.addons</groupId>
+                <artifactId>customfield</artifactId>
+                <version>0.9.2</version>
             </dependency>
 
             <dependency>
                 <groupId>com.vaadin.addon</groupId>
                 <artifactId>beanvalidation-addon</artifactId>
                 <version>0.6.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.vaadin.addons</groupId>
-                <artifactId>pojo-container</artifactId>
-                <version>0.1.0</version>
             </dependency>
 
             <dependency>
@@ -312,7 +314,19 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>gwt-maven-plugin</artifactId>
-                    <version>2.1.0-1</version>
+                    <version>2.2.0</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.google.gwt</groupId>
+                            <artifactId>gwt-user</artifactId>
+                            <version>${gwt.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.google.gwt</groupId>
+                            <artifactId>gwt-dev</artifactId>
+                            <version>${gwt.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>com.vaadin</groupId>

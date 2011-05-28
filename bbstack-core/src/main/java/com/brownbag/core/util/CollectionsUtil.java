@@ -25,12 +25,12 @@ import java.util.Collection;
  * Time: 9:26 PM
  */
 public class CollectionsUtil {
-    public static String[] toStringArray(Collection<String> collection) {
+    public static String[] toStringArray(Collection collection) {
         String[] stringArray = new String[collection.size()];
 
         int i = 0;
-        for (String string : collection) {
-            stringArray[i++] = string;
+        for (Object string : collection) {
+            stringArray[i++] = string.toString();
         }
 
         return stringArray;

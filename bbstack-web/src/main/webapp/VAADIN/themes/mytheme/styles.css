@@ -17,22 +17,10 @@
 
 @import url(../reindeer/styles.css);
 
-/*.v-app {*/
-/*background: yellow;*/
-/*}*/
-
 .v-table-body {
     overflow: hidden !important;
 }
 
-/*.v-table-header {*/
-    /*height: auto;*/
-/*}*/
-
-/*.v-table-header-wrap {*/
-    /*height: auto;*/
-/*}*/
-
-/*.v-table-caption-container {*/
-    /*height: auto;*/
-/*}*/
+.v-textfield.v-readonly {
+    border: 1px solid #bcbdbe;
+}

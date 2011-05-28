@@ -28,6 +28,16 @@ import java.lang.reflect.Type;
  * Time: 2:09 PM
  */
 public class ReflectionUtil {
+    public static <T> T newInstance(Class<T> type) {
+        try {
+            return type.newInstance();
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static Class getGenericArgumentType(Class clazz) {
         Type type = clazz.getGenericSuperclass();
 
@@ -42,48 +52,28 @@ public class ReflectionUtil {
         }
     }
 
-    public static BeanProperty getType(Class clazz, String propertyPath) {
+    public static BeanProperty getBeanProperty(Class clazz, String propertyPath) {
         String[] properties = propertyPath.split("\\.");
         Class containingType = null;
         Class currentPropertyType = clazz;
-        String propertyId = propertyPath;
+        String propertyId;
+        BeanProperty beanProperty = null;
         for (int i = 0; i < properties.length; i++) {
             String property = properties[i];
             Class propertyType = BeanUtils.findPropertyType(property, new Class[]{currentPropertyType});
             if (propertyType == null || propertyType.equals(Object.class)) {
-                throw new RuntimeException("Invalid otherProperty type " + propertyType
-                        + " for otherProperty " + property);
+                throw new RuntimeException("Invalid property path given for class " + clazz
+                        + ": " + property);
             } else {
                 containingType = currentPropertyType;
                 currentPropertyType = propertyType;
                 propertyId = properties[i];
+
+                beanProperty = new BeanProperty(beanProperty, propertyId, currentPropertyType, containingType);
             }
         }
 
-        return new BeanProperty(propertyId, currentPropertyType, containingType);
+        return beanProperty;
     }
 
-    public static class BeanProperty {
-        private String id;
-        private Class type;
-        private Class containerType;
-
-        private BeanProperty(String id, Class type, Class containerType) {
-            this.id = id;
-            this.type = type;
-            this.containerType = containerType;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public Class getType() {
-            return type;
-        }
-
-        public Class getContainerType() {
-            return containerType;
-        }
-    }
 }

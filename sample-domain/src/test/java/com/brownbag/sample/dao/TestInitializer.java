@@ -17,10 +17,7 @@
 
 package com.brownbag.sample.dao;
 
-import com.brownbag.sample.entity.Address;
-import com.brownbag.sample.entity.Country;
-import com.brownbag.sample.entity.Person;
-import com.brownbag.sample.entity.State;
+import com.brownbag.sample.entity.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,25 +45,28 @@ public class TestInitializer {
     private CountryDao countryDao;
 
     @Autowired
-    private PersonDao personDao;
+    private ContactDao contactDao;
+
+    @Autowired
+    private AccountDao accountDao;
 
     //    @IfProfileValue(name="initDB", value="true")
     @Test
     public void initialize() throws Exception {
 
         initializeCountriesStates();
-        initializePersons();
+        initializeContacts();
     }
 
-    private void initializePersons() {
+    private void initializeContacts() {
         for (Integer i = 0; i < 1000; i++) {
-            Person person = new Person(
+            Contact contact = new Contact(
                     "first" + i,
                     "last" + i,
                     i.toString()
             );
-            person.setSocialSecurityNumber("123456789");
-            person.setBirthDate(createBirthDate());
+            contact.setSocialSecurityNumber("123456789");
+            contact.setBirthDate(createBirthDate());
 
             Address address = new Address();
             address.setStreet(i + " Main St");
@@ -83,10 +83,35 @@ public class TestInitializer {
                 address.setState(new State("ON"));
                 address.setZipCode("M4B 1B4");
             }
-            person.setAddress(address);
-
-            personDao.persist(person);
+            contact.setAddress(address);
+            initializeAccount(contact, i);
+            contactDao.persist(contact);
         }
+    }
+
+    private void initializeAccount(Contact contact, int i) {
+        Account account = new Account();
+        account.setName("companyName" + i);
+        contact.setAccount(account);
+
+        Address address = new Address();
+        address.setStreet(i + " Main St");
+        if (i % 2 == 0) {
+            address.setCity("Charlotte");
+            Country country = new Country("US");
+            address.setCountry(country);
+            address.setState(new State("NC"));
+            address.setZipCode("28202");
+        } else {
+            address.setCity("Toronto");
+            Country country = new Country("CA");
+            address.setCountry(country);
+            address.setState(new State("ON"));
+            address.setZipCode("M4B 1B4");
+        }
+        account.setAddress(address);
+
+        accountDao.persist(account);
     }
 
     private void initializeCountriesStates() {

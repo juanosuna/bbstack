@@ -40,9 +40,9 @@
           p:servletClass="com.brownbag.core.util.AutowiringApplicationServlet">
         <property name="initParameters">
             <props>
-                <prop key="application">com.brownbag.core.ui.MainApplication</prop>
+                <prop key="application">com.brownbag.core.view.MainApplication</prop>
                 <prop key="productionMode">true</prop>
-                <prop key="widgetset">com.brownbag.core.ui.MyAppWidgetSet</prop>
+                <prop key="widgetset">com.brownbag.core.view.MyAppWidgetSet</prop>
             </props>
         </property>
     </bean>
@@ -62,8 +62,8 @@
     </bean>
 
     <bean name="loginController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
-         <property name="viewName" value="login"/>
-     </bean>
+        <property name="viewName" value="login"/>
+    </bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/jsp/"></property>

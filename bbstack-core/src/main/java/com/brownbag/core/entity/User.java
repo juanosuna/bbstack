@@ -17,8 +17,6 @@
 
 package com.brownbag.core.entity;
 
-import com.brownbag.core.entity.WritableEntity;
-
 /**
  * User: Juan
  * Date: 2/20/11
