@@ -52,7 +52,7 @@ public abstract class SearchableEntityComponent<T> extends EntityComponent {
 
         toggleSearchFormPanelButton = new Button(null,
                 this, "toggleSearchFormPanel");
-        toggleSearchFormPanelButton.setIcon(new ThemeResource("../mytheme/icons/expand-icon.png"));
+        toggleSearchFormPanelButton.setIcon(new ThemeResource("../mytheme/icons/collapse-icon.png"));
         toggleSearchFormPanelButton.addStyleName("borderless");
         getMainPanel().addComponent(toggleSearchFormPanelButton);
 
