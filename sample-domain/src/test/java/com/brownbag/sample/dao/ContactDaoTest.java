@@ -24,6 +24,7 @@ import com.brownbag.sample.entity.State;
 import com.brownbag.sample.view.contact.ContactQuery;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -68,6 +69,7 @@ public class ContactDaoTest extends AbstractDomainTest {
         contactDao.persist(contact);
     }
 
+    @Ignore
     @Test
     public void findByName() {
         ContactQuery contactQuery = new ContactQuery();
