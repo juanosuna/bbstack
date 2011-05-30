@@ -95,7 +95,8 @@ public abstract class EntityComponent<T> extends CustomComponent {
 
     protected static Panel createPanel(AbstractOrderedLayout layout) {
         Panel panel = new Panel();
-        panel.addStyleName(Runo.PANEL_LIGHT);
+        panel.addStyleName("borderless");
+//        panel.addStyleName(Runo.PANEL_LIGHT);
         layout.setMargin(false);
         layout.setSpacing(true);
         panel.setContent(layout);

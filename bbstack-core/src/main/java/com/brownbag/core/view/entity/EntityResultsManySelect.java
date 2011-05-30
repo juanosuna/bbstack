@@ -23,6 +23,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import java.util.Collection;
+
 /**
  * User: Juan
  * Date: 5/7/11
@@ -54,13 +56,17 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
         super.postConstruct();
 
         addButton = new Button(getUiMessageSource().getMessage("entityResults.add"), this, "add");
+        addButton.addStyleName("small default");
         getButtonPanel().addComponent(addButton);
 
         getEntityTable().addActionHandler(new ContextMenu());
+        getEntityTable().setMultiSelect(true);
+        getEntitySelect().getEntityResults().getEntityTable().setMultiSelect(true);
     }
 
     public void add() {
         popupWindow = new Window("Select Entity");
+        popupWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -68,17 +74,17 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
         popupWindow.setModal(true);
         popupWindow.addComponent(getEntitySelect());
         popupWindow.setClosable(true);
-        getEntitySelect().getEntityResults().addSelectButtonListener(this, "itemSelected");
+        getEntitySelect().getEntityResults().addSelectButtonListener(this, "itemsSelected");
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
     }
 
-    public void itemSelected() {
+    public void itemsSelected() {
         close();
-        Object selectedValue = getEntitySelect().getEntityResults().getSelectedValue();
-        valueSelected(selectedValue);
+        Collection selectedValues = getEntitySelect().getEntityResults().getSelectedValues();
+        valuesSelected(selectedValues.toArray());
     }
 
-    public abstract void valueSelected(Object value);
+    public abstract void valuesSelected(Object... values);
 
     public void setAddButtonEnabled(boolean isEnabled) {
         addButton.setEnabled(isEnabled);
@@ -89,11 +95,11 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
     }
 
     public void remove() {
-        Object selectedValue = getSelectedValue();
-        valueRemoved(selectedValue);
+        Collection selectedValues = getSelectedValues();
+        valuesRemoved(selectedValues.toArray());
     }
 
-    public abstract void valueRemoved(Object value);
+    public abstract void valuesRemoved(Object... value);
 
     public class ContextMenu implements Action.Handler {
         private Action removeAction = new Action(getUiMessageSource().getMessage("entityResults.remove"));

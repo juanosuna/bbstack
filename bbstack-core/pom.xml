@@ -176,6 +176,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>chameleon</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-servlet_2.5_spec</artifactId>
             <scope>provided</scope>

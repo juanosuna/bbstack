@@ -27,6 +27,9 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * User: Juan
  * Date: 5/7/11
@@ -108,6 +111,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         entityTable = new EntityTable(this);
 
         Panel resultsPanel = new Panel();
+        resultsPanel.addStyleName("borderless");
         buttonPanel = createButtonPanel();
         resultsPanel.addComponent(buttonPanel);
         resultsPanel.addComponent(entityTable);
@@ -118,6 +122,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
 
     private Panel createButtonPanel() {
         Panel buttonPanel = new Panel();
+        buttonPanel.addStyleName("borderless");
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(false);
         layout.setSpacing(true);
@@ -126,26 +131,33 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         buttonPanel.setContent(layout);
 
         Button firstButton = new Button(uiMessageSource.getMessage("entityResults.first"), getEntityTable(), "firstPage");
+        firstButton.addStyleName("small default");
         buttonPanel.addComponent(firstButton);
 
         Button previousButton = new Button(uiMessageSource.getMessage("entityResults.previous"), getEntityTable(), "previousPage");
+        previousButton.addStyleName("small default");
         buttonPanel.addComponent(previousButton);
 
         Button nextButton = new Button(uiMessageSource.getMessage("entityResults.next"), getEntityTable(), "nextPage");
+        nextButton.addStyleName("small default");
         buttonPanel.addComponent(nextButton);
 
         Button lastButton = new Button(uiMessageSource.getMessage("entityResults.last"), getEntityTable(), "lastPage");
+        lastButton.addStyleName("small default");
         buttonPanel.addComponent(lastButton);
 
         Label pageSizeLabel = new Label(uiMessageSource.getMessage("entityResults.pageSize") + ": ");
+        pageSizeLabel.addStyleName("small");
         buttonPanel.addComponent(pageSizeLabel);
-        ComboBox pageSizeMenu = new ComboBox();
+        Select pageSizeMenu = new Select();
+        pageSizeMenu.addStyleName("small");
         pageSizeMenu.addItem(10);
         pageSizeMenu.addItem(25);
         pageSizeMenu.addItem(50);
         pageSizeMenu.addItem(100);
         MethodProperty pageProperty = new MethodProperty(getEntityQuery(), "pageSize");
         pageSizeMenu.setPropertyDataSource(pageProperty);
+        pageSizeMenu.setFilteringMode(Select.FILTERINGMODE_OFF);
         pageSizeMenu.setNullSelectionAllowed(false);
         pageSizeMenu.setImmediate(true);
         pageSizeMenu.setWidth(5, UNITS_EM);
@@ -160,9 +172,11 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
     }
 
     public Object getSelectedValue() {
-        Object itemId = getEntityTable().getValue();
-        BeanItem beanItem = getEntityTable().getContainerDataSource().getItem(itemId);
-        return beanItem.getBean();
+        return getEntityTable().getValue();
+    }
+
+    public Collection getSelectedValues() {
+        return (Collection) getEntityTable().getValue();
     }
 
     public void search() {

@@ -122,7 +122,7 @@ public class FormField extends DisplayField {
         }
 
         if (ReferenceEntity.class.isAssignableFrom(propertyType)) {
-            return new ComboBox();
+            return new Select();
         }
 
         return new TextField();
@@ -156,17 +156,18 @@ public class FormField extends DisplayField {
             initDateFieldDefaults((DateField) field);
         }
 
-        if (field instanceof ComboBox) {
+        if (field instanceof Select) {
             EntityDao propertyDao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class,
                     getPropertyType());
             List referenceEntities = propertyDao.findAll();
-            initComboBoxDefaults((ComboBox) field, getPropertyType(), referenceEntities);
+            initComboBoxDefaults((Select) field, getPropertyType(), referenceEntities);
         }
     }
 
     public static void initAbstractFieldDefaults(AbstractField field) {
         field.setRequiredError("Required value is missing");
         field.setImmediate(true);
+        field.setInvalidCommitted(true);
     }
 
     public static void initTextFieldDefaults(TextField field) {
@@ -178,11 +179,11 @@ public class FormField extends DisplayField {
         field.setResolution(DateField.RESOLUTION_DAY);
     }
 
-    public static void initComboBoxDefaults(ComboBox field, Class propertyType, List referenceEntities) {
+    public static void initComboBoxDefaults(Select field, Class propertyType, List referenceEntities) {
         BeanItemContainer container = new BeanItemContainer(propertyType, referenceEntities);
 
         field.setContainerDataSource(container);
-        field.setFilteringMode(ComboBox.FILTERINGMODE_OFF);
+        field.setFilteringMode(Select.FILTERINGMODE_CONTAINS);
         field.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
         field.setNullSelectionAllowed(true);
         field.setItemCaptionPropertyId("name"); // todo can't hard-code

@@ -20,6 +20,7 @@ package com.brownbag.core.view.entity;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.MyBeanItemContainer;
 import com.vaadin.ui.Table;
 
 import java.text.SimpleDateFormat;
@@ -37,6 +38,7 @@ public class EntityTable extends Table {
 
     protected EntityTable(EntityResultsComponent entityResults) {
         this.entityResults = entityResults;
+        addStyleName("strong striped");
         postConstruct();
     }
 
@@ -53,7 +55,7 @@ public class EntityTable extends Table {
     }
 
     public void postConstruct() {
-        BeanItemContainer dataSource = new BeanItemContainer(getEntityType());
+        BeanItemContainer dataSource = new MyBeanItemContainer(getEntityType());
         String[] propertyIds = getEntityFields().getPropertyIdsAsArray();
         for (String propertyId : propertyIds) {
             dataSource.addNestedContainerProperty(propertyId);

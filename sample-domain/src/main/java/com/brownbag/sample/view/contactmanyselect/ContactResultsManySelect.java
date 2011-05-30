@@ -51,7 +51,9 @@ public class ContactResultsManySelect extends EntityResultsManySelect<Contact> {
         displayFields.setPropertyIds(new String[]{
                 "name",
                 "address.state",
-                "address.country"
+                "address.country",
+                "lastModified",
+                "lastModifiedBy"
         });
     }
 
@@ -61,21 +63,25 @@ public class ContactResultsManySelect extends EntityResultsManySelect<Contact> {
     }
 
     @Override
-    public void valueSelected(Object value) {
-        Contact contactSelected = (Contact) value;
+    public void valuesSelected(Object... values) {
         Account account = contactQueryManySelect.getAccount();
-        contactSelected = contactDao.find(contactSelected.getId());
-        contactSelected.setAccount(account);
-        contactDao.persist(contactSelected);
+        for (Object value : values) {
+            Contact contactSelected = (Contact) value;
+            contactSelected = contactDao.find(contactSelected.getId());
+            contactSelected.setAccount(account);
+            contactDao.persist(contactSelected);
+        }
         search();
     }
 
     @Override
-    public void valueRemoved(Object value) {
-        Contact contactSelected = (Contact) value;
-        contactSelected = contactDao.find(contactSelected.getId());
-        contactSelected.setAccount(null);
-        contactDao.persist(contactSelected);
+    public void valuesRemoved(Object... values) {
+        for (Object value : values) {
+            Contact contactSelected = (Contact) value;
+            contactSelected = contactDao.find(contactSelected.getId());
+            contactSelected.setAccount(null);
+            contactDao.persist(contactSelected);
+        }
         search();
     }
 }

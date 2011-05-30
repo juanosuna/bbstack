@@ -42,7 +42,8 @@ public class EntitySelectField extends CustomField {
 
         final Button searchButton = new Button();
         searchButton.setWidth(Sizeable.UNITS_EM, 3);
-        searchButton.setIcon(new ThemeResource("icons/search-icon.png"));
+        searchButton.addStyleName("borderless");
+        searchButton.setIcon(new ThemeResource("../chameleon/img/magnifier.png"));
         searchButton.addListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
                 open();
@@ -52,7 +53,8 @@ public class EntitySelectField extends CustomField {
 
         clearButton = new Button();
         clearButton.setWidth(Sizeable.UNITS_EM, 3);
-        clearButton.setIcon(new ThemeResource("icons/clear-icon.png"));
+        clearButton.addStyleName("borderless");
+        clearButton.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
         layout.addComponent(clearButton);
 
         entitySelect.getEntityResults().addSelectButtonListener(this, "itemSelected");
@@ -74,6 +76,7 @@ public class EntitySelectField extends CustomField {
 
     public void open() {
         popupWindow = new Window(getCaption());
+        popupWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
         layout.setMargin(true);
         layout.setSpacing(true);

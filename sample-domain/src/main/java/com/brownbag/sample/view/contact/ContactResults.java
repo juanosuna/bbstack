@@ -35,11 +35,15 @@ public class ContactResults extends EntityResults<Contact> {
     @Override
     public void configureEntityFields(DisplayFields displayFields) {
         displayFields.setPropertyIds(new String[]{
-                "name",
+                "firstName",
+                "lastName",
+                "account.name",
                 "address.state",
                 "address.country",
                 "lastModified",
                 "lastModifiedBy"
         });
+
+        displayFields.getField("account.name").setLabel("Account");
     }
 }

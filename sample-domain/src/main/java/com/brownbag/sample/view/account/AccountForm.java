@@ -28,6 +28,7 @@ import com.brownbag.sample.view.contactmanyselect.ContactManySelect;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -50,6 +51,8 @@ public class AccountForm extends EntityForm<Account> {
     @Resource
     private ContactManySelect contactManySelect;
 
+    private TabSheet tabSheet;
+
     @Override
     public String getEntityCaption() {
         return "Account Form";
@@ -64,7 +67,7 @@ public class AccountForm extends EntityForm<Account> {
         formFields.setPosition("address.zipCode", 1, 3);
         formFields.setPosition("address.country", 0, 4);
 
-        ComboBox stateField = (ComboBox) formFields.getFormField("address.state").getField();
+        Select stateField = (Select) formFields.getFormField("address.state").getField();
         stateField.getContainerDataSource().removeAllItems();
 
         formFields.addValueChangeListener("address.country", this, "countryChanged");
@@ -72,7 +75,7 @@ public class AccountForm extends EntityForm<Account> {
 
     public void countryChanged(Field.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
-        ComboBox stateCombo = (ComboBox) getFormFields().getFormField("address.state").getField();
+        Select stateCombo = (Select) getFormFields().getFormField("address.state").getField();
         State selectedState = (State) stateCombo.getValue();
         BeanItemContainer<State> stateContainer = (BeanItemContainer<State>) stateCombo.getContainerDataSource();
         stateContainer.removeAllItems();
@@ -87,9 +90,9 @@ public class AccountForm extends EntityForm<Account> {
     public void postConstruct() {
         super.postConstruct();
 
-        TabSheet tabs = new TabSheet();
-        tabs.addTab(contactManySelect);
-        getFormPanel().addComponent(tabs);
+        tabSheet = new TabSheet();
+        tabSheet.addTab(contactManySelect);
+        getFormPanel().addComponent(tabSheet);
     }
 
     @Override
@@ -99,13 +102,13 @@ public class AccountForm extends EntityForm<Account> {
         Account account = getEntity();
         contactManySelect.getEntityQuery().setAccount(account);
         contactManySelect.getEntityResults().search();
-        contactManySelect.getEntityResults().setAddButtonEnabled(true);
+        tabSheet.setVisible(true);
     }
 
     @Override
     public void create() {
         super.create();
 
-        contactManySelect.getEntityResults().setAddButtonEnabled(false);
+        tabSheet.setVisible(false);
     }
 }

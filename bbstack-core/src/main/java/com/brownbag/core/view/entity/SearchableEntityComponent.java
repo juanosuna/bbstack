@@ -17,6 +17,7 @@
 
 package com.brownbag.core.view.entity;
 
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
@@ -49,8 +50,10 @@ public abstract class SearchableEntityComponent<T> extends EntityComponent {
         wireRelationships();
         postConstructRelatedBeans();
 
-        toggleSearchFormPanelButton = new Button(getUiMessageSource().getMessage("entityTab.hide"),
+        toggleSearchFormPanelButton = new Button(null,
                 this, "toggleSearchFormPanel");
+        toggleSearchFormPanelButton.setIcon(new ThemeResource("../mytheme/icons/expand-icon.png"));
+        toggleSearchFormPanelButton.addStyleName("borderless");
         getMainPanel().addComponent(toggleSearchFormPanelButton);
 
         Panel searchFormPanel = createPanel(new HorizontalLayout());
@@ -77,9 +80,9 @@ public abstract class SearchableEntityComponent<T> extends EntityComponent {
     public void toggleSearchFormPanel() {
         searchFormPanelAnimator.setRolledUp(!searchFormPanelAnimator.isRolledUp());
         if (searchFormPanelAnimator.isRolledUp()) {
-            toggleSearchFormPanelButton.setCaption(getUiMessageSource().getMessage("entityTab.show"));
+            toggleSearchFormPanelButton.setIcon(new ThemeResource("../mytheme/icons/expand-icon.png"));
         } else {
-            toggleSearchFormPanelButton.setCaption(getUiMessageSource().getMessage("entityTab.hide"));
+            toggleSearchFormPanelButton.setIcon(new ThemeResource("../mytheme/icons/collapse-icon.png"));
         }
     }
 }

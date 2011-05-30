@@ -203,13 +203,19 @@
             <dependency>
                 <groupId>com.vaadin.addon</groupId>
                 <artifactId>beanvalidation-addon</artifactId>
-                <version>0.6.1</version>
+                <version>0.6.2</version>
             </dependency>
 
             <dependency>
                 <groupId>org.vaadin.addons</groupId>
                 <artifactId>animator</artifactId>
                 <version>1.6.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.vaadin.addons</groupId>
+                <artifactId>chameleon</artifactId>
+                <version>1.0.2</version>
             </dependency>
 
             <!-- Misc -->

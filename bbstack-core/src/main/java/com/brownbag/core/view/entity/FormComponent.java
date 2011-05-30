@@ -101,6 +101,10 @@ public abstract class FormComponent<T> extends CustomComponent {
         formPanel = EntityComponent.createPanel(layout);
 
         form = new ConfigurableForm();
+        form.setWriteThrough(true);
+        form.setInvalidCommitted(true);
+        form.setImmediate(true);
+        form.setValidationVisibleOnCommit(true);
         form.setStyleName("entityForm");
         formPanel.addComponent(form);
 
@@ -113,10 +117,6 @@ public abstract class FormComponent<T> extends CustomComponent {
         gridLayout.setSpacing(true);
         gridLayout.setWidth("100%");
         form.setLayout(gridLayout);
-
-        form.setWriteThrough(true);
-        form.setInvalidCommitted(true);
-        form.setImmediate(true);
 
         HorizontalLayout footerLayout = createFooterButtons();
         form.getFooter().setMargin(true);

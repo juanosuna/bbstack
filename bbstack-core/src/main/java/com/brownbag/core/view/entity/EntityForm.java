@@ -19,19 +19,21 @@ package com.brownbag.core.view.entity;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.WritableEntity;
+import com.brownbag.core.validation.PatternIfThen;
+import com.brownbag.core.validation.PatternIfThenValidator;
 import com.brownbag.core.validation.Validation;
 import com.brownbag.core.view.MainApplication;
+import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.CompositeErrorMessage;
 import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.terminal.UserError;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.*;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.metadata.ConstraintDescriptor;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -73,26 +75,29 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         footerLayout.setSpacing(true);
 
         Button cancelButton = new Button(getUiMessageSource().getMessage("entityForm.cancel"), this, "cancel");
+        cancelButton.addStyleName("default");
         footerLayout.addComponent(cancelButton);
 
         Button resetButton = new Button(getUiMessageSource().getMessage("entityForm.reset"), this, "reset");
+        resetButton.addStyleName("default");
         footerLayout.addComponent(resetButton);
 
         Button saveButton = new Button(getUiMessageSource().getMessage("entityForm.save"), this, "save");
+        saveButton.addStyleName("default");
         footerLayout.addComponent(saveButton);
 
         return footerLayout;
     }
 
     public void load(WritableEntity entity) {
-        getForm().setComponentError(null);
+        clearComponentErrors();
         WritableEntity loadedEntity = (WritableEntity) getEntityDao().find(entity.getId());
         BeanItem beanItem = createBeanItem(loadedEntity);
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
     }
 
     public void clear() {
-        getForm().setComponentError(null);
+        clearComponentErrors();
         getForm().setItemDataSource(null, getFormFields().getPropertyIds());
     }
 
@@ -102,10 +107,11 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     private void createImpl() {
-        getForm().setComponentError(null);
+        clearComponentErrors();
         Object newEntity = createEntity();
         BeanItem beanItem = createBeanItem(newEntity);
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
+        clearComponentErrors();
     }
 
     private T createEntity() {
@@ -120,6 +126,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     public void open() {
         formWindow = new Window(getEntityCaption());
+        formWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) formWindow.getContent();
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -127,6 +134,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         formWindow.setModal(true);
         formWindow.addComponent(this);
         formWindow.setClosable(true);
+        formWindow.setScrollable(true);
         MainApplication.getInstance().getMainWindow().addWindow(formWindow);
     }
 
@@ -136,7 +144,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void cancel() {
-        getForm().setComponentError(null);
+        clearComponentErrors();
         getForm().discard();
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         if (beanItem == null) {
@@ -184,19 +192,36 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
             for (ConstraintViolation constraintViolation : constraintViolations) {
                 String message = constraintViolation.getMessage();
-                errorMessages.add(new UserError(message));
+                UserError error = new UserError(message);
+                ConstraintDescriptor descriptor = constraintViolation.getConstraintDescriptor();
+                Annotation annotation = descriptor.getAnnotation();
+                if (annotation instanceof PatternIfThen) {
+                    PatternIfThen patternIfThen = (PatternIfThen) annotation;
+                    String thenProperty = constraintViolation.getPropertyPath()
+                            + "." + patternIfThen.thenProperty();
+                    FormField thenField = getFormFields().getFormField(thenProperty);
+                    AbstractComponent fieldComponent = (AbstractComponent) thenField.getField();
+                    fieldComponent.setComponentError(error);
+                } else {
+//                    errorMessages.add(error);
+                }
             }
             CompositeErrorMessage compositeErrorMessage = new CompositeErrorMessage(errorMessages);
             getForm().setComponentError(compositeErrorMessage);
         } else {
-            getForm().setComponentError(null);
+            clearComponentErrors();
         }
 
         return constraintViolations;
     }
 
-    public void reset() {
+    public void clearComponentErrors() {
+        getFormFields().clearErrors();
         getForm().setComponentError(null);
+    }
+
+    public void reset() {
+        clearComponentErrors();
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         if (beanItem == null) {
             createImpl();

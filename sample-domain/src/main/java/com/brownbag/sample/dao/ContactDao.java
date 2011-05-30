@@ -149,9 +149,10 @@ public class ContactDao extends EntityDao<Contact, Long> {
             String orderField = query.getOrderByField();
             if (orderField.equals("address.country")) {
                 path = contact.get("address").get("country");
-
             } else if (orderField.equals("address.state")) {
                 path = contact.get("address").get("state");
+            } else if (orderField.equals("account.name")) {
+                path = contact.get("account").get("name");
             } else {
                 path = contact.get(orderField);
             }
@@ -188,6 +189,7 @@ public class ContactDao extends EntityDao<Contact, Long> {
         c.select(contact);
 
         contact.fetch("address");
+        contact.fetch("account");
 
         List<Predicate> criteria = new ArrayList<Predicate>();
         ParameterExpression<List> p = b.parameter(List.class, "ids");
@@ -199,9 +201,10 @@ public class ContactDao extends EntityDao<Contact, Long> {
             Path path;
             if (orderField.equals("address.country")) {
                 path = contact.get("address").get("country");
-
             } else if (orderField.equals("address.state")) {
                 path = contact.get("address").get("state");
+            } else if (orderField.equals("account.name")) {
+                path = contact.get("account").get("name");
             } else {
                 path = contact.get(orderField);
             }

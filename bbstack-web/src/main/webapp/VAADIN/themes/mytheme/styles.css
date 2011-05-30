@@ -15,7 +15,7 @@
  * from Brown Bag Consulting LLC.
  */
 
-@import url(../reindeer/styles.css);
+@import url(../chameleon-blue/styles.css);
 
 .v-table-body {
     overflow: hidden !important;
@@ -23,4 +23,20 @@
 
 .v-textfield.v-readonly {
     border: 1px solid #bcbdbe;
+}
+
+.v-textfield-error, .v-checkbox-error, .v-textarea-error, .v-richtextarea-error,
+.v-select-error .v-select-option, .v-datefield-error .v-textfield {
+    border-color: red !important;
+    border-width: medium !important;
+    background: none !important;
+    border-image: none !important;
+}
+
+.v-form fieldset {
+    border: thin #add8e6 solid;
+}
+
+.v-filterselect-error {
+    border: medium red solid !important;
 }

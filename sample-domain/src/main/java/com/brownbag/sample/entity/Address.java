@@ -19,8 +19,7 @@ package com.brownbag.sample.entity;
 
 
 import com.brownbag.core.entity.WritableEntity;
-import com.brownbag.core.validation.PatternDependencies;
-import com.brownbag.core.validation.PatternIf;
+import com.brownbag.core.validation.PatternIfThen;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotBlank;
@@ -33,7 +32,10 @@ import java.util.Set;
 
 import static com.brownbag.core.entity.WritableEntity.SCHEMA;
 
-@PatternDependencies
+//@PatternDependencies
+@PatternIfThen(ifProperty = "country.id", ifRegex = "^US$",
+        thenProperty = "zipCode", thenRegex = "^\\d{5}$|^\\d{5}$",
+        message = "US zip code must be 5 or 9 digits")
 @Entity
 @Table(schema = SCHEMA)
 public class Address extends WritableEntity {
@@ -48,8 +50,8 @@ public class Address extends WritableEntity {
     @Size(min = 1, max = 16)
     private String city;
 
-    @PatternIf(otherProperty = "country.id", otherPropertyRegexp = "^US$",
-            regexp = "^\\d{5}$|^\\d{5}$", message = "US zip code must be 5 or 9 digits")
+//    @PatternIf(otherProperty = "country.id", otherPropertyRegexp = "^US$",
+//            regexp = "^\\d{5}$|^\\d{5}$", message = "US zip code must be 5 or 9 digits")
     private String zipCode;
 
     @Index(name = "IDX_ADDRESS_STATE")

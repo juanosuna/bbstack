@@ -25,6 +25,7 @@ import com.brownbag.sample.entity.State;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Select;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -55,7 +56,7 @@ public class AccountSearchForm extends EntitySearchForm<AccountQuery> {
         formFields.setPosition("state", 1, 0);
         formFields.setPosition("country", 2, 0);
 
-        ComboBox stateField = (ComboBox) formFields.getFormField("state").getField();
+        Select stateField = (Select) formFields.getFormField("state").getField();
         stateField.getContainerDataSource().removeAllItems();
 
         formFields.addValueChangeListener("country", this, "countryChanged");
@@ -63,7 +64,7 @@ public class AccountSearchForm extends EntitySearchForm<AccountQuery> {
 
     public void countryChanged(Field.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
-        ComboBox stateCombo = (ComboBox) getFormFields().getFormField("state").getField();
+        Select stateCombo = (Select) getFormFields().getFormField("state").getField();
         State selectedState = (State) stateCombo.getValue();
         BeanItemContainer<State> stateContainer = (BeanItemContainer<State>) stateCombo.getContainerDataSource();
         stateContainer.removeAllItems();

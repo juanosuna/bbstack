@@ -29,6 +29,7 @@ import com.brownbag.sample.view.accountselect.AccountSelect;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Select;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -72,7 +73,7 @@ public class ContactForm extends EntityForm<Contact> {
 
         formFields.getFormField("account.name").setLabel("Account");
 
-        ComboBox stateField = (ComboBox) formFields.getFormField("address.state").getField();
+        Select stateField = (Select) formFields.getFormField("address.state").getField();
         stateField.getContainerDataSource().removeAllItems();
 
         entitySelectField = new EntitySelectField(accountSelect);
@@ -99,7 +100,7 @@ public class ContactForm extends EntityForm<Contact> {
 
     public void countryChanged(Field.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
-        ComboBox stateCombo = (ComboBox) getFormFields().getFormField("address.state").getField();
+        Select stateCombo = (Select) getFormFields().getFormField("address.state").getField();
         State selectedState = (State) stateCombo.getValue();
         BeanItemContainer<State> stateContainer = (BeanItemContainer<State>) stateCombo.getContainerDataSource();
         stateContainer.removeAllItems();

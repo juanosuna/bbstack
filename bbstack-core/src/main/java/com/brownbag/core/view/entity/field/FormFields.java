@@ -18,9 +18,12 @@
 package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.util.MessageSource;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Field;
+import org.hibernate.type.AbstractComponentType;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * User: Juan
@@ -98,5 +101,16 @@ public class FormFields extends DisplayFields {
 
     public boolean isAttachValidators() {
         return attachValidators;
+    }
+
+    public void clearErrors() {
+        Collection<DisplayField> fields = getFields();
+        for (DisplayField field : fields) {
+            FormField formField = (FormField) field;
+            if (formField.getField() instanceof AbstractComponent) {
+                AbstractComponent fieldComponent = (AbstractComponent) formField.getField();
+                fieldComponent.setComponentError(null);
+            }
+        }
     }
 }

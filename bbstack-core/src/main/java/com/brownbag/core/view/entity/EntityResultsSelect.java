@@ -38,6 +38,7 @@ public abstract class EntityResultsSelect<T> extends EntityResultsComponent {
         addSelectionChangedListener(this, "selectionChanged");
 
         selectButton = new Button(getUiMessageSource().getMessage("entityResults.select"));
+        selectButton.addStyleName("small default");
         selectButton.setEnabled(false);
         getButtonPanel().addComponent(selectButton);
     }

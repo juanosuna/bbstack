@@ -53,9 +53,11 @@ public abstract class EntitySearchForm<T> extends FormComponent {
         footerLayout.setSpacing(true);
 
         Button clear = new Button(getUiMessageSource().getMessage("entitySearchForm.clear"), this, "clear");
+        clear.addStyleName("default");
         footerLayout.addComponent(clear);
 
         Button search = new Button(getUiMessageSource().getMessage("entitySearchForm.search"), this, "search");
+        search.addStyleName("default");
         footerLayout.addComponent(search);
 
         return footerLayout;
@@ -68,7 +70,6 @@ public abstract class EntitySearchForm<T> extends FormComponent {
 
     public void clear() {
         getEntityQuery().clear();
-        getForm().setComponentError(null);
         BeanItem beanItem = createBeanItem(getEntityQuery());
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 

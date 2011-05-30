@@ -56,6 +56,7 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
         super.postConstruct();
 
         Button newButton = new Button(getUiMessageSource().getMessage("entityResults.new"), this, "create");
+        newButton.addStyleName("small default");
         getButtonPanel().addComponent(newButton);
 
         getEntityTable().addActionHandler(new ContextMenu());
