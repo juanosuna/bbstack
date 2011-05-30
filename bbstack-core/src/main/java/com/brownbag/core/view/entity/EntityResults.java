@@ -18,9 +18,12 @@
 package com.brownbag.core.view.entity;
 
 import com.brownbag.core.entity.WritableEntity;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.Action;
 import com.vaadin.ui.Button;
+
+import javax.naming.Context;
 
 /**
  * User: Juan
@@ -31,6 +34,7 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
 
     private EntityForm entityForm;
     private EntityQuery entityQuery;
+    private ContextMenu contextMenu;
 
     protected EntityResults() {
         super();
@@ -44,7 +48,7 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
         this.entityForm = entityForm;
     }
 
-    EntityQuery getEntityQuery() {
+    public EntityQuery getEntityQuery() {
         return entityQuery;
     }
 
@@ -59,7 +63,8 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
         newButton.addStyleName("small default");
         getButtonPanel().addComponent(newButton);
 
-        getEntityTable().addActionHandler(new ContextMenu());
+        addSelectionChangedListener(this, "selectionChanged");
+        contextMenu = new ContextMenu();
     }
 
     public void create() {
@@ -82,6 +87,15 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
             Object entity = beanItem.getBean();
             getEntityDao().delete(entity);
             search();
+        }
+    }
+
+    public void selectionChanged(Property.ValueChangeEvent event) {
+        Object itemId = getEntityTable().getValue();
+        if (itemId != null) {
+            getEntityTable().addActionHandler(contextMenu);
+        } else {
+            getEntityTable().removeActionHandler(contextMenu);
         }
     }
 

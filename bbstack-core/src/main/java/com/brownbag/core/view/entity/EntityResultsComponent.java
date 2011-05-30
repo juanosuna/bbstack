@@ -93,7 +93,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         this.entityForm = entityForm;
     }
 
-    EntityQuery getEntityQuery() {
+    public EntityQuery getEntityQuery() {
         return entityQuery;
     }
 

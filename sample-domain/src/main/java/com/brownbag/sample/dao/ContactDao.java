@@ -188,8 +188,8 @@ public class ContactDao extends EntityDao<Contact, Long> {
         Root<Contact> contact = c.from(Contact.class);
         c.select(contact);
 
-        contact.fetch("address");
-        contact.fetch("account");
+        contact.fetch("address", JoinType.LEFT);
+        contact.fetch("account", JoinType.LEFT);
 
         List<Predicate> criteria = new ArrayList<Predicate>();
         ParameterExpression<List> p = b.parameter(List.class, "ids");

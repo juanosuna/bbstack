@@ -18,6 +18,7 @@
 package com.brownbag.core.view.entity;
 
 import com.brownbag.core.view.MainApplication;
+import com.vaadin.data.Property;
 import com.vaadin.event.Action;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
@@ -38,13 +39,15 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
 
     private Button addButton;
 
+    private ContextMenu contextMenu;
+
     protected EntityResultsManySelect() {
         super();
     }
 
     public abstract EntitySelect getEntitySelect();
 
-    EntityQuery getEntityQuery() {
+    public EntityQuery getEntityQuery() {
         return entityQuery;
     }
 
@@ -59,7 +62,8 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
         addButton.addStyleName("small default");
         getButtonPanel().addComponent(addButton);
 
-        getEntityTable().addActionHandler(new ContextMenu());
+        addSelectionChangedListener(this, "selectionChanged");
+        contextMenu = new ContextMenu();
         getEntityTable().setMultiSelect(true);
         getEntitySelect().getEntityResults().getEntityTable().setMultiSelect(true);
     }
@@ -72,7 +76,10 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
         layout.setSpacing(true);
         layout.setSizeUndefined();
         popupWindow.setModal(true);
-        popupWindow.addComponent(getEntitySelect());
+        EntitySelect entitySelect = getEntitySelect();
+        entitySelect.getEntityResults().getEntityQuery().clear();
+        entitySelect.getEntityResults().search();
+        popupWindow.addComponent(entitySelect);
         popupWindow.setClosable(true);
         getEntitySelect().getEntityResults().addSelectButtonListener(this, "itemsSelected");
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
@@ -100,6 +107,15 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
     }
 
     public abstract void valuesRemoved(Object... value);
+
+    public void selectionChanged(Property.ValueChangeEvent event) {
+        Object itemId = getEntityTable().getValue();
+        if (itemId != null) {
+            getEntityTable().addActionHandler(contextMenu);
+        } else {
+            getEntityTable().removeActionHandler(contextMenu);
+        }
+    }
 
     public class ContextMenu implements Action.Handler {
         private Action removeAction = new Action(getUiMessageSource().getMessage("entityResults.remove"));

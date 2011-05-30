@@ -20,6 +20,8 @@ package com.brownbag.core.view.entity;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 
+import java.util.Collection;
+
 /**
  * User: Juan
  * Date: 5/7/11
@@ -45,7 +47,11 @@ public abstract class EntityResultsSelect<T> extends EntityResultsComponent {
 
     public void selectionChanged(Property.ValueChangeEvent event) {
         Object itemId = getEntityTable().getValue();
-        selectButton.setEnabled(itemId != null);
+        if (itemId instanceof Collection) {
+            selectButton.setEnabled(((Collection) itemId).size() > 0);
+        } else {
+            selectButton.setEnabled(itemId != null);
+        }
     }
 
     public void addSelectButtonListener(Object target, String methodName) {

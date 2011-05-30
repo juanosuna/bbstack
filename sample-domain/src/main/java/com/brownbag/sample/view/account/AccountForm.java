@@ -100,6 +100,7 @@ public class AccountForm extends EntityForm<Account> {
         super.load(entity);
 
         Account account = getEntity();
+        contactManySelect.getEntityQuery().clear();
         contactManySelect.getEntityQuery().setAccount(account);
         contactManySelect.getEntityResults().search();
         tabSheet.setVisible(true);

@@ -40,3 +40,20 @@
 .v-filterselect-error {
     border: medium red solid !important;
 }
+
+.v-table-cell-content, .v-table-header-cell {
+    border-right: none;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.v-tabsheet-tabitem {
+    background-color: rgb(5,134,252) !important;
+    color: rgb(247,248,249) !important;
+}
+
+.v-tabsheet-tabitem-selected .v-caption {
+    text-shadow: none !important;
+}

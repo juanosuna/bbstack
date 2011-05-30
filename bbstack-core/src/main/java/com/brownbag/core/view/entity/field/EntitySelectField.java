@@ -84,6 +84,8 @@ public class EntitySelectField extends CustomField {
         popupWindow.setModal(true);
         popupWindow.addComponent(entitySelect);
         popupWindow.setClosable(true);
+        entitySelect.getEntityResults().getEntityQuery().clear();
+        entitySelect.getEntityResults().search();
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
     }
 
