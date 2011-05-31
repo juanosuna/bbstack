@@ -31,5 +31,16 @@ public abstract class MainTabSheet extends TabSheet {
         for (EntityEntryPoint entryPoint : entryPoints) {
             addTab(entryPoint);
         }
+
+        addListener(new TabChangeListener());
+    }
+
+    private class TabChangeListener implements SelectedTabChangeListener {
+
+        @Override
+        public void selectedTabChange(SelectedTabChangeEvent event) {
+            EntityEntryPoint entityEntryPoint = (EntityEntryPoint) getSelectedTab();
+            entityEntryPoint.getEntityResults().search();
+        }
     }
 }

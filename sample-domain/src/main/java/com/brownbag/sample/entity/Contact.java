@@ -137,4 +137,9 @@ public class Contact extends WritableEntity {
     public void setAddress(Address address) {
         this.address = address;
     }
+
+    @PreRemove
+	public void preRemove() {
+		setAccount(null);
+	}
 }

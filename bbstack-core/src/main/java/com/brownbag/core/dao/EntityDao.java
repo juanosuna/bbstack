@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
 import java.io.Serializable;
 import java.util.Collection;
@@ -36,7 +37,7 @@ import java.util.List;
 @Transactional
 public class EntityDao<T, ID extends Serializable> {
 
-    @PersistenceContext
+    @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
 
     private Class<T> persistentClass;

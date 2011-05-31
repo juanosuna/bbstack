@@ -139,6 +139,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void close() {
+        getEntityResults().search();
         MainApplication.getInstance().getMainWindow().removeWindow(formWindow);
         formWindow = null;
     }
@@ -176,11 +177,9 @@ public abstract class EntityForm<T> extends FormComponent<T> {
                 entity.updateLastModified();
                 WritableEntity mergedEntity = (WritableEntity) getEntityDao().merge(entity);
                 load(mergedEntity);
-                getEntityResults().search();
             } else {
                 getEntityDao().persist(entity);
                 load(entity);
-                getEntityResults().search();
             }
             close();
         }

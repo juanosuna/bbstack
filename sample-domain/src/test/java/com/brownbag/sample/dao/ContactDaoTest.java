@@ -69,7 +69,6 @@ public class ContactDaoTest extends AbstractDomainTest {
         contactDao.persist(contact);
     }
 
-    @Ignore
     @Test
     public void findByName() {
         ContactQuery contactQuery = new ContactQuery();

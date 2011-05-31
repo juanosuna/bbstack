@@ -85,7 +85,7 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
         if (itemId != null) {
             BeanItem beanItem = getEntityTable().getContainerDataSource().getItem(itemId);
             Object entity = beanItem.getBean();
-            getEntityDao().delete(entity);
+            getEntityDao().remove(entity);
             search();
         }
     }

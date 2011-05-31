@@ -26,7 +26,7 @@
         <non-jta-data-source>sample-datasource</non-jta-data-source>
         <properties>
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
-            <property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.EhCacheProvider"/>
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
             <property name="javax.persistence.validation.mode" value="auto"/>
         </properties>
     </persistence-unit>

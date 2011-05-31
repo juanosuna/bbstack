@@ -20,8 +20,8 @@ package com.brownbag.core.view;
 import com.brownbag.core.util.MessageSource;
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.*;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -80,10 +80,31 @@ public class MainApplication extends Application implements HttpServletRequestLi
 
     @Override
     public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
+        super.terminalError(event);
         if (event.getThrowable().getCause() instanceof AccessDeniedException) {
             getMainWindow().showNotification(
                     messageSource.getMessage("mainApplication.accessDenied"),
                     Window.Notification.TYPE_ERROR_MESSAGE);
         }
+        else {
+            String fullStackTrace = ExceptionUtils.getFullStackTrace(event.getThrowable());
+            open(fullStackTrace);
+        }
     }
+
+    public void open(String message) {
+        Window errorWindow = new Window("Error");
+        errorWindow.addStyleName("opaque");
+        VerticalLayout layout = (VerticalLayout) errorWindow.getContent();
+        layout.setSpacing(true);
+        layout.setSizeUndefined();
+        errorWindow.setModal(true);
+        Label label = new Label(message);
+        label.setContentMode(Label.CONTENT_PREFORMATTED);
+        layout.addComponent(label);
+        errorWindow.setClosable(true);
+        errorWindow.setScrollable(true);
+        MainApplication.getInstance().getMainWindow().addWindow(errorWindow);
+    }
+
 }
