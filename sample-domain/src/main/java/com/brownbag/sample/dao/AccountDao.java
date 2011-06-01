@@ -63,7 +63,7 @@ public class AccountDao extends EntityDao<Account, Long> {
         List<Predicate> criteria = new ArrayList<Predicate>();
         if (accountQuery.getName() != null) {
             ParameterExpression<String> p = b.parameter(String.class, "name");
-            criteria.add(b.like(account.<String>get("name"), p));
+            criteria.add(b.like(b.upper(account.<String>get("name")), p));
         }
         if (accountQuery.getState() != null) {
             ParameterExpression<State> p = b.parameter(State.class, "state");
@@ -96,7 +96,7 @@ public class AccountDao extends EntityDao<Account, Long> {
 
         TypedQuery<Long> q = getEntityManager().createQuery(c);
         if (accountQuery.getName() != null) {
-            q.setParameter("name", "%" + accountQuery.getName() + "%");
+            q.setParameter("name", "%" + accountQuery.getName().toUpperCase() + "%");
         }
         if (accountQuery.getState() != null) {
             q.setParameter("state", accountQuery.getState());
@@ -153,10 +153,5 @@ public class AccountDao extends EntityDao<Account, Long> {
     @Override
     public void remove(Account entity) {
         super.remove(entity);
-
-        Set<Contact> contacts = entity.getContacts();
-        for (Contact contact : contacts) {
-            contact.setAccount(null);
-        }
     }
 }

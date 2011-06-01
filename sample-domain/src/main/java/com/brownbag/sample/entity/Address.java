@@ -32,7 +32,6 @@ import java.util.Set;
 
 import static com.brownbag.core.entity.WritableEntity.SCHEMA;
 
-//@PatternDependencies
 @PatternIfThen(ifProperty = "country.id", ifRegex = "^US$",
         thenProperty = "zipCode", thenRegex = "^\\d{5}$|^\\d{5}$",
         message = "US zip code must be 5 or 9 digits")
@@ -50,8 +49,6 @@ public class Address extends WritableEntity {
     @Size(min = 1, max = 16)
     private String city;
 
-//    @PatternIf(otherProperty = "country.id", otherPropertyRegexp = "^US$",
-//            regexp = "^\\d{5}$|^\\d{5}$", message = "US zip code must be 5 or 9 digits")
     private String zipCode;
 
     @Index(name = "IDX_ADDRESS_STATE")

@@ -118,7 +118,7 @@ public class EntityTable extends Table {
     }
 
     public void search() {
-        getEntityQuery().setFirstResult(0);
+        getEntityQuery().firstPage();
         executeQuery();
     }
 

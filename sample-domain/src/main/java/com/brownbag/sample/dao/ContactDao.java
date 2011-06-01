@@ -131,7 +131,7 @@ public class ContactDao extends EntityDao<Contact, Long> {
         List<Predicate> criteria = new ArrayList<Predicate>();
         if (query.getLastName() != null) {
             ParameterExpression<String> p = b.parameter(String.class, "lastName");
-            criteria.add(b.like(contact.<String>get("lastName"), p));
+            criteria.add(b.like(b.upper(contact.<String>get("lastName")), p));
         }
         if (query.getState() != null) {
             ParameterExpression<State> p = b.parameter(State.class, "state");
@@ -165,7 +165,7 @@ public class ContactDao extends EntityDao<Contact, Long> {
 
         TypedQuery<Long> q = getEntityManager().createQuery(c);
         if (query.getLastName() != null) {
-            q.setParameter("lastName", "%" + query.getLastName() + "%");
+            q.setParameter("lastName", "%" + query.getLastName().toUpperCase() + "%");
         }
         if (query.getState() != null) {
             q.setParameter("state", query.getState());

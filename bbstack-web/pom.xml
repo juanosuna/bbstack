@@ -161,7 +161,36 @@
                     </systemProperties>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-upload-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>upload-war</id>
+                        <!--<phase>install</phase>-->
+                        <goals>
+                            <goal>upload</goal>
+                        </goals>
+                        <configuration>
+                            <resourceSrc>${project.build.directory}/${project.build.finalName}.war</resourceSrc>
+                            <resourceDest></resourceDest>
+                            <serverId>brownbag</serverId>
+                            <url>scp://www.brownbagconsulting.com//usr/share/jetty.new/webapps/</url>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>1.0-beta-7</version>
+            </extension>
+        </extensions>
+
     </build>
 
 </project>

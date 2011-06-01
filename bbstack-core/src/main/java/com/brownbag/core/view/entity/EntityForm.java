@@ -20,22 +20,17 @@ package com.brownbag.core.view.entity;
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.validation.PatternIfThen;
-import com.brownbag.core.validation.PatternIfThenValidator;
 import com.brownbag.core.validation.Validation;
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.terminal.CompositeErrorMessage;
-import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.metadata.ConstraintDescriptor;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -171,8 +166,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         WritableEntity entity = (WritableEntity) beanItem.getBean();
 
-        Set<ConstraintViolation> constraintViolations = validate(entity);
-        if (getForm().isValid() && constraintViolations.isEmpty()) {
+        boolean isValid = validatePatternIfThens(entity);
+        if (getForm().isValid() && isValid) {
             if (entity.getId() != null) {
                 entity.updateLastModified();
                 WritableEntity mergedEntity = (WritableEntity) getEntityDao().merge(entity);
@@ -185,33 +180,27 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         }
     }
 
-    private Set<ConstraintViolation> validate(WritableEntity entity) {
+    private boolean validatePatternIfThens(WritableEntity entity) {
         Set<ConstraintViolation> constraintViolations = (Set<ConstraintViolation>) validation.validate(entity);
-        if (!constraintViolations.isEmpty()) {
-            List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
-            for (ConstraintViolation constraintViolation : constraintViolations) {
-                String message = constraintViolation.getMessage();
-                UserError error = new UserError(message);
-                ConstraintDescriptor descriptor = constraintViolation.getConstraintDescriptor();
-                Annotation annotation = descriptor.getAnnotation();
-                if (annotation instanceof PatternIfThen) {
-                    PatternIfThen patternIfThen = (PatternIfThen) annotation;
-                    String thenProperty = constraintViolation.getPropertyPath()
-                            + "." + patternIfThen.thenProperty();
-                    FormField thenField = getFormFields().getFormField(thenProperty);
-                    AbstractComponent fieldComponent = (AbstractComponent) thenField.getField();
-                    fieldComponent.setComponentError(error);
-                } else {
-//                    errorMessages.add(error);
-                }
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            String message = constraintViolation.getMessage();
+            UserError error = new UserError(message);
+            ConstraintDescriptor descriptor = constraintViolation.getConstraintDescriptor();
+            Annotation annotation = descriptor.getAnnotation();
+            if (annotation instanceof PatternIfThen) {
+                PatternIfThen patternIfThen = (PatternIfThen) annotation;
+                String thenProperty = constraintViolation.getPropertyPath()
+                        + "." + patternIfThen.thenProperty();
+                FormField thenField = getFormFields().getFormField(thenProperty);
+                AbstractComponent fieldComponent = (AbstractComponent) thenField.getField();
+                fieldComponent.setComponentError(error);
             }
-            CompositeErrorMessage compositeErrorMessage = new CompositeErrorMessage(errorMessages);
-            getForm().setComponentError(compositeErrorMessage);
-        } else {
+        }
+        if (constraintViolations.isEmpty()) {
             clearComponentErrors();
         }
 
-        return constraintViolations;
+        return constraintViolations.isEmpty();
     }
 
     public void clearComponentErrors() {

@@ -137,4 +137,11 @@ public class Account extends WritableEntity {
     public void setContacts(Set<Contact> contacts) {
         this.contacts = contacts;
     }
+
+    @PreRemove
+    public void preRemove() {
+        for (Contact contact : getContacts()) {
+            contact.setAccount(null);
+        }
+    }
 }

@@ -55,13 +55,25 @@
             <name>Spring Framework Maven Milestone Repository</name>
             <url>http://maven.springframework.org/milestone</url>
         </repository>
-
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>brownbag</id>
+            <name>Brown Bag Deployment Server</name>
+            <url>scp://www.brownbagconsulting.com/root/.m2/repository</url>
+        </repository>
+    </distributionManagement>
 
     <pluginRepositories>
         <pluginRepository>
             <id>jboss-releases</id>
             <url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>atlassian</id>
+            <name>Atlassian Repo</name>
+            <url>https://maven.atlassian.com/content/repositories/atlassian-public</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -348,6 +360,11 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>properties-maven-plugin</artifactId>
                     <version>1.0-alpha-2</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.atlassian.maven.plugins</groupId>
+                    <artifactId>maven-upload-plugin</artifactId>
+                    <version>1.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>

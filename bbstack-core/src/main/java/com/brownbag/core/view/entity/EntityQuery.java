@@ -63,7 +63,7 @@ public abstract class EntityQuery<T> {
     }
 
     public void nextPage() {
-        firstResult = Math.min(firstResult + pageSize, resultCount.intValue() - pageSize);
+        firstResult = Math.min(firstResult + pageSize, Math.max(resultCount.intValue() - pageSize, 0));
     }
 
     public void previousPage() {
@@ -71,7 +71,7 @@ public abstract class EntityQuery<T> {
     }
 
     public void lastPage() {
-        firstResult = resultCount.intValue() - pageSize;
+        firstResult = Math.max(resultCount.intValue() - pageSize, 0);
     }
 
     public String getOrderByField() {

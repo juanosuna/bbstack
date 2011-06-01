@@ -32,20 +32,16 @@
         <level value="info"/>
     </logger>
 
-    <logger name="org.hibernate.SQL">
-        <level value="debug"/>
-    </logger>
+    <!--<logger name="org.hibernate.SQL">-->
+        <!--<level value="debug"/>-->
+    <!--</logger>-->
 
     <logger name="org.hibernate.type">
         <level value="debug"/>
     </logger>
 
     <logger name="org.hibernate.cache">
-        <level value="trace"/>
-    </logger>
-
-    <logger name="net.sf.ehcache">
-        <level value="trace"/>
+        <level value="info"/>
     </logger>
 
     <logger name="org.springframework">

@@ -17,6 +17,7 @@
 
 package com.brownbag.core.validation;
 
+import org.apache.commons.beanutils.NestedNullException;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import javax.validation.ConstraintValidator;
@@ -43,14 +44,18 @@ public class PatternIfThenValidator implements ConstraintValidator<PatternIfThen
     public boolean isValid(Object bean, ConstraintValidatorContext context) {
         if (bean == null) return true;
 
-        if (match(bean, patternIfThen.ifProperty(), patternIfThen.ifRegex())) {
-            boolean isValid = match(bean, patternIfThen.thenProperty(), patternIfThen.thenRegex());
-            if (!isValid) {
-                context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(patternIfThen.message()).addConstraintViolation();
-            }
+        try {
+            if (match(bean, patternIfThen.ifProperty(), patternIfThen.ifRegex())) {
+                boolean isValid = match(bean, patternIfThen.thenProperty(), patternIfThen.thenRegex());
+                if (!isValid) {
+                    context.disableDefaultConstraintViolation();
+                    context.buildConstraintViolationWithTemplate(patternIfThen.message()).addConstraintViolation();
+                }
 
-            return isValid;
+                return isValid;
+            }
+        } catch (NestedNullException e) {
+            return true;
         }
 
         return true;

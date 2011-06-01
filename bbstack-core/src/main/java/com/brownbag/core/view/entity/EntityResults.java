@@ -21,9 +21,8 @@ import com.brownbag.core.entity.WritableEntity;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.Action;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Button;
-
-import javax.naming.Context;
 
 /**
  * User: Juan
@@ -65,6 +64,8 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
 
         addSelectionChangedListener(this, "selectionChanged");
         contextMenu = new ContextMenu();
+
+        getEntityTable().addListener(new EntityResults.DoubleClickListener());
     }
 
     public void create() {
@@ -74,6 +75,11 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
 
     public void edit() {
         Object itemId = getEntityTable().getValue();
+        edit(itemId);
+    }
+
+    public void edit(Object itemId) {
+        getEntityTable().setValue(itemId);
         BeanItem beanItem = getEntityTable().getContainerDataSource().getItem(itemId);
         getEntityForm().setEntityResults(this);
         getEntityForm().load((WritableEntity) beanItem.getBean());
@@ -115,6 +121,14 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
                 edit();
             } else if (deleteAction == action) {
                 delete();
+            }
+        }
+    }
+
+    public class DoubleClickListener implements ItemClickEvent.ItemClickListener {
+        public void itemClick(ItemClickEvent event) {
+            if (event.isDoubleClick()) {
+                edit(event.getItemId());
             }
         }
     }

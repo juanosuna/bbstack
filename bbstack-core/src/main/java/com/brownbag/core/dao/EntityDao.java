@@ -25,10 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -37,7 +34,7 @@ import java.util.List;
 @Transactional
 public class EntityDao<T, ID extends Serializable> {
 
-    @PersistenceContext(type = PersistenceContextType.EXTENDED)
+    @PersistenceContext
     private EntityManager entityManager;
 
     private Class<T> persistentClass;
@@ -60,7 +57,14 @@ public class EntityDao<T, ID extends Serializable> {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void remove(T entity) {
-        getEntityManager().remove(entity);
+        T attachedEntity = getReference(entity);
+        getEntityManager().remove(attachedEntity);
+    }
+
+    public T getReference(T entity) {
+        PersistenceUnitUtil jpaUtil = entityManager.getEntityManagerFactory().getPersistenceUnitUtil();
+        Object primaryKey = jpaUtil.getIdentifier(entity);
+        return getEntityManager().getReference(getPersistentClass(), primaryKey);
     }
 
     @Transactional(readOnly = true)
@@ -124,8 +128,8 @@ public class EntityDao<T, ID extends Serializable> {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void delete(T entity) {
-        Query query = getEntityManager().createQuery("delete from " + getPersistentClass().getSimpleName() + " c"
-                + " where c = :entity)");
+        Query query = getEntityManager().createQuery("delete from " + getPersistentClass().getSimpleName()
+                + " c where c = :entity");
 
         query.setParameter("entity", entity);
 
