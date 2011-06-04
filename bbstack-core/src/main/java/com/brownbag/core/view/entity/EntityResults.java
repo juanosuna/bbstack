@@ -18,11 +18,14 @@
 package com.brownbag.core.view.entity;
 
 import com.brownbag.core.entity.WritableEntity;
+import com.brownbag.core.util.assertion.Assert;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.event.Action;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Button;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collection;
 
 /**
  * User: Juan
@@ -31,9 +34,13 @@ import com.vaadin.ui.Button;
  */
 public abstract class EntityResults<T> extends EntityResultsComponent {
 
+    @Autowired
+    private ContextMenu contextMenu;
+
     private EntityForm entityForm;
     private EntityQuery entityQuery;
-    private ContextMenu contextMenu;
+    private Button editButton;
+    private Button deleteButton;
 
     protected EntityResults() {
         super();
@@ -58,12 +65,23 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
     public void postConstruct() {
         super.postConstruct();
 
+        getEntityTable().setMultiSelect(true);
+
         Button newButton = new Button(getUiMessageSource().getMessage("entityResults.new"), this, "create");
         newButton.addStyleName("small default");
         getButtonPanel().addComponent(newButton);
 
+        editButton = new Button(getUiMessageSource().getMessage("entityResults.edit"), this, "edit");
+        editButton.addStyleName("small default");
+        getButtonPanel().addComponent(editButton);
+
+        deleteButton = new Button(getUiMessageSource().getMessage("entityResults.delete"), this, "delete");
+        deleteButton.addStyleName("small default");
+        getButtonPanel().addComponent(deleteButton);
+
         addSelectionChangedListener(this, "selectionChanged");
-        contextMenu = new ContextMenu();
+        contextMenu.addAction("entityResults.edit", this, "edit");
+        contextMenu.addAction("entityResults.delete", this, "delete");
 
         getEntityTable().addListener(new EntityResults.DoubleClickListener());
     }
@@ -74,12 +92,13 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
     }
 
     public void edit() {
-        Object itemId = getEntityTable().getValue();
-        edit(itemId);
+        Collection itemIds = (Collection) getEntityTable().getValue();
+        Assert.PROGRAMMING.assertTrue(itemIds.size() == 1);
+        edit(itemIds.iterator().next());
     }
 
     public void edit(Object itemId) {
-        getEntityTable().setValue(itemId);
+//        getEntityTable().setValue(itemId);
         BeanItem beanItem = getEntityTable().getContainerDataSource().getItem(itemId);
         getEntityForm().setEntityResults(this);
         getEntityForm().load((WritableEntity) beanItem.getBean());
@@ -87,41 +106,37 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
     }
 
     public void delete() {
-        Object itemId = getEntityTable().getValue();
-        if (itemId != null) {
+        Collection itemIds = (Collection) getEntityTable().getValue();
+        for (Object itemId : itemIds) {
             BeanItem beanItem = getEntityTable().getContainerDataSource().getItem(itemId);
             Object entity = beanItem.getBean();
             getEntityDao().remove(entity);
-            search();
         }
+        // solves tricky ConcurrentModification bug where ContextMenu handler calls delete
+        // but then search removes handler
+        searchImpl(false);
     }
 
     public void selectionChanged(Property.ValueChangeEvent event) {
-        Object itemId = getEntityTable().getValue();
-        if (itemId != null) {
+        Collection itemIds = (Collection) getEntityTable().getValue();
+        if (itemIds.size() == 1) {
+            contextMenu.setActionEnabled("entityResults.edit", true);
+            contextMenu.setActionEnabled("entityResults.delete", true);
+            getEntityTable().removeActionHandler(contextMenu);
             getEntityTable().addActionHandler(contextMenu);
+            editButton.setEnabled(true);
+            deleteButton.setEnabled(true);
+        } else if (itemIds.size() > 1) {
+            contextMenu.setActionEnabled("entityResults.edit", false);
+            contextMenu.setActionEnabled("entityResults.delete", true);
+            getEntityTable().removeActionHandler(contextMenu);
+            getEntityTable().addActionHandler(contextMenu);
+            editButton.setEnabled(false);
+            deleteButton.setEnabled(true);
         } else {
             getEntityTable().removeActionHandler(contextMenu);
-        }
-    }
-
-    public class ContextMenu implements Action.Handler {
-        private Action editAction = new Action(getUiMessageSource().getMessage("entityResults.edit"));
-        private Action deleteAction = new Action(getUiMessageSource().getMessage("entityResults.delete"));
-        private Action[] allActions = new Action[]{editAction, deleteAction};
-
-        @Override
-        public Action[] getActions(Object target, Object sender) {
-            return allActions;
-        }
-
-        @Override
-        public void handleAction(Action action, Object sender, Object target) {
-            if (editAction == action) {
-                edit();
-            } else if (deleteAction == action) {
-                delete();
-            }
+            editButton.setEnabled(false);
+            deleteButton.setEnabled(false);
         }
     }
 

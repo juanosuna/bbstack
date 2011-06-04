@@ -25,6 +25,7 @@ import com.vaadin.ui.Table;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -90,6 +91,7 @@ public class EntityTable extends Table {
                 } else {
                     getEntityQuery().setOrderDirection(EntityQuery.OrderDirection.DESC);
                 }
+                clearSelection();
                 search();
             } else {
                 throw new UnsupportedOperationException("No sorting on this column");
@@ -98,21 +100,25 @@ public class EntityTable extends Table {
     }
 
     public void firstPage() {
+        clearSelection();
         getEntityQuery().firstPage();
         executeQuery();
     }
 
     public void previousPage() {
+        clearSelection();
         getEntityQuery().previousPage();
         executeQuery();
     }
 
     public void nextPage() {
+        clearSelection();
         getEntityQuery().nextPage();
         executeQuery();
     }
 
     public void lastPage() {
+        clearSelection();
         getEntityQuery().lastPage();
         executeQuery();
     }
@@ -127,6 +133,14 @@ public class EntityTable extends Table {
         getContainerDataSource().removeAllItems();
         for (Object entity : entities) {
             getContainerDataSource().addBean(entity);
+        }
+    }
+
+    public void clearSelection() {
+        if (isMultiSelect()) {
+            setValue(new HashSet());
+        } else {
+            setValue(null);
         }
     }
 

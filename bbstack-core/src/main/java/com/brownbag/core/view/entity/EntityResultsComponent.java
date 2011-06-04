@@ -22,13 +22,12 @@ import com.brownbag.core.util.MessageSource;
 import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 
 /**
  * User: Juan
@@ -189,10 +188,16 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
     }
 
     public void search() {
+        searchImpl(true);
+    }
+
+    protected void searchImpl(boolean clearSelection) {
         getEntityTable().search();
         String caption = uiMessageSource.getMessage("entityResults.caption",
                 new Object[]{getEntityQuery().getResultCount()});
         getEntityTable().setCaption(caption);
-        getEntityTable().setValue(null);
+        if (clearSelection) {
+            getEntityTable().clearSelection();
+        }
     }
 }
