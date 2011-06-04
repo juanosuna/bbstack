@@ -17,6 +17,8 @@
 
 package com.brownbag.core.view.entity;
 
+import com.brownbag.core.dao.EntityDao;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
@@ -34,13 +36,20 @@ public abstract class EntityManySelect<T> extends EntityComponent {
     }
 
     public abstract EntityResultsManySelect getEntityResults();
+    public abstract EntityManySelectQuery getEntityQuery();
 
     @PostConstruct
     public void postConstruct() {
         super.postConstruct();
 
+        wireRelationships();
+
         Panel resultsPanel = createPanel(new VerticalLayout());
         resultsPanel.addComponent(getEntityResults());
         getMainPanel().addComponent(resultsPanel);
+    }
+
+    private void wireRelationships() {
+        getEntityResults().setEntityDao(getEntityDao());
     }
 }

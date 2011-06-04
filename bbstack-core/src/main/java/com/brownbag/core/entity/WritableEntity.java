@@ -28,7 +28,6 @@ import java.util.UUID;
 @EntityListeners({WritableEntity.WritableEntityListener.class})
 public abstract class WritableEntity {
 
-    public static final String SCHEMA = "SAMPLE";
     public static final String SYSTEM_USER = "system";
 
     public static String getCurrentUser() {

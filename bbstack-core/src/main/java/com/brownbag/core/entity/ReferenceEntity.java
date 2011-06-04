@@ -23,6 +23,8 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class ReferenceEntity implements Comparable {
 
+    public static final String CACHE_REGION = "ReadOnly";
+
     @Id
     private String id;
 

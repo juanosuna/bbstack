@@ -126,7 +126,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(false);
         layout.setSpacing(true);
-        buttonPanel.setSizeUndefined();
+//        buttonPanel.setSizeUndefined();
         buttonPanel.addStyleName(Runo.PANEL_LIGHT);
         buttonPanel.setContent(layout);
 
@@ -155,7 +155,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         pageSizeMenu.addItem(25);
         pageSizeMenu.addItem(50);
         pageSizeMenu.addItem(100);
-        MethodProperty pageProperty = new MethodProperty(getEntityQuery(), "pageSize");
+        MethodProperty pageProperty = new MethodProperty(this, "pageSize");
         pageSizeMenu.setPropertyDataSource(pageProperty);
         pageSizeMenu.setFilteringMode(Select.FILTERINGMODE_OFF);
         pageSizeMenu.setNullSelectionAllowed(false);
@@ -165,6 +165,15 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         buttonPanel.addComponent(pageSizeMenu);
 
         return buttonPanel;
+    }
+
+    public int getPageSize() {
+        return getEntityQuery().getPageSize();
+    }
+
+    public void setPageSize(int pageSize) {
+        getEntityQuery().setPageSize(pageSize);
+        getEntityTable().setPageLength(pageSize);
     }
 
     public void addSelectionChangedListener(Object target, String methodName) {
@@ -184,5 +193,6 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         String caption = uiMessageSource.getMessage("entityResults.caption",
                 new Object[]{getEntityQuery().getResultCount()});
         getEntityTable().setCaption(caption);
+        getEntityTable().setValue(null);
     }
 }

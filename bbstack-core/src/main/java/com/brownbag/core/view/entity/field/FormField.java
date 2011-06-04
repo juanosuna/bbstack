@@ -22,7 +22,9 @@ import com.brownbag.core.entity.ReferenceEntity;
 import com.brownbag.core.util.BeanProperty;
 import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.util.SpringApplicationContext;
+import com.brownbag.core.util.assertion.Assert;
 import com.vaadin.addon.beanvalidation.BeanValidationValidator;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.*;
 
@@ -35,6 +37,8 @@ import java.util.List;
  * Time: 11:10 PM
  */
 public class FormField extends DisplayField {
+    public static final String DEFAULT_DISPLAY_PROPERTY_ID = "name";
+
     private Field field;
     private Integer columnStart;
     private Integer rowStart;
@@ -97,9 +101,46 @@ public class FormField extends DisplayField {
         }
     }
 
+    public void setSelectItems(List items) {
+        Object selectedItem = getSelectedItem();
+
+        Field field = getField();
+        Assert.PROGRAMMING.assertTrue(field instanceof Select,
+                "property " + getPropertyId() + " is not a Select field");
+        Select selectField = (Select) field;
+        if (selectField.getContainerDataSource() == null
+                || !(selectField.getContainerDataSource() instanceof BeanItemContainer)) {
+            BeanItemContainer container = new BeanItemContainer(getPropertyType(), items);
+            selectField.setContainerDataSource(container);
+        } else {
+            BeanItemContainer container = (BeanItemContainer) selectField.getContainerDataSource();
+            container.removeAllItems();
+            container.addAll(items);
+
+            if (!container.containsId(selectedItem)) {
+                selectField.select(selectField.getNullSelectionItemId());
+            }
+        }
+    }
+
+    public void setDisplayPropertyId(String displayPropertyId) {
+        Assert.PROGRAMMING.assertTrue(field instanceof Select,
+                "property " + getPropertyId() + " is not a Select field");
+
+        ((Select) field).setItemCaptionPropertyId(displayPropertyId);
+    }
+
+    public Object getSelectedItem() {
+        Field field = getField();
+        Assert.PROGRAMMING.assertTrue(field instanceof Select,
+                "property " + getPropertyId() + " is not a Select field");
+        Select selectField = (Select) field;
+        return selectField.getValue();
+    }
+
     public void addValueChangeListener(Object target, String methodName) {
         AbstractComponent component = (AbstractComponent) getField();
-        component.addListener(Field.ValueChangeEvent.class, target, methodName);
+        component.addListener(Property.ValueChangeEvent.class, target, methodName);
     }
 
     public FormFields getFormFields() {
@@ -136,7 +177,7 @@ public class FormField extends DisplayField {
         field.setCaption(getLabel());
         field.setInvalidAllowed(true);
 
-        if (getFormFields().isAttachValidators()) {
+        if (getFormFields().attachValidators()) {
             BeanProperty beanProperty = ReflectionUtil.getBeanProperty(getDisplayFields().getEntityType(),
                     getPropertyId());
             if (beanProperty.isValidationOn()) {
@@ -157,10 +198,12 @@ public class FormField extends DisplayField {
         }
 
         if (field instanceof Select) {
+            initSelectDefaults((Select) field);
+
             EntityDao propertyDao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class,
                     getPropertyType());
             List referenceEntities = propertyDao.findAll();
-            initComboBoxDefaults((Select) field, getPropertyType(), referenceEntities);
+            setSelectItems(referenceEntities);
         }
     }
 
@@ -179,14 +222,11 @@ public class FormField extends DisplayField {
         field.setResolution(DateField.RESOLUTION_DAY);
     }
 
-    public static void initComboBoxDefaults(Select field, Class propertyType, List referenceEntities) {
-        BeanItemContainer container = new BeanItemContainer(propertyType, referenceEntities);
-
-        field.setContainerDataSource(container);
+    public static void initSelectDefaults(Select field) {
         field.setFilteringMode(Select.FILTERINGMODE_CONTAINS);
         field.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
         field.setNullSelectionAllowed(true);
-        field.setItemCaptionPropertyId("name"); // todo can't hard-code
+        field.setItemCaptionPropertyId(DEFAULT_DISPLAY_PROPERTY_ID);
         field.setImmediate(true);
     }
 }

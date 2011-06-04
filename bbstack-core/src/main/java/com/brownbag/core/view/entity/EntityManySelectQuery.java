@@ -15,17 +15,10 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.contactmanyselect;
+package com.brownbag.core.view.entity;
 
-import com.brownbag.core.view.entity.EntityManySelectQuery;
-import com.brownbag.sample.dao.ContactDao;
-import com.brownbag.sample.entity.Account;
-import com.brownbag.sample.entity.Contact;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * User: Juan
@@ -34,20 +27,29 @@ import java.util.List;
  */
 @Component
 @Scope("session")
-public class ContactQueryManySelect extends EntityManySelectQuery<Contact, Account> {
+public abstract class EntityManySelectQuery<T, P> extends EntityQuery<T> {
 
-    @Resource
-    private ContactDao contactDao;
+    private P parent;
 
-    @Override
-    public List<Contact> execute() {
-        List<Contact> contacts = contactDao.find(this);
+    public P getParent() {
+        return parent;
+    }
 
-        return contacts;
+    public void setParent(P parent) {
+        this.parent = parent;
     }
 
     @Override
     public void clear() {
-        super.clear();
+        setParent(null);
+        setOrderByField(null);
+        setOrderDirection(OrderDirection.ASC);
+    }
+
+    @Override
+    public String toString() {
+        return "EntityManySelectQuery{" +
+                "parent='" + parent +
+                '}';
     }
 }

@@ -20,7 +20,6 @@ package com.brownbag.core.view.entity.field;
 import com.brownbag.core.util.MessageSource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Field;
-import org.hibernate.type.AbstractComponentType;
 
 import java.util.Collection;
 import java.util.List;
@@ -68,7 +67,7 @@ public class FormFields extends DisplayFields {
     }
 
     @Override
-    protected DisplayField createField(String propertyId) {
+    protected FormField createField(String propertyId) {
         return new FormField(this, propertyId);
     }
 
@@ -94,12 +93,29 @@ public class FormFields extends DisplayFields {
         formField.setField(field);
     }
 
+    public String getLabel(String propertyId) {
+        return getField(propertyId).getLabel();
+    }
+
+    public void setLabel(String propertyId, String label) {
+        getField(propertyId).setLabel(label);
+    }
+
+    public void setSelectItems(String propertyId, List items) {
+        FormField formField = (FormField) getField(propertyId);
+        formField.setSelectItems(items);
+    }
+
+    public Object getSelectedItem(String propertyId) {
+        return getFormField(propertyId).getSelectedItem();
+    }
+
     public void addValueChangeListener(String propertyId, Object target, String methodName) {
         FormField formField = (FormField) getField(propertyId);
         formField.addValueChangeListener(target, methodName);
     }
 
-    public boolean isAttachValidators() {
+    public boolean attachValidators() {
         return attachValidators;
     }
 

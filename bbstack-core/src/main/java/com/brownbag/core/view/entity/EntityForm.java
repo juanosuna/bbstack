@@ -25,12 +25,15 @@ import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.metadata.ConstraintDescriptor;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,6 +47,12 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     private EntityDao entityDao;
 
     private Window formWindow;
+    private TabSheet tabSheet;
+
+
+    public List<EntityManySelect> getManySelects() {
+        return new ArrayList<EntityManySelect>();
+    }
 
     Validation getValidation() {
         return validation;
@@ -63,6 +72,20 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     FormFields createFormFields() {
         return new FormFields(getEntityType(), getEntityMessageSource(), true);
+    }
+
+    @Override
+    public void postConstruct() {
+        super.postConstruct();
+
+        List<EntityManySelect> manySelects = getManySelects();
+        if (manySelects.size() > 0) {
+            tabSheet = new TabSheet();
+            for (EntityManySelect manySelect : manySelects) {
+                tabSheet.addTab(manySelect);
+            }
+            getFormPanel().addComponent(tabSheet);
+        }
     }
 
     protected HorizontalLayout createFooterButtons() {
@@ -89,6 +112,22 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         WritableEntity loadedEntity = (WritableEntity) getEntityDao().find(entity.getId());
         BeanItem beanItem = createBeanItem(loadedEntity);
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
+
+        loadManySelects();
+    }
+
+    private void loadManySelects() {
+        List<EntityManySelect> manySelects = getManySelects();
+        if (manySelects.size() > 0) {
+            for (EntityManySelect manySelect : manySelects) {
+                Object parent = getEntity();
+                manySelect.getEntityQuery().clear();
+                manySelect.getEntityQuery().setParent(parent);
+                manySelect.getEntityResults().search();
+
+            }
+            tabSheet.setVisible(true);
+        }
     }
 
     public void clear() {
@@ -99,6 +138,10 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     public void create() {
         createImpl();
         open();
+
+        if (getManySelects().size() > 0) {
+            tabSheet.setVisible(false);
+        }
     }
 
     private void createImpl() {

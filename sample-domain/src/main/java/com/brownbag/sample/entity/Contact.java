@@ -31,10 +31,8 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-import static com.brownbag.core.entity.WritableEntity.SCHEMA;
-
 @Entity
-@Table(schema = SCHEMA)
+@Table
 public class Contact extends WritableEntity {
 
     @NotBlank
@@ -67,7 +65,7 @@ public class Contact extends WritableEntity {
     @Index(name = "IDX_CONTACT_ADDRESS")
     @ForeignKey(name = "FK_CONTACT_ADDRESS")
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Address address = new Address();
+    private Address address;
 
     public Contact() {
     }
@@ -139,7 +137,7 @@ public class Contact extends WritableEntity {
     }
 
     @PreRemove
-	public void preRemove() {
-		setAccount(null);
-	}
+    public void preRemove() {
+        setAccount(null);
+    }
 }

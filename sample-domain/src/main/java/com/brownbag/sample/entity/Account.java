@@ -33,10 +33,8 @@ import java.util.Currency;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.brownbag.core.entity.WritableEntity.SCHEMA;
-
 @Entity
-@Table(schema = SCHEMA)
+@Table
 public class Account extends WritableEntity {
 
     @NotBlank

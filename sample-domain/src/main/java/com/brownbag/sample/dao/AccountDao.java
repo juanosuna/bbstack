@@ -20,7 +20,6 @@ package com.brownbag.sample.dao;
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.view.entity.EntityQuery;
 import com.brownbag.sample.entity.Account;
-import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
 import com.brownbag.sample.view.account.AccountQuery;
@@ -31,7 +30,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 @Transactional

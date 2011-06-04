@@ -85,9 +85,4 @@ public class PatternIfThenValidator implements ConstraintValidator<PatternIfThen
             return value.toString();
         }
     }
-
-    private static boolean isEmpty(Object object) {
-        String value = convertToString(object);
-        return value.length() == 0;
-    }
 }

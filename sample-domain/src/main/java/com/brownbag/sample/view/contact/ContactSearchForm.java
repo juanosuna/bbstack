@@ -22,9 +22,7 @@ import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Field;
+import com.vaadin.data.Property;
 import com.vaadin.ui.Select;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -62,16 +60,9 @@ public class ContactSearchForm extends EntitySearchForm<ContactQuery> {
         formFields.addValueChangeListener("country", this, "countryChanged");
     }
 
-    public void countryChanged(Field.ValueChangeEvent event) {
+    public void countryChanged(Property.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
-        Select stateCombo = (Select) getFormFields().getFormField("state").getField();
-        State selectedState = (State) stateCombo.getValue();
-        BeanItemContainer<State> stateContainer = (BeanItemContainer<State>) stateCombo.getContainerDataSource();
-        stateContainer.removeAllItems();
         List<State> states = stateDao.findByCountry(newCountry);
-        stateContainer.addAll(states);
-        if (newCountry != null && selectedState != null && !newCountry.equals(selectedState.getCountry())) {
-            stateCombo.select(stateCombo.getNullSelectionItemId());
-        }
+        getFormFields().setSelectItems("state", states);
     }
 }

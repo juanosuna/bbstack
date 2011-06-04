@@ -55,7 +55,7 @@ public class ContactDao extends EntityDao<Contact, Long> {
         Root<Contact> contact = c.from(Contact.class);
 
         if (isCount) {
-            if (contactQuery.getAccount() == null) {
+            if (contactQuery.getParent() == null) {
                 List<Long> results = new ArrayList<Long>();
                 results.add(0L);
                 return results;
@@ -67,7 +67,7 @@ public class ContactDao extends EntityDao<Contact, Long> {
         }
 
         List<Predicate> criteria = new ArrayList<Predicate>();
-        if (contactQuery.getAccount() != null) {
+        if (contactQuery.getParent() != null) {
             ParameterExpression<Account> p = b.parameter(Account.class, "account");
             criteria.add(b.equal(contact.get("account"), p));
         }
@@ -93,8 +93,8 @@ public class ContactDao extends EntityDao<Contact, Long> {
         }
 
         TypedQuery<Long> q = getEntityManager().createQuery(c);
-        if (contactQuery.getAccount() != null) {
-            q.setParameter("account", contactQuery.getAccount());
+        if (contactQuery.getParent() != null) {
+            q.setParameter("account", contactQuery.getParent());
         }
 
         if (!isCount) {

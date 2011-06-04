@@ -64,7 +64,7 @@ public class EntityTable extends Table {
 
         setSelectable(true);
         setImmediate(true);
-        setPageLength(0);
+        setPageLength(10);
         setColumnReorderingAllowed(true);
         setColumnCollapsingAllowed(true);
         setCacheRate(1);

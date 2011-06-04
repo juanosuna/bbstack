@@ -1,14 +1,17 @@
 package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.view.MainApplication;
+import com.brownbag.core.view.entity.EntityForm;
 import com.brownbag.core.view.entity.EntitySelect;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
+import org.apache.commons.beanutils.BeanUtils;
 import org.vaadin.addon.customfield.CustomField;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 /**
@@ -26,7 +29,13 @@ public class EntitySelectField extends CustomField {
 
     private Window popupWindow;
 
-    public EntitySelectField(EntitySelect entitySelect) {
+    private EntityForm entityForm;
+    private String propertyId;
+
+
+    public EntitySelectField(EntityForm entityForm, String propertyId, EntitySelect entitySelect) {
+        this.entityForm = entityForm;
+        this.propertyId = propertyId;
         this.entitySelect = entitySelect;
         postConstruct();
     }
@@ -58,12 +67,35 @@ public class EntitySelectField extends CustomField {
         layout.addComponent(clearButton);
 
         entitySelect.getEntityResults().addSelectButtonListener(this, "itemSelected");
+        addClearListener(this, "itemCleared");
 
         setCompositionRoot(layout);
     }
 
     public void itemSelected() {
+        Object entity = entityForm.getEntity();
+        Object selectedValue = getSelectedValue();
+        try {
+            BeanUtils.setProperty(entity, propertyId, selectedValue);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+        entityForm.refreshFromDataSource();
         close();
+    }
+
+    public void itemCleared() {
+        Object entity = entityForm.getEntity();
+        try {
+            BeanUtils.setProperty(entity, propertyId, null);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+        entityForm.refreshFromDataSource();
     }
 
     public void addClearListener(Object target, String methodName) {

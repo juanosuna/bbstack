@@ -19,8 +19,6 @@ package com.brownbag.sample.view.contactmanyselect;
 
 import com.brownbag.core.view.entity.EntityResultsManySelect;
 import com.brownbag.core.view.entity.field.DisplayFields;
-import com.brownbag.sample.dao.ContactDao;
-import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.view.contactselect.ContactSelect;
 import org.springframework.context.annotation.Scope;
@@ -36,12 +34,6 @@ import javax.annotation.Resource;
 @Component
 @Scope("session")
 public class ContactResultsManySelect extends EntityResultsManySelect<Contact> {
-
-    @Resource
-    private ContactQueryManySelect contactQueryManySelect;
-
-    @Resource
-    private ContactDao contactDao;
 
     @Resource
     private ContactSelect contactSelect;
@@ -63,25 +55,7 @@ public class ContactResultsManySelect extends EntityResultsManySelect<Contact> {
     }
 
     @Override
-    public void valuesSelected(Object... values) {
-        Account account = contactQueryManySelect.getAccount();
-        for (Object value : values) {
-            Contact contactSelected = (Contact) value;
-            contactSelected = contactDao.find(contactSelected.getId());
-            contactSelected.setAccount(account);
-            contactDao.persist(contactSelected);
-        }
-        search();
-    }
-
-    @Override
-    public void valuesRemoved(Object... values) {
-        for (Object value : values) {
-            Contact contactSelected = (Contact) value;
-            contactSelected = contactDao.find(contactSelected.getId());
-            contactSelected.setAccount(null);
-            contactDao.persist(contactSelected);
-        }
-        search();
+    public String getPropertyId() {
+        return "account";
     }
 }

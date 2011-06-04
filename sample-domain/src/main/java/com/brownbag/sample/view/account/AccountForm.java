@@ -17,23 +17,20 @@
 
 package com.brownbag.sample.view.account;
 
-import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.view.entity.EntityForm;
+import com.brownbag.core.view.entity.EntityManySelect;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
 import com.brownbag.sample.view.contactmanyselect.ContactManySelect;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.TabSheet;
+import com.vaadin.data.Property;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,8 +48,6 @@ public class AccountForm extends EntityForm<Account> {
     @Resource
     private ContactManySelect contactManySelect;
 
-    private TabSheet tabSheet;
-
     @Override
     public String getEntityCaption() {
         return "Account Form";
@@ -67,49 +62,21 @@ public class AccountForm extends EntityForm<Account> {
         formFields.setPosition("address.zipCode", 1, 3);
         formFields.setPosition("address.country", 0, 4);
 
-        Select stateField = (Select) formFields.getFormField("address.state").getField();
-        stateField.getContainerDataSource().removeAllItems();
-
+        formFields.setSelectItems("address.state", new ArrayList());
         formFields.addValueChangeListener("address.country", this, "countryChanged");
     }
 
-    public void countryChanged(Field.ValueChangeEvent event) {
+    public void countryChanged(Property.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
-        Select stateCombo = (Select) getFormFields().getFormField("address.state").getField();
-        State selectedState = (State) stateCombo.getValue();
-        BeanItemContainer<State> stateContainer = (BeanItemContainer<State>) stateCombo.getContainerDataSource();
-        stateContainer.removeAllItems();
         List<State> states = stateDao.findByCountry(newCountry);
-        stateContainer.addAll(states);
-        if (newCountry != null && selectedState != null && !newCountry.equals(selectedState.getCountry())) {
-            stateCombo.select(stateCombo.getNullSelectionItemId());
-        }
+        getFormFields().setSelectItems("address.state", states);
     }
 
     @Override
-    public void postConstruct() {
-        super.postConstruct();
+    public List<EntityManySelect> getManySelects() {
+        List<EntityManySelect> manySelects = new ArrayList<EntityManySelect>();
+        manySelects.add(contactManySelect);
 
-        tabSheet = new TabSheet();
-        tabSheet.addTab(contactManySelect);
-        getFormPanel().addComponent(tabSheet);
-    }
-
-    @Override
-    public void load(WritableEntity entity) {
-        super.load(entity);
-
-        Account account = getEntity();
-        contactManySelect.getEntityQuery().clear();
-        contactManySelect.getEntityQuery().setAccount(account);
-        contactManySelect.getEntityResults().search();
-        tabSheet.setVisible(true);
-    }
-
-    @Override
-    public void create() {
-        super.create();
-
-        tabSheet.setVisible(false);
+        return manySelects;
     }
 }

@@ -25,11 +25,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import static com.brownbag.core.entity.WritableEntity.SCHEMA;
+import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
 
 @Entity
-@Table(schema = SCHEMA)
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "ReadOnly")
+@Table
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = CACHE_REGION)
 public class AccountType extends ReferenceEntity {
 
     public AccountType() {

@@ -55,6 +55,10 @@ public class DisplayField {
         return propertyId;
     }
 
+    public String getPropertyLeafId() {
+        return StringUtil.extractAfterPeriod(getPropertyId());
+    }
+
     public Class getPropertyType() {
         return propertyType;
     }

@@ -21,19 +21,16 @@ import com.brownbag.core.view.entity.EntityForm;
 import com.brownbag.core.view.entity.field.EntitySelectField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.sample.dao.StateDao;
-import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
 import com.brownbag.sample.view.accountselect.AccountSelect;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Select;
+import com.vaadin.data.Property;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,8 +47,6 @@ public class ContactForm extends EntityForm<Contact> {
 
     @Resource
     private AccountSelect accountSelect;
-
-    private EntitySelectField entitySelectField;
 
     @Override
     public String getEntityCaption() {
@@ -71,43 +66,18 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setPosition("address.country", 0, 4);
         formFields.setPosition("account.name", 1, 4);
 
-        formFields.getFormField("account.name").setLabel("Account");
+        formFields.setLabel("account.name", "Account");
 
-        Select stateField = (Select) formFields.getFormField("address.state").getField();
-        stateField.getContainerDataSource().removeAllItems();
-
-        entitySelectField = new EntitySelectField(accountSelect);
-        formFields.setField("account.name", entitySelectField);
-        accountSelect.getEntityResults().addSelectButtonListener(this, "accountSelected");
-
-        entitySelectField.addClearListener(this, "accountCleared");
-
+        formFields.setSelectItems("address.state", new ArrayList());
         formFields.addValueChangeListener("address.country", this, "countryChanged");
+
+        EntitySelectField entitySelectField = new EntitySelectField(this, "account", accountSelect);
+        formFields.setField("account.name", entitySelectField);
     }
 
-    public void accountSelected() {
-        Contact contact = getEntity();
-        Account selectedAccount = (Account) entitySelectField.getSelectedValue();
-        contact.setAccount(selectedAccount);
-        refreshFromDataSource();
-    }
-
-    public void accountCleared() {
-        Contact contact = getEntity();
-        contact.setAccount(null);
-        refreshFromDataSource();
-    }
-
-    public void countryChanged(Field.ValueChangeEvent event) {
+    public void countryChanged(Property.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
-        Select stateCombo = (Select) getFormFields().getFormField("address.state").getField();
-        State selectedState = (State) stateCombo.getValue();
-        BeanItemContainer<State> stateContainer = (BeanItemContainer<State>) stateCombo.getContainerDataSource();
-        stateContainer.removeAllItems();
         List<State> states = stateDao.findByCountry(newCountry);
-        stateContainer.addAll(states);
-        if (newCountry != null && selectedState != null && !newCountry.equals(selectedState.getCountry())) {
-            stateCombo.select(stateCombo.getNullSelectionItemId());
-        }
+        getFormFields().setSelectItems("address.state", states);
     }
 }

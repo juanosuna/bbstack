@@ -17,13 +17,17 @@
 
 package com.brownbag.core.view.entity;
 
+import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.view.MainApplication;
 import com.vaadin.data.Property;
 import com.vaadin.event.Action;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import org.apache.commons.beanutils.BeanUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 /**
@@ -35,11 +39,11 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
 
     private Window popupWindow;
 
-    private EntityQuery entityQuery;
-
     private Button addButton;
 
     private ContextMenu contextMenu;
+
+    private EntityDao entityDao;
 
     protected EntityResultsManySelect() {
         super();
@@ -47,12 +51,14 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
 
     public abstract EntitySelect getEntitySelect();
 
-    public EntityQuery getEntityQuery() {
-        return entityQuery;
+    public abstract String getPropertyId();
+
+    public EntityDao getEntityDao() {
+        return entityDao;
     }
 
-    void setEntityQuery(EntityQuery entityQuery) {
-        this.entityQuery = entityQuery;
+    void setEntityDao(EntityDao entityDao) {
+        this.entityDao = entityDao;
     }
 
     public void postConstruct() {
@@ -91,7 +97,41 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
         valuesSelected(selectedValues.toArray());
     }
 
-    public abstract void valuesSelected(Object... values);
+    @Override
+    public EntityManySelectQuery getEntityQuery() {
+        return (EntityManySelectQuery) super.getEntityQuery();
+    }
+
+    public void valuesSelected(Object... values) {
+        Object parent = getEntityQuery().getParent();
+        for (Object value : values) {
+            value = entityDao.getReference(value);
+            try {
+                BeanUtils.setProperty(value, getPropertyId(), parent);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+            entityDao.persist(value);
+        }
+        search();
+    }
+
+    public void valuesRemoved(Object... values) {
+        for (Object value : values) {
+            value = entityDao.getReference(value);
+            try {
+                BeanUtils.setProperty(value, getPropertyId(), null);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+            entityDao.persist(value);
+        }
+        search();
+    }
 
     public void setAddButtonEnabled(boolean isEnabled) {
         addButton.setEnabled(isEnabled);
@@ -106,11 +146,9 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
         valuesRemoved(selectedValues.toArray());
     }
 
-    public abstract void valuesRemoved(Object... value);
-
     public void selectionChanged(Property.ValueChangeEvent event) {
-        Object itemId = getEntityTable().getValue();
-        if (itemId != null) {
+        Collection itemIds = (Collection) getEntityTable().getValue();
+        if (itemIds.size() > 0) {
             getEntityTable().addActionHandler(contextMenu);
         } else {
             getEntityTable().removeActionHandler(contextMenu);

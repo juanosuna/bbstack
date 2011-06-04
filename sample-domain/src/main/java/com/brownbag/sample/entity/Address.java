@@ -30,13 +30,11 @@ import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.brownbag.core.entity.WritableEntity.SCHEMA;
-
 @PatternIfThen(ifProperty = "country.id", ifRegex = "^US$",
         thenProperty = "zipCode", thenRegex = "^\\d{5}$|^\\d{5}$",
         message = "US zip code must be 5 or 9 digits")
 @Entity
-@Table(schema = SCHEMA)
+@Table
 public class Address extends WritableEntity {
 
     @NotNull

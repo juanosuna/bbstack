@@ -29,12 +29,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import static com.brownbag.core.entity.WritableEntity.SCHEMA;
+import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_ONLY;
 
 @Entity
-@Table(schema = SCHEMA)
-@Cache(usage = READ_ONLY, region = "ReadOnly")
+@Table
+@Cache(usage = READ_ONLY, region = CACHE_REGION)
 public class State extends ReferenceEntity {
 
     @Index(name = "IDX_STATE_COUNTRY")
