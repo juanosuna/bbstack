@@ -24,7 +24,7 @@ import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
-import com.brownbag.sample.view.contactmanyselect.ContactManySelect;
+import com.brownbag.sample.view.account.contactmanyselect.ContactManySelect;
 import com.vaadin.data.Property;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

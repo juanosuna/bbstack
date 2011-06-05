@@ -25,7 +25,7 @@
 <body>
 <h2 align="center">Login</h2>
 
-<p align="center">Try admin/admin for write access or guest/guest for read-only access</p>
+<p align="center">For demo, please log in as username "admin" with password "admin"</p>
 <c:if test="${not empty param.login_error}">
       <span style="color: red; ">
         Your login attempt was not successful, try again.<br/><br/>
@@ -47,7 +47,7 @@
             <td><input type='password' id="j_password" name='j_password'></td>
         </tr>
         <tr>
-            <td align="right"><input type="checkbox" name="_spring_security_remember_me"></td>
+            <td align="right"><input type="checkbox" name="_spring_security_remember_me" value="checked"></td>
             <td align="left">remember for two weeks</td>
         </tr>
 

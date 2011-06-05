@@ -15,9 +15,9 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.contactselect;
+package com.brownbag.sample.view.contact.accountselect;
 
-import com.brownbag.sample.view.contact.ContactSearchForm;
+import com.brownbag.sample.view.account.AccountSearchForm;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -28,5 +28,5 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public class ContactSearchFormSelect extends ContactSearchForm {
+public class AccountSearchFormSelect extends AccountSearchForm {
 }

@@ -15,31 +15,18 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.contactselect;
+package com.brownbag.sample.view.contact.accountselect;
 
-import com.brownbag.core.view.entity.EntityResultsSelect;
-import com.brownbag.core.view.entity.field.DisplayFields;
-import com.brownbag.sample.entity.Contact;
+import com.brownbag.sample.view.account.AccountQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
  * User: Juan
- * Date: 5/6/11
- * Time: 4:04 PM
+ * Date: 2/8/11
+ * Time: 12:01 AM
  */
 @Component
 @Scope("session")
-public class ContactResultsSelect extends EntityResultsSelect<Contact> {
-
-    @Override
-    public void configureEntityFields(DisplayFields displayFields) {
-        displayFields.setPropertyIds(new String[]{
-                "name",
-                "address.state",
-                "address.country",
-                "lastModified",
-                "lastModifiedBy"
-        });
-    }
+public class AccountQuerySelect extends AccountQuery {
 }

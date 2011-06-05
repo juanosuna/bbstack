@@ -15,11 +15,11 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.accountselect;
+package com.brownbag.sample.view.account.contactmanyselect.contactselect;
 
 import com.brownbag.core.view.entity.EntitySelect;
-import com.brownbag.sample.dao.AccountDao;
-import com.brownbag.sample.entity.Account;
+import com.brownbag.sample.dao.ContactDao;
+import com.brownbag.sample.entity.Contact;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -27,38 +27,38 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("session")
-public class AccountSelect extends EntitySelect<Account> {
+public class ContactSelect extends EntitySelect<Contact> {
 
     @Resource
-    private AccountDao accountDao;
+    private ContactDao contactDao;
 
     @Resource
-    private AccountQuerySelect accountQuerySelect;
+    private ContactQuerySelect contactQuerySelect;
 
     @Resource
-    private AccountSearchFormSelect accountSearchFormSelect;
+    private ContactSearchFormSelect contactSearchFormSelect;
 
     @Resource
-    private AccountResultsSelect accountResultsSelect;
+    private ContactResultsSelect contactResultsSelect;
 
     @Override
-    public AccountDao getEntityDao() {
-        return accountDao;
+    public ContactDao getEntityDao() {
+        return contactDao;
     }
 
     @Override
-    public AccountQuerySelect getEntityQuery() {
-        return accountQuerySelect;
+    public ContactQuerySelect getEntityQuery() {
+        return contactQuerySelect;
     }
 
     @Override
-    public AccountSearchFormSelect getEntitySearchForm() {
-        return accountSearchFormSelect;
+    public ContactSearchFormSelect getEntitySearchForm() {
+        return contactSearchFormSelect;
     }
 
     @Override
-    public AccountResultsSelect getEntityResults() {
-        return accountResultsSelect;
+    public ContactResultsSelect getEntityResults() {
+        return contactResultsSelect;
     }
 }
 

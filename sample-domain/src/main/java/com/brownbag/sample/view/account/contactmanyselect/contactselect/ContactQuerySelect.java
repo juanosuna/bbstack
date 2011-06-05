@@ -15,18 +15,18 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.accountselect;
+package com.brownbag.sample.view.account.contactmanyselect.contactselect;
 
-import com.brownbag.sample.view.account.AccountSearchForm;
+import com.brownbag.sample.view.contact.ContactQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
  * User: Juan
  * Date: 2/8/11
- * Time: 7:52 PM
+ * Time: 12:01 AM
  */
 @Component
 @Scope("session")
-public class AccountSearchFormSelect extends AccountSearchForm {
+public class ContactQuerySelect extends ContactQuery {
 }

@@ -15,50 +15,52 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.contactselect;
+package com.brownbag.sample.view.account.contactmanyselect;
 
-import com.brownbag.core.view.entity.EntitySelect;
-import com.brownbag.sample.dao.ContactDao;
+import com.brownbag.core.view.entity.EntityResultsManySelect;
+import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.entity.Contact;
+import com.brownbag.sample.view.account.contactmanyselect.contactselect.ContactSelect;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+/**
+ * User: Juan
+ * Date: 5/6/11
+ * Time: 4:04 PM
+ */
 @Component
 @Scope("session")
-public class ContactSelect extends EntitySelect<Contact> {
+public class ContactResultsManySelect extends EntityResultsManySelect<Contact> {
 
     @Resource
-    private ContactDao contactDao;
-
-    @Resource
-    private ContactQuerySelect contactQuerySelect;
-
-    @Resource
-    private ContactSearchFormSelect contactSearchFormSelect;
-
-    @Resource
-    private ContactResultsSelect contactResultsSelect;
+    private ContactSelect contactSelect;
 
     @Override
-    public ContactDao getEntityDao() {
-        return contactDao;
+    public void configureEntityFields(DisplayFields displayFields) {
+        displayFields.setPropertyIds(new String[]{
+                "name",
+                "address.state",
+                "address.country",
+                "lastModified",
+                "lastModifiedBy"
+        });
     }
 
     @Override
-    public ContactQuerySelect getEntityQuery() {
-        return contactQuerySelect;
+    public ContactSelect getEntitySelect() {
+        return contactSelect;
     }
 
     @Override
-    public ContactSearchFormSelect getEntitySearchForm() {
-        return contactSearchFormSelect;
+    public String getPropertyId() {
+        return "account";
     }
 
     @Override
-    public ContactResultsSelect getEntityResults() {
-        return contactResultsSelect;
+    public String getEntityCaption() {
+        return "Contacts";
     }
 }
-

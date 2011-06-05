@@ -24,7 +24,7 @@ import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
 import com.brownbag.sample.view.contact.ContactQuery;
-import com.brownbag.sample.view.contactmanyselect.ContactQueryManySelect;
+import com.brownbag.sample.view.account.contactmanyselect.ContactQueryManySelect;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

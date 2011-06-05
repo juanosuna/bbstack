@@ -15,16 +15,13 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.contactmanyselect;
+package com.brownbag.sample.view.contact.accountselect;
 
-import com.brownbag.core.view.entity.EntityResultsManySelect;
+import com.brownbag.core.view.entity.EntityResultsSelect;
 import com.brownbag.core.view.entity.field.DisplayFields;
-import com.brownbag.sample.entity.Contact;
-import com.brownbag.sample.view.contactselect.ContactSelect;
+import com.brownbag.sample.entity.Account;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * User: Juan
@@ -33,10 +30,7 @@ import javax.annotation.Resource;
  */
 @Component
 @Scope("session")
-public class ContactResultsManySelect extends EntityResultsManySelect<Contact> {
-
-    @Resource
-    private ContactSelect contactSelect;
+public class AccountResultsSelect extends EntityResultsSelect<Account> {
 
     @Override
     public void configureEntityFields(DisplayFields displayFields) {
@@ -47,20 +41,5 @@ public class ContactResultsManySelect extends EntityResultsManySelect<Contact> {
                 "lastModified",
                 "lastModifiedBy"
         });
-    }
-
-    @Override
-    public ContactSelect getEntitySelect() {
-        return contactSelect;
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "account";
-    }
-
-    @Override
-    public String getEntityCaption() {
-        return "Contacts";
     }
 }
