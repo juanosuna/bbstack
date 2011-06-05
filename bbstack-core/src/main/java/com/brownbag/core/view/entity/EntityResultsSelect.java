@@ -17,10 +17,16 @@
 
 package com.brownbag.core.view.entity;
 
+import com.brownbag.core.util.MethodDelegate;
 import com.vaadin.data.Property;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Button;
+import org.aspectj.apache.bcel.classfile.Method;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * User: Juan
@@ -28,6 +34,9 @@ import java.util.Collection;
  * Time: 5:27 PM
  */
 public abstract class EntityResultsSelect<T> extends EntityResultsComponent {
+
+    @Autowired
+    private ContextMenu contextMenu;
 
     private Button selectButton;
 
@@ -40,21 +49,35 @@ public abstract class EntityResultsSelect<T> extends EntityResultsComponent {
         addSelectionChangedListener(this, "selectionChanged");
 
         selectButton = new Button(getUiMessageSource().getMessage("entityResults.select"));
-        selectButton.addStyleName("small default");
         selectButton.setEnabled(false);
+        selectButton.addStyleName("small default");
         getButtonPanel().addComponent(selectButton);
     }
 
     public void selectionChanged(Property.ValueChangeEvent event) {
         Object itemId = getEntityTable().getValue();
         if (itemId instanceof Collection) {
-            selectButton.setEnabled(((Collection) itemId).size() > 0);
+            if (((Collection) itemId).size() > 0) {
+                selectButton.setEnabled(true);
+                getEntityTable().addActionHandler(contextMenu);
+            } else {
+                selectButton.setEnabled(false);
+                getEntityTable().removeActionHandler(contextMenu);
+            }
         } else {
-            selectButton.setEnabled(itemId != null);
+            if (itemId != null) {
+                selectButton.setEnabled(true);
+                getEntityTable().addActionHandler(contextMenu);
+            } else {
+                selectButton.setEnabled(false);
+                getEntityTable().removeActionHandler(contextMenu);
+            }
         }
     }
 
     public void addSelectButtonListener(Object target, String methodName) {
         selectButton.addListener(Button.ClickEvent.class, target, methodName);
+        contextMenu.addAction("entityResults.select", target, methodName);
+        contextMenu.setActionEnabled("entityResults.select", true);
     }
 }

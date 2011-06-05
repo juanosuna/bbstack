@@ -68,6 +68,10 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         this.uiMessageSource = uiMessageSource;
     }
 
+    public MessageSource getEntityMessageSource() {
+        return entityMessageSource;
+    }
+
     public void setEntityMessageSource(MessageSource entityMessageSource) {
         this.entityMessageSource = entityMessageSource;
     }

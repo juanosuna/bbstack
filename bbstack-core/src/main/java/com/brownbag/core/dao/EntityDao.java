@@ -17,6 +17,7 @@
 
 package com.brownbag.core.dao;
 
+import com.brownbag.core.entity.IEntity;
 import com.brownbag.core.util.ReflectionUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -62,8 +63,7 @@ public class EntityDao<T, ID extends Serializable> {
     }
 
     public T getReference(T entity) {
-        PersistenceUnitUtil jpaUtil = entityManager.getEntityManagerFactory().getPersistenceUnitUtil();
-        Object primaryKey = jpaUtil.getIdentifier(entity);
+        Object primaryKey = ((IEntity) entity).getId();
         return getEntityManager().getReference(getPersistentClass(), primaryKey);
     }
 

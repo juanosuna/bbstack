@@ -20,12 +20,11 @@ package com.brownbag.core.view.entity;
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.view.MainApplication;
 import com.vaadin.data.Property;
-import com.vaadin.event.Action;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -40,7 +39,10 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
     private Window popupWindow;
 
     private Button addButton;
+    private Button removeButton;
 
+
+    @Autowired
     private ContextMenu contextMenu;
 
     private EntityDao entityDao;
@@ -52,6 +54,8 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
     public abstract EntitySelect getEntitySelect();
 
     public abstract String getPropertyId();
+
+    public abstract String getEntityCaption();
 
     public EntityDao getEntityDao() {
         return entityDao;
@@ -68,14 +72,21 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
         addButton.addStyleName("small default");
         getButtonPanel().addComponent(addButton);
 
-        addSelectionChangedListener(this, "selectionChanged");
-        contextMenu = new ContextMenu();
+        removeButton = new Button(getUiMessageSource().getMessage("entityResults.remove"), this, "remove");
+        removeButton.setEnabled(false);
+        removeButton.addStyleName("small default");
+        getButtonPanel().addComponent(removeButton);
+
         getEntityTable().setMultiSelect(true);
         getEntitySelect().getEntityResults().getEntityTable().setMultiSelect(true);
+
+        contextMenu.addAction("entityResults.remove", this, "remove");
+        contextMenu.setActionEnabled("entityResults.remove", true);
+        addSelectionChangedListener(this, "selectionChanged");
     }
 
     public void add() {
-        popupWindow = new Window("Select Entity");
+        popupWindow = new Window(getEntityMessageSource().getMessageWithDefault(getEntityCaption()));
         popupWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
         layout.setMargin(true);
@@ -115,7 +126,7 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
             }
             entityDao.persist(value);
         }
-        search();
+        searchImpl(false);
     }
 
     public void valuesRemoved(Object... values) {
@@ -130,7 +141,7 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
             }
             entityDao.persist(value);
         }
-        search();
+        searchImpl(false);
     }
 
     public void setAddButtonEnabled(boolean isEnabled) {
@@ -150,25 +161,10 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
         Collection itemIds = (Collection) getEntityTable().getValue();
         if (itemIds.size() > 0) {
             getEntityTable().addActionHandler(contextMenu);
+            removeButton.setEnabled(true);
         } else {
             getEntityTable().removeActionHandler(contextMenu);
-        }
-    }
-
-    public class ContextMenu implements Action.Handler {
-        private Action removeAction = new Action(getUiMessageSource().getMessage("entityResults.remove"));
-        private Action[] allActions = new Action[]{removeAction};
-
-        @Override
-        public Action[] getActions(Object target, Object sender) {
-            return allActions;
-        }
-
-        @Override
-        public void handleAction(Action action, Object sender, Object target) {
-            if (removeAction == action) {
-                remove();
-            }
+            removeButton.setEnabled(false);
         }
     }
 }

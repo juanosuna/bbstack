@@ -72,10 +72,12 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
         getButtonPanel().addComponent(newButton);
 
         editButton = new Button(getUiMessageSource().getMessage("entityResults.edit"), this, "edit");
+        editButton.setEnabled(false);
         editButton.addStyleName("small default");
         getButtonPanel().addComponent(editButton);
 
         deleteButton = new Button(getUiMessageSource().getMessage("entityResults.delete"), this, "delete");
+        deleteButton.setEnabled(false);
         deleteButton.addStyleName("small default");
         getButtonPanel().addComponent(deleteButton);
 
@@ -83,7 +85,7 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
         contextMenu.addAction("entityResults.edit", this, "edit");
         contextMenu.addAction("entityResults.delete", this, "delete");
 
-        getEntityTable().addListener(new EntityResults.DoubleClickListener());
+        getEntityTable().addListener(new DoubleClickListener());
     }
 
     public void create() {

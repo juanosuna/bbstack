@@ -58,4 +58,9 @@ public class ContactResultsManySelect extends EntityResultsManySelect<Contact> {
     public String getPropertyId() {
         return "account";
     }
+
+    @Override
+    public String getEntityCaption() {
+        return "Contacts";
+    }
 }
