@@ -52,7 +52,7 @@
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
         </property>
 
-        <property name="persistenceUnitName" value="sample-persistence"/>
+        <property name="persistenceUnitName" value="persistence-unit"/>
 
         <property name="jpaProperties">
             <props>
@@ -91,8 +91,6 @@
 
     <bean id="springApplicationContext" class="com.brownbag.core.util.SpringApplicationContext"/>
 
-    <context:component-scan
-            base-package="com.brownbag.sample.dao,com.brownbag.sample.entity,com.brownbag.sample.query"/>
     <context:annotation-config/>
 
 </beans>

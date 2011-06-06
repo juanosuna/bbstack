@@ -29,14 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Calendar;
 import java.util.Date;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-        "classpath:applicationContext-data-access.xml",
-        "classpath:applicationContext-data-init.xml"
-})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 @Transactional
-public class TestInitializer {
+public class TestInitializer extends AbstractDomainTest {
 
     @Autowired
     private StateDao stateDao;

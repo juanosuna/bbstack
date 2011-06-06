@@ -1,5 +1,7 @@
 package com.brownbag.core.util;
 
+import org.springframework.beans.BeanUtils;
+
 import javax.validation.Valid;
 import java.lang.reflect.Field;
 
@@ -18,6 +20,29 @@ public class BeanProperty {
         this.id = id;
         this.type = type;
         this.containerType = containerType;
+    }
+
+    public static BeanProperty getBeanProperty(Class clazz, String propertyPath) {
+        String[] properties = propertyPath.split("\\.");
+        Class containingType;
+        Class currentPropertyType = clazz;
+        String propertyId;
+        BeanProperty beanProperty = null;
+        for (String property : properties) {
+            Class propertyType = BeanUtils.findPropertyType(property, new Class[]{currentPropertyType});
+            if (propertyType == null || propertyType.equals(Object.class)) {
+                throw new RuntimeException("Invalid property path given for class " + clazz
+                        + ": " + property);
+            } else {
+                containingType = currentPropertyType;
+                currentPropertyType = propertyType;
+                propertyId = property;
+
+                beanProperty = new BeanProperty(beanProperty, propertyId, currentPropertyType, containingType);
+            }
+        }
+
+        return beanProperty;
     }
 
     public BeanProperty getParent() {

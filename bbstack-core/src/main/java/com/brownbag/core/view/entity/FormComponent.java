@@ -17,14 +17,14 @@
 
 package com.brownbag.core.view.entity;
 
-import com.brownbag.core.util.MessageSource;
+import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
+import com.vaadin.data.util.NullCapableBeanItem;
+import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.MyBeanItem;
-import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
 import com.vaadin.data.util.VaadinPropertyDescriptor;
 import com.vaadin.ui.*;
 
@@ -51,13 +51,8 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     public abstract String getEntityCaption();
 
-
     public Form getForm() {
         return form;
-    }
-
-    public void setForm(Form form) {
-        this.form = form;
     }
 
     MessageSource getEntityMessageSource() {
@@ -98,7 +93,7 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     public void postConstruct() {
         VerticalLayout layout = new VerticalLayout();
-        formPanel = EntityComponent.createPanel(layout);
+        formPanel = EntityComposition.createPanel(layout);
 
         form = new ConfigurableForm();
         form.setWriteThrough(true);
@@ -147,7 +142,7 @@ public abstract class FormComponent<T> extends CustomComponent {
             VaadinPropertyDescriptor descriptor = new NullCapableNestedPropertyDescriptor(propertyId, getEntityType());
             descriptors.put(propertyId, descriptor);
         }
-        return new MyBeanItem(entity, descriptors);
+        return new NullCapableBeanItem(entity, descriptors);
     }
 
     public static class EntityFieldFactory implements FormFieldFactory {

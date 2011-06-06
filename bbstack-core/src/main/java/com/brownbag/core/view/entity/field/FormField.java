@@ -20,7 +20,6 @@ package com.brownbag.core.view.entity.field;
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.ReferenceEntity;
 import com.brownbag.core.util.BeanProperty;
-import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.util.SpringApplicationContext;
 import com.brownbag.core.util.assertion.Assert;
 import com.vaadin.addon.beanvalidation.BeanValidationValidator;
@@ -178,7 +177,7 @@ public class FormField extends DisplayField {
         field.setInvalidAllowed(true);
 
         if (getFormFields().attachValidators()) {
-            BeanProperty beanProperty = ReflectionUtil.getBeanProperty(getDisplayFields().getEntityType(),
+            BeanProperty beanProperty = BeanProperty.getBeanProperty(getDisplayFields().getEntityType(),
                     getPropertyId());
             if (beanProperty.isValidationOn()) {
                 BeanValidationValidator.addValidator(field, beanProperty.getId(), beanProperty.getContainerType());

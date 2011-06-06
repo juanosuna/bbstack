@@ -17,7 +17,7 @@
 
 package com.brownbag.sample.view.account.contactmanyselect;
 
-import com.brownbag.core.view.entity.EntityManySelect;
+import com.brownbag.core.view.entity.manyselect.EntityManySelect;
 import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Contact;
 import org.springframework.context.annotation.Scope;
@@ -33,7 +33,7 @@ public class ContactManySelect extends EntityManySelect<Contact> {
     private ContactDao contactDao;
 
     @Resource
-    private ContactResultsManySelect contactResultsManySelect;
+    private ContactManySelectResults contactResultsManySelect;
 
     @Resource
     private ContactQueryManySelect contactQueryManySelect;
@@ -54,7 +54,7 @@ public class ContactManySelect extends EntityManySelect<Contact> {
     }
 
     @Override
-    public ContactResultsManySelect getEntityResults() {
+    public ContactManySelectResults getEntityResults() {
         return contactResultsManySelect;
     }
 }

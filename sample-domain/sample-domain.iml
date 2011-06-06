@@ -18,10 +18,10 @@
     <facet type="Spring" name="Spring">
       <configuration>
         <fileset id="fileset1" name="My Fileset" removed="false">
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-data-access.xml</file>
+          <file>file://$MODULE_DIR$/../bbstack-core/src/main/resources/spring/applicationContext-data-access.xml</file>
           <file>file://$MODULE_DIR$/src/main/resources/applicationContext-data-init.xml</file>
           <file>file://$MODULE_DIR$/src/main/resources/applicationContext-display.xml</file>
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-service.xml</file>
+          <file>file://$MODULE_DIR$/../bbstack-core/src/main/resources/spring/applicationContext-service.xml</file>
         </fileset>
       </configuration>
     </facet>

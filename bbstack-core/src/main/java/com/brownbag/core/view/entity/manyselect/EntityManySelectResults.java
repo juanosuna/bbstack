@@ -15,10 +15,13 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity;
+package com.brownbag.core.view.entity.manyselect;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.view.MainApplication;
+import com.brownbag.core.view.entity.EntityResultsComponent;
+import com.brownbag.core.view.entity.singleselect.EntitySingleSelect;
+import com.brownbag.core.view.entity.util.ContextMenu;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
@@ -34,7 +37,7 @@ import java.util.Collection;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityResultsManySelect<T> extends EntityResultsComponent {
+public abstract class EntityManySelectResults<T> extends EntityResultsComponent<T> {
 
     private Window popupWindow;
 
@@ -47,11 +50,11 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
 
     private EntityDao entityDao;
 
-    protected EntityResultsManySelect() {
+    protected EntityManySelectResults() {
         super();
     }
 
-    public abstract EntitySelect getEntitySelect();
+    public abstract EntitySingleSelect getEntitySelect();
 
     public abstract String getPropertyId();
 
@@ -93,10 +96,10 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
         layout.setSpacing(true);
         layout.setSizeUndefined();
         popupWindow.setModal(true);
-        EntitySelect entitySelect = getEntitySelect();
-        entitySelect.getEntityResults().getEntityQuery().clear();
-        entitySelect.getEntityResults().search();
-        popupWindow.addComponent(entitySelect);
+        EntitySingleSelect entitySingleSelect = getEntitySelect();
+        entitySingleSelect.getEntityResults().getEntityQuery().clear();
+        entitySingleSelect.getEntityResults().search();
+        popupWindow.addComponent(entitySingleSelect);
         popupWindow.setClosable(true);
         getEntitySelect().getEntityResults().addSelectButtonListener(this, "itemsSelected");
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
@@ -157,6 +160,7 @@ public abstract class EntityResultsManySelect<T> extends EntityResultsComponent 
         valuesRemoved(selectedValues.toArray());
     }
 
+    // todo try removing param
     public void selectionChanged(Property.ValueChangeEvent event) {
         Collection itemIds = (Collection) getEntityTable().getValue();
         if (itemIds.size() > 0) {

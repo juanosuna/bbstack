@@ -12,11 +12,6 @@ public class MethodDelegate {
     private Object target;
     private Method method;
 
-    public MethodDelegate(Object target, Method method) {
-        this.target = target;
-        this.method = method;
-    }
-
     public MethodDelegate(Object target, String methodName, Class<?>... parameterTypes) {
         this.target = target;
         try {

@@ -24,17 +24,13 @@ public enum AssertionExceptionType {
     public AssertionException create() {
         try {
             return exceptionType.getConstructor().newInstance();
-        }
-        catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
-        }
-        catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        }
-        catch (InstantiationException e) {
+        } catch (InstantiationException e) {
             throw new RuntimeException(e);
         }
     }
@@ -43,23 +39,18 @@ public enum AssertionExceptionType {
      * Reflectively instantiates exception based on type
      *
      * @param message to pass to exception's constructor
-     *
      * @return instance of this exception's type
      */
     public AssertionException create(String message) {
         try {
             return exceptionType.getConstructor(String.class).newInstance(message);
-        }
-        catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
-        }
-        catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        }
-        catch (InstantiationException e) {
+        } catch (InstantiationException e) {
             throw new RuntimeException(e);
         }
     }
@@ -73,17 +64,13 @@ public enum AssertionExceptionType {
     public AssertionException create(Throwable cause) {
         try {
             return exceptionType.getConstructor(Throwable.class).newInstance(cause);
-        }
-        catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
-        }
-        catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        }
-        catch (InstantiationException e) {
+        } catch (InstantiationException e) {
             throw new RuntimeException(e);
         }
     }
@@ -93,23 +80,19 @@ public enum AssertionExceptionType {
      * Reflectively instantiates exception based on type
      *
      * @param message to pass to exception's constructor
-     * @param cause to pass to exception's constructor
+     * @param cause   to pass to exception's constructor
      * @return instance of this exception's type
      */
     public AssertionException create(String message, Throwable cause) {
         try {
             return exceptionType.getConstructor(String.class, Throwable.class).newInstance(message, cause);
-        }
-        catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
-        }
-        catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        }
-        catch (InstantiationException e) {
+        } catch (InstantiationException e) {
             throw new RuntimeException(e);
         }
     }

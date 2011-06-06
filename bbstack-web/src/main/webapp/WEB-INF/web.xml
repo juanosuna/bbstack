@@ -25,10 +25,10 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath:/applicationContext-data-access.xml
-            classpath:/applicationContext-display.xml
-            classpath:/applicationContext-service.xml
-            WEB-INF/applicationContext-security.xml
+            classpath:/spring/applicationContext-data-access.xml
+            classpath:/spring/applicationContext-service.xml
+            classpath:/spring/applicationContext-security.xml
+            classpath:/spring/applicationContext-scan.xml
         </param-value>
     </context-param>
 
@@ -54,6 +54,10 @@
     <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:/spring/dispatcher-servlet.xml</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -91,7 +95,7 @@
     </session-config>
 
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>login.jsp</welcome-file>
     </welcome-file-list>
 
 </web-app>

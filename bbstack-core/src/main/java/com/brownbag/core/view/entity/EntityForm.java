@@ -24,10 +24,11 @@ import com.brownbag.core.validation.Validation;
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
+import com.brownbag.core.view.entity.manyselect.EntityManySelect;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.metadata.ConstraintDescriptor;
@@ -43,23 +44,15 @@ import java.util.Set;
  */
 public abstract class EntityForm<T> extends FormComponent<T> {
 
+    @Autowired
     private Validation validation;
     private EntityDao entityDao;
 
     private Window formWindow;
     private TabSheet tabSheet;
 
-
     public List<EntityManySelect> getManySelects() {
         return new ArrayList<EntityManySelect>();
-    }
-
-    Validation getValidation() {
-        return validation;
-    }
-
-    void setValidation(Validation validation) {
-        this.validation = validation;
     }
 
     EntityDao getEntityDao() {
@@ -116,7 +109,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         loadManySelects();
     }
 
-    private void loadManySelects() {
+    public void loadManySelects() {
         List<EntityManySelect> manySelects = getManySelects();
         if (manySelects.size() > 0) {
             for (EntityManySelect manySelect : manySelects) {
@@ -203,7 +196,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     public void save() {
         try {
             getForm().commit();
-            // hack, not sure why this is happening , since invalid data is allowed
+            // todo hack, not sure why this is happening , since invalid data is allowed
         } catch (com.vaadin.data.Validator.InvalidValueException e) {
         }
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();

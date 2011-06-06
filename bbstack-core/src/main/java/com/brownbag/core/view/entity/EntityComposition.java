@@ -18,12 +18,11 @@
 package com.brownbag.core.view.entity;
 
 import com.brownbag.core.dao.EntityDao;
-import com.brownbag.core.util.MessageSource;
+import com.brownbag.core.view.MessageSource;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Runo;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -33,7 +32,7 @@ import javax.annotation.Resource;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityComponent<T> extends CustomComponent {
+public abstract class EntityComposition<T> extends CustomComponent {
 
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
@@ -43,15 +42,12 @@ public abstract class EntityComponent<T> extends CustomComponent {
 
     private Panel mainPanel;
 
-    protected EntityComponent() {
+    protected EntityComposition() {
     }
 
     public abstract EntityDao getEntityDao();
-
     public abstract EntityQuery getEntityQuery();
-
     public abstract EntityResultsComponent getEntityResults();
-
     public abstract String getEntityCaption();
 
     public String getCaption() {
@@ -77,7 +73,6 @@ public abstract class EntityComponent<T> extends CustomComponent {
 
         VerticalLayout layout = new VerticalLayout();
         mainPanel = createPanel(layout);
-//        mainPanel.setCaption(getEntityCaption());
 
         setCompositionRoot(mainPanel);
     }
@@ -96,7 +91,6 @@ public abstract class EntityComponent<T> extends CustomComponent {
     protected static Panel createPanel(AbstractOrderedLayout layout) {
         Panel panel = new Panel();
         panel.addStyleName("borderless");
-//        panel.addStyleName(Runo.PANEL_LIGHT);
         layout.setMargin(false);
         layout.setSpacing(true);
         panel.setContent(layout);

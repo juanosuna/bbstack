@@ -17,48 +17,29 @@
 
 package com.brownbag.sample.view.contact.accountselect;
 
-import com.brownbag.core.view.entity.EntitySelect;
-import com.brownbag.sample.dao.AccountDao;
+import com.brownbag.core.view.entity.singleselect.EntitySingleSelectResults;
+import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.entity.Account;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-
+/**
+ * User: Juan
+ * Date: 5/6/11
+ * Time: 4:04 PM
+ */
 @Component
 @Scope("session")
-public class AccountSelect extends EntitySelect<Account> {
-
-    @Resource
-    private AccountDao accountDao;
-
-    @Resource
-    private AccountQuerySelect accountQuerySelect;
-
-    @Resource
-    private AccountSearchFormSelect accountSearchFormSelect;
-
-    @Resource
-    private AccountResultsSelect accountResultsSelect;
+public class AccountSingleSelectResults extends EntitySingleSelectResults<Account> {
 
     @Override
-    public AccountDao getEntityDao() {
-        return accountDao;
-    }
-
-    @Override
-    public AccountQuerySelect getEntityQuery() {
-        return accountQuerySelect;
-    }
-
-    @Override
-    public AccountSearchFormSelect getEntitySearchForm() {
-        return accountSearchFormSelect;
-    }
-
-    @Override
-    public AccountResultsSelect getEntityResults() {
-        return accountResultsSelect;
+    public void configureEntityFields(DisplayFields displayFields) {
+        displayFields.setPropertyIds(new String[]{
+                "name",
+                "address.state",
+                "address.country",
+                "lastModified",
+                "lastModifiedBy"
+        });
     }
 }
-

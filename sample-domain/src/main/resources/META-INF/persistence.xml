@@ -21,7 +21,7 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
              version="1.0">
 
-    <persistence-unit name="sample-persistence" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="persistence-unit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>sample-datasource</non-jta-data-source>
         <properties>

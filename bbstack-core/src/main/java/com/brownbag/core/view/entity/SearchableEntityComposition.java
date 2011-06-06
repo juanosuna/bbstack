@@ -31,17 +31,17 @@ import javax.annotation.PostConstruct;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class SearchableEntityComponent<T> extends EntityComponent {
+public abstract class SearchableEntityComposition<T> extends EntityComposition<T> {
     private Button toggleSearchFormPanelButton;
     private Animator searchFormPanelAnimator;
 
-    protected SearchableEntityComponent() {
+    protected SearchableEntityComposition() {
         super();
     }
 
-    public abstract EntityResultsComponent getEntityResults();
-
     public abstract EntitySearchForm getEntitySearchForm();
+
+    public abstract EntityResultsComponent getEntityResults();
 
     @PostConstruct
     public void postConstruct() {
@@ -50,9 +50,8 @@ public abstract class SearchableEntityComponent<T> extends EntityComponent {
         wireRelationships();
         postConstructRelatedBeans();
 
-        toggleSearchFormPanelButton = new Button(null,
-                this, "toggleSearchFormPanel");
-        toggleSearchFormPanelButton.setIcon(new ThemeResource("../mytheme/icons/collapse-icon.png"));
+        toggleSearchFormPanelButton = new Button(null, this, "toggleSearchFormPanel");
+        toggleSearchFormPanelButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
         toggleSearchFormPanelButton.addStyleName("borderless");
         getMainPanel().addComponent(toggleSearchFormPanelButton);
 
@@ -79,10 +78,11 @@ public abstract class SearchableEntityComponent<T> extends EntityComponent {
 
     public void toggleSearchFormPanel() {
         searchFormPanelAnimator.setRolledUp(!searchFormPanelAnimator.isRolledUp());
+        // todo beautify icons
         if (searchFormPanelAnimator.isRolledUp()) {
-            toggleSearchFormPanelButton.setIcon(new ThemeResource("../mytheme/icons/expand-icon.png"));
+            toggleSearchFormPanelButton.setIcon(new ThemeResource("../customTheme/icons/expand-icon.png"));
         } else {
-            toggleSearchFormPanelButton.setIcon(new ThemeResource("../mytheme/icons/collapse-icon.png"));
+            toggleSearchFormPanelButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
         }
     }
 }

@@ -27,7 +27,7 @@ import com.vaadin.ui.HorizontalLayout;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntitySearchForm<T> extends FormComponent {
+public abstract class EntitySearchForm<T> extends FormComponent<T> {
 
     private EntityQuery entityQuery;
 
@@ -79,7 +79,7 @@ public abstract class EntitySearchForm<T> extends FormComponent {
     public void search() {
         try {
             getForm().commit();
-            // hack, not sure why this is happening , since invalid data is allowed
+            // todo hack, not sure why this is happening , since invalid data is allowed
         } catch (com.vaadin.data.Validator.InvalidValueException e) {
         }
         getEntityResults().search();

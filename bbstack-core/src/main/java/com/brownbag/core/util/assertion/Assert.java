@@ -54,7 +54,7 @@ public class Assert {
      * Asserts condition and throws exception if condition is not true
      *
      * @param condition boolean expression
-     * @param message to be embedded in thrown exception
+     * @param message   to be embedded in thrown exception
      */
     public void assertTrue(boolean condition, String message) {
         if (!condition) {
@@ -66,8 +66,6 @@ public class Assert {
      * Forces the throwing of an exception.
      *
      * @param message to embed in the exception
-     *
-     * @return never returns and object
      * @throws RuntimeException Always thrown exception containing given description
      */
     public void fail(String message) throws RuntimeException {
@@ -78,8 +76,7 @@ public class Assert {
      * Forces the throwing of an exception
      *
      * @param message to embed in the exception
-     * @param cause root cause for chaining to thrown exception
-     * @return never returns and object
+     * @param cause   root cause for chaining to thrown exception
      * @throws RuntimeException Always thrown exception containing given description
      */
     public void fail(String message, Throwable cause) throws RuntimeException {
@@ -90,8 +87,7 @@ public class Assert {
      * Forces throw throwing of an exception
      *
      * @param cause root cause for chaining to thrown exception
-     * @return never returns and object
-     * @throws RuntimeException  Always thrown exception containing given description
+     * @throws RuntimeException Always thrown exception containing given description
      */
     public void fail(Throwable cause) throws RuntimeException {
         throw assertionExceptionType.create(cause);

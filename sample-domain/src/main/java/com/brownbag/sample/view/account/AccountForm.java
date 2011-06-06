@@ -18,7 +18,7 @@
 package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.EntityManySelect;
+import com.brownbag.core.view.entity.manyselect.EntityManySelect;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Account;

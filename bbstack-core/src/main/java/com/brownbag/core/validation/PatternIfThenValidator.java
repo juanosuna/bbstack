@@ -62,7 +62,7 @@ public class PatternIfThenValidator implements ConstraintValidator<PatternIfThen
     }
 
     private static boolean match(Object bean, String property, String regexp) {
-        String propertyValue = null;
+        String propertyValue;
         try {
             propertyValue = convertToString(PropertyUtils.getProperty(bean, property));
         } catch (IllegalAccessException e) {

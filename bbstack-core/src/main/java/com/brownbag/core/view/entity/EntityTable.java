@@ -18,9 +18,9 @@
 package com.brownbag.core.view.entity;
 
 import com.brownbag.core.view.entity.field.DisplayFields;
+import com.vaadin.data.util.NullCapableBeanItemContainer;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.MyBeanItemContainer;
 import com.vaadin.ui.Table;
 
 import java.text.SimpleDateFormat;
@@ -56,7 +56,7 @@ public class EntityTable extends Table {
     }
 
     public void postConstruct() {
-        BeanItemContainer dataSource = new MyBeanItemContainer(getEntityType());
+        BeanItemContainer dataSource = new NullCapableBeanItemContainer(getEntityType());
         String[] propertyIds = getEntityFields().getPropertyIdsAsArray();
         for (String propertyId : propertyIds) {
             dataSource.addNestedContainerProperty(propertyId);
@@ -84,6 +84,7 @@ public class EntityTable extends Table {
         if (propertyId.length > 1) {
             throw new RuntimeException("Cannot sort on more than one column");
         } else if (propertyId.length == 1) {
+            // todo reevaluate
             if (!entityResults.getDisplayFields().getField(propertyId[0].toString()).isDerived()) {
                 getEntityQuery().setOrderByField(propertyId[0]);
                 if (ascending[0]) {

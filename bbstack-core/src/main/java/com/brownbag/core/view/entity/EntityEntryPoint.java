@@ -17,9 +17,6 @@
 
 package com.brownbag.core.view.entity;
 
-import com.brownbag.core.validation.Validation;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.annotation.PostConstruct;
 
 /**
@@ -27,10 +24,7 @@ import javax.annotation.PostConstruct;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityEntryPoint<T> extends SearchableEntityComponent {
-
-    @Autowired
-    private Validation validation;
+public abstract class EntityEntryPoint<T> extends SearchableEntityComposition<T> {
 
     protected EntityEntryPoint() {
         super();
@@ -48,14 +42,14 @@ public abstract class EntityEntryPoint<T> extends SearchableEntityComponent {
 
     private void wireRelationships() {
         getEntityResults().setEntityForm(getEntityForm());
-
         getEntityForm().setUiMessageSource(getUiMessageSource());
-        getEntityForm().setValidation(validation);
         getEntityForm().setEntityMessageSource(getEntityMessageSource());
         getEntityForm().setEntityDao(getEntityDao());
     }
 
     private void postConstructRelatedBeans() {
         getEntityForm().postConstruct();
+// todo why not necessary?
+//        getEntityResults().postConstruct();
     }
 }

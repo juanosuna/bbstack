@@ -17,10 +17,11 @@
 
 package com.brownbag.core.view;
 
-import com.brownbag.core.util.MessageSource;
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -38,8 +39,6 @@ public class MainApplication extends Application implements HttpServletRequestLi
 
     @Autowired
     private MainTabSheet tabSheet;
-
-    private Window mainWindow;
 
     public static MainApplication getInstance() {
         return threadLocal.get();
@@ -65,12 +64,12 @@ public class MainApplication extends Application implements HttpServletRequestLi
     public void init() {
         setInstance(this);
 
-        setTheme("mytheme");
+        setTheme("customTheme");
 
         VerticalLayout mainLayout = new VerticalLayout();
         mainLayout.setMargin(true);
         mainLayout.setSpacing(true);
-        mainWindow = new Window(messageSource.getMessage("mainApplication.caption"));
+        Window mainWindow = new Window(messageSource.getMessage("mainApplication.caption"));
         mainWindow.setContent(mainLayout);
         setMainWindow(mainWindow);
 
@@ -85,8 +84,7 @@ public class MainApplication extends Application implements HttpServletRequestLi
             getMainWindow().showNotification(
                     messageSource.getMessage("mainApplication.accessDenied"),
                     Window.Notification.TYPE_ERROR_MESSAGE);
-        }
-        else {
+        } else {
             String fullStackTrace = ExceptionUtils.getFullStackTrace(event.getThrowable());
             open(fullStackTrace);
         }
@@ -106,5 +104,4 @@ public class MainApplication extends Application implements HttpServletRequestLi
         errorWindow.setScrollable(true);
         MainApplication.getInstance().getMainWindow().addWindow(errorWindow);
     }
-
 }

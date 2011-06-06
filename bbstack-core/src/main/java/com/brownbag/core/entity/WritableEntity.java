@@ -26,7 +26,7 @@ import java.util.UUID;
 
 @MappedSuperclass
 @EntityListeners({WritableEntity.WritableEntityListener.class})
-public abstract class WritableEntity implements IEntity {
+public abstract class WritableEntity implements IdentifiableEntity {
 
     public static final String SYSTEM_USER = "system";
 

@@ -1,6 +1,6 @@
-package com.brownbag.core.view.entity;
+package com.brownbag.core.view.entity.util;
 
-import com.brownbag.core.util.MessageSource;
+import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.util.MethodDelegate;
 import com.brownbag.core.util.assertion.Assert;
 import com.vaadin.event.Action;

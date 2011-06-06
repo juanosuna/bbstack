@@ -17,6 +17,11 @@
 
 package com.brownbag.core.view.entity;
 
+import org.apache.commons.beanutils.PropertyUtils;
+
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -94,7 +99,34 @@ public abstract class EntityQuery<T> {
         this.orderDirection = orderDirection;
     }
 
-    public abstract void clear();
+    public void clear() {
+        setOrderByField(null);
+        setOrderDirection(OrderDirection.ASC);
+
+        try {
+            PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(this);
+            for (PropertyDescriptor descriptor : descriptors) {
+                Method writeMethod = descriptor.getWriteMethod();
+                if (writeMethod != null && !writeMethod.getDeclaringClass().equals(EntityQuery.class)
+                        && !writeMethod.getDeclaringClass().equals(Object.class)) {
+                    Class type = descriptor.getPropertyType();
+                    if (type.isPrimitive() && !type.isArray()) {
+                        if (Number.class.isAssignableFrom(type)) {
+                            writeMethod.invoke(this, 0);
+                        } else if (Boolean.class.isAssignableFrom(type)) {
+                            writeMethod.invoke(this, false);
+                        }
+                    } else {
+                        writeMethod.invoke(this, new Object[]{null});
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public String toString() {

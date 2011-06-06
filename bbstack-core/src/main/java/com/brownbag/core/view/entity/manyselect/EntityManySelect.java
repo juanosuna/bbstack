@@ -15,10 +15,9 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity;
+package com.brownbag.core.view.entity.manyselect;
 
-import com.brownbag.core.dao.EntityDao;
-import com.vaadin.terminal.Sizeable;
+import com.brownbag.core.view.entity.EntityComposition;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
@@ -29,13 +28,14 @@ import javax.annotation.PostConstruct;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityManySelect<T> extends EntityComponent {
+public abstract class EntityManySelect<T> extends EntityComposition<T> {
 
     protected EntityManySelect() {
         super();
     }
 
-    public abstract EntityResultsManySelect getEntityResults();
+    public abstract EntityManySelectResults getEntityResults();
+
     public abstract EntityManySelectQuery getEntityQuery();
 
     @PostConstruct

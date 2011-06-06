@@ -18,7 +18,7 @@
 package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.util.CollectionsUtil;
-import com.brownbag.core.util.MessageSource;
+import com.brownbag.core.view.MessageSource;
 
 import java.util.*;
 

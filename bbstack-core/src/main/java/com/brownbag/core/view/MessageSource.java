@@ -1,4 +1,4 @@
-package com.brownbag.core.util;
+package com.brownbag.core.view;
 
 import com.brownbag.core.view.MainApplication;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;

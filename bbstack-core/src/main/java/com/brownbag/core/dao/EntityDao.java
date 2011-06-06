@@ -17,7 +17,7 @@
 
 package com.brownbag.core.dao;
 
-import com.brownbag.core.entity.IEntity;
+import com.brownbag.core.entity.IdentifiableEntity;
 import com.brownbag.core.util.ReflectionUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -26,7 +26,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -63,7 +65,7 @@ public class EntityDao<T, ID extends Serializable> {
     }
 
     public T getReference(T entity) {
-        Object primaryKey = ((IEntity) entity).getId();
+        Object primaryKey = ((IdentifiableEntity) entity).getId();
         return getEntityManager().getReference(getPersistentClass(), primaryKey);
     }
 

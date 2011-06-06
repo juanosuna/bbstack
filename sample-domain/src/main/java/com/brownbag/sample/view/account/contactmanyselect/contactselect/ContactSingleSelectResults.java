@@ -15,32 +15,31 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.account.contactmanyselect;
+package com.brownbag.sample.view.account.contactmanyselect.contactselect;
 
-import com.brownbag.core.view.entity.manyselect.EntityManySelectQuery;
-import com.brownbag.sample.dao.ContactDao;
-import com.brownbag.sample.entity.Account;
+import com.brownbag.core.view.entity.singleselect.EntitySingleSelectResults;
+import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.entity.Contact;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.util.List;
-
 /**
  * User: Juan
- * Date: 2/8/11
- * Time: 12:01 AM
+ * Date: 5/6/11
+ * Time: 4:04 PM
  */
 @Component
 @Scope("session")
-public class ContactQueryManySelect extends EntityManySelectQuery<Contact, Account> {
-
-    @Resource
-    private ContactDao contactDao;
+public class ContactSingleSelectResults extends EntitySingleSelectResults<Contact> {
 
     @Override
-    public List<Contact> execute() {
-        return contactDao.find(this);
+    public void configureEntityFields(DisplayFields displayFields) {
+        displayFields.setPropertyIds(new String[]{
+                "name",
+                "address.state",
+                "address.country",
+                "lastModified",
+                "lastModifiedBy"
+        });
     }
 }

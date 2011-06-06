@@ -21,7 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class ReferenceEntity implements IEntity, Comparable {
+public abstract class ReferenceEntity implements IdentifiableEntity, Comparable {
 
     public static final String CACHE_REGION = "ReadOnly";
 

@@ -19,6 +19,7 @@ package com.brownbag.core.view.entity;
 
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.assertion.Assert;
+import com.brownbag.core.view.entity.util.ContextMenu;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
@@ -32,7 +33,7 @@ import java.util.Collection;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityResults<T> extends EntityResultsComponent {
+public abstract class EntityResults<T> extends EntityResultsComponent<T> {
 
     @Autowired
     private ContextMenu contextMenu;
@@ -119,6 +120,7 @@ public abstract class EntityResults<T> extends EntityResultsComponent {
         searchImpl(false);
     }
 
+    // todo try removing param
     public void selectionChanged(Property.ValueChangeEvent event) {
         Collection itemIds = (Collection) getEntityTable().getValue();
         if (itemIds.size() == 1) {

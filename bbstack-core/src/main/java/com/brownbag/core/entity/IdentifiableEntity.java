@@ -5,6 +5,6 @@ package com.brownbag.core.entity;
  * Date: 6/5/11
  * Time: 10:20 PM
  */
-public interface IEntity {
+public interface IdentifiableEntity {
     Object getId();
 }

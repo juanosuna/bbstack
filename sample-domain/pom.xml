@@ -77,7 +77,7 @@
                                 <namingstrategy>${hibernate.naming_strategy}</namingstrategy>
                                 <outputfilename>create-schema.${DB}.sql</outputfilename>
                                 <scan-classes>true</scan-classes>
-                                <persistenceunit>sample-persistence</persistenceunit>
+                                <persistenceunit>persistence-unit</persistenceunit>
                             </componentProperties>
                         </configuration>
                         <executions>

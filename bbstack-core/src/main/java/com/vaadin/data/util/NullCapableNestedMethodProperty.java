@@ -1,8 +1,13 @@
 package com.vaadin.data.util;
 
+import com.vaadin.data.util.MethodProperty;
+import com.vaadin.data.util.NestedMethodProperty;
+
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: Juan

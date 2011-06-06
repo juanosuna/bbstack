@@ -70,18 +70,7 @@ public class ContactQuery extends EntityQuery<Contact> {
 
     @Override
     public List<Contact> execute() {
-        List<Contact> contacts = contactDao.find(this);
-
-        return contacts;
-    }
-
-    @Override
-    public void clear() {
-        setLastName(null);
-        setCountry(null);
-        setState(null);
-        setOrderByField(null);
-        setOrderDirection(OrderDirection.ASC);
+        return contactDao.find(this);
     }
 
     @Override

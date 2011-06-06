@@ -15,9 +15,9 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.contact.accountselect;
+package com.brownbag.core.view.entity.manyselect;
 
-import com.brownbag.sample.view.account.AccountQuery;
+import com.brownbag.core.view.entity.EntityQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -28,5 +28,22 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public class AccountQuerySelect extends AccountQuery {
+public abstract class EntityManySelectQuery<T, P> extends EntityQuery<T> {
+
+    private P parent;
+
+    public P getParent() {
+        return parent;
+    }
+
+    public void setParent(P parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public String toString() {
+        return "EntityManySelectQuery{" +
+                "parent='" + parent +
+                '}';
+    }
 }

@@ -18,7 +18,7 @@
 package com.brownbag.core.view.entity;
 
 import com.brownbag.core.dao.EntityDao;
-import com.brownbag.core.util.MessageSource;
+import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.vaadin.data.Property;
@@ -27,7 +27,6 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * User: Juan
@@ -60,7 +59,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         return ReflectionUtil.getGenericArgumentType(getClass());
     }
 
-    MessageSource getUiMessageSource() {
+    protected MessageSource getUiMessageSource() {
         return uiMessageSource;
     }
 
@@ -84,7 +83,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         this.entityDao = entityDao;
     }
 
-    EntityTable getEntityTable() {
+    public EntityTable getEntityTable() {
         return entityTable;
     }
 

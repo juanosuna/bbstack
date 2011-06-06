@@ -70,18 +70,7 @@ public class AccountQuery extends EntityQuery<Account> {
 
     @Override
     public List<Account> execute() {
-        List<Account> accounts = accountDao.find(this);
-
-        return accounts;
-    }
-
-    @Override
-    public void clear() {
-        setName(null);
-        setCountry(null);
-        setState(null);
-        setOrderByField(null);
-        setOrderDirection(OrderDirection.ASC);
+        return accountDao.find(this);
     }
 
     @Override

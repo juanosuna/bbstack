@@ -15,8 +15,9 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity;
+package com.brownbag.sample.view.account.contactmanyselect.contactselect;
 
+import com.brownbag.sample.view.contact.ContactQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -27,29 +28,5 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public abstract class EntityManySelectQuery<T, P> extends EntityQuery<T> {
-
-    private P parent;
-
-    public P getParent() {
-        return parent;
-    }
-
-    public void setParent(P parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public void clear() {
-        setParent(null);
-        setOrderByField(null);
-        setOrderDirection(OrderDirection.ASC);
-    }
-
-    @Override
-    public String toString() {
-        return "EntityManySelectQuery{" +
-                "parent='" + parent +
-                '}';
-    }
+public class ContactQuerySingleSelect extends ContactQuery {
 }

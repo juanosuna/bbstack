@@ -2,7 +2,7 @@ package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.EntitySelect;
+import com.brownbag.core.view.entity.singleselect.EntitySingleSelect;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.terminal.Sizeable;
@@ -23,7 +23,7 @@ public class EntitySelectField extends CustomField {
 
     private TextField field;
 
-    private EntitySelect entitySelect;
+    private EntitySingleSelect entitySingleSelect;
 
     private Button clearButton;
 
@@ -33,10 +33,10 @@ public class EntitySelectField extends CustomField {
     private String propertyId;
 
 
-    public EntitySelectField(EntityForm entityForm, String propertyId, EntitySelect entitySelect) {
+    public EntitySelectField(EntityForm entityForm, String propertyId, EntitySingleSelect entitySingleSelect) {
         this.entityForm = entityForm;
         this.propertyId = propertyId;
-        this.entitySelect = entitySelect;
+        this.entitySingleSelect = entitySingleSelect;
         postConstruct();
     }
 
@@ -66,7 +66,7 @@ public class EntitySelectField extends CustomField {
         clearButton.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
         layout.addComponent(clearButton);
 
-        entitySelect.getEntityResults().addSelectButtonListener(this, "itemSelected");
+        entitySingleSelect.getEntityResults().addSelectButtonListener(this, "itemSelected");
         addClearListener(this, "itemCleared");
 
         setCompositionRoot(layout);
@@ -103,7 +103,7 @@ public class EntitySelectField extends CustomField {
     }
 
     public Object getSelectedValue() {
-        return entitySelect.getEntityResults().getSelectedValue();
+        return entitySingleSelect.getEntityResults().getSelectedValue();
     }
 
     public void open() {
@@ -114,10 +114,10 @@ public class EntitySelectField extends CustomField {
         layout.setSpacing(true);
         layout.setSizeUndefined();
         popupWindow.setModal(true);
-        popupWindow.addComponent(entitySelect);
+        popupWindow.addComponent(entitySingleSelect);
         popupWindow.setClosable(true);
-        entitySelect.getEntityResults().getEntityQuery().clear();
-        entitySelect.getEntityResults().search();
+        entitySingleSelect.getEntityResults().getEntityQuery().clear();
+        entitySingleSelect.getEntityResults().search();
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
     }
 

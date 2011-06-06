@@ -17,8 +17,10 @@
 
 package com.brownbag.core.util;
 
-import org.springframework.beans.BeanUtils;
+import com.vaadin.data.util.BeanItem;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -52,28 +54,19 @@ public class ReflectionUtil {
         }
     }
 
-    public static BeanProperty getBeanProperty(Class clazz, String propertyPath) {
-        String[] properties = propertyPath.split("\\.");
-        Class containingType = null;
-        Class currentPropertyType = clazz;
-        String propertyId;
-        BeanProperty beanProperty = null;
-        for (int i = 0; i < properties.length; i++) {
-            String property = properties[i];
-            Class propertyType = BeanUtils.findPropertyType(property, new Class[]{currentPropertyType});
-            if (propertyType == null || propertyType.equals(Object.class)) {
-                throw new RuntimeException("Invalid property path given for class " + clazz
-                        + ": " + property);
-            } else {
-                containingType = currentPropertyType;
-                currentPropertyType = propertyType;
-                propertyId = properties[i];
-
-                beanProperty = new BeanProperty(beanProperty, propertyId, currentPropertyType, containingType);
-            }
+    public static <T> T newInstance(Class<T> type, Class[] parameterTypes, Object[] args) {
+        try {
+            Constructor constructor = type.getDeclaredConstructor(parameterTypes);
+            constructor.setAccessible(true);
+            return (T) constructor.newInstance(args);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-
-        return beanProperty;
     }
-
 }

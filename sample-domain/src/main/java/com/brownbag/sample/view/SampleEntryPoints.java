@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Component
 @Scope("session")
-public class EntityEntryPoints extends MainTabSheet {
+public class SampleEntryPoints extends MainTabSheet {
     @Resource
     private ContactEntryPoint contactEntryPoint;
 

@@ -15,32 +15,29 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity;
+package com.brownbag.core.view.entity.singleselect;
 
-import com.brownbag.core.util.MethodDelegate;
+import com.brownbag.core.view.entity.EntityResultsComponent;
+import com.brownbag.core.view.entity.util.ContextMenu;
 import com.vaadin.data.Property;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Button;
-import org.aspectj.apache.bcel.classfile.Method;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * User: Juan
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityResultsSelect<T> extends EntityResultsComponent {
+public abstract class EntitySingleSelectResults<T> extends EntityResultsComponent<T> {
 
     @Autowired
     private ContextMenu contextMenu;
 
     private Button selectButton;
 
-    protected EntityResultsSelect() {
+    protected EntitySingleSelectResults() {
         super();
     }
 
@@ -54,6 +51,7 @@ public abstract class EntityResultsSelect<T> extends EntityResultsComponent {
         getButtonPanel().addComponent(selectButton);
     }
 
+    // todo try removing param
     public void selectionChanged(Property.ValueChangeEvent event) {
         Object itemId = getEntityTable().getValue();
         if (itemId instanceof Collection) {
