@@ -74,10 +74,6 @@ public class EntitySelectField extends CustomField {
 
     public void itemSelected() {
         Object selectedValue = getSelectedValue();
-        itemSelected(selectedValue);
-    }
-
-    public void itemSelected(Object selectedValue) {
         Object entity = entityForm.getEntity();
         try {
             BeanUtils.setProperty(entity, propertyId, selectedValue);

@@ -47,7 +47,7 @@
             <td><input type='password' id="j_password" name='j_password'></td>
         </tr>
         <tr>
-            <td align="right"><input type="checkbox" name="_spring_security_remember_me" value="checked"></td>
+            <td align="right"><input type="checkbox" name="_spring_security_remember_me" value="true"></td>
             <td align="left">remember for two weeks</td>
         </tr>
 
