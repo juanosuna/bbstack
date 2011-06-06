@@ -22,7 +22,9 @@ import org.apache.commons.beanutils.PropertyUtils;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * User: Juan
@@ -34,8 +36,9 @@ public abstract class EntityQuery<T> {
     private Integer pageSize = 10;
     private Integer firstResult = 0;
     private Long resultCount = 0L;
-    private Object orderByField;
+    private String orderByPropertyId;
     private OrderDirection orderDirection = OrderDirection.ASC;
+    private Set<String> nonSortablePropertyIds = new HashSet<String>();
 
     public abstract List<T> execute();
 
@@ -79,16 +82,16 @@ public abstract class EntityQuery<T> {
         firstResult = Math.max(resultCount.intValue() - pageSize, 0);
     }
 
-    public String getOrderByField() {
-        if (orderByField == null) {
+    public String getOrderByPropertyId() {
+        if (orderByPropertyId == null) {
             return null;
         } else {
-            return orderByField.toString();
+            return orderByPropertyId.toString();
         }
     }
 
-    public void setOrderByField(Object orderByField) {
-        this.orderByField = orderByField;
+    public void setOrderByPropertyId(String orderByPropertyId) {
+        this.orderByPropertyId = orderByPropertyId;
     }
 
     public OrderDirection getOrderDirection() {
@@ -99,8 +102,20 @@ public abstract class EntityQuery<T> {
         this.orderDirection = orderDirection;
     }
 
+    public boolean isSortable(String propertyId) {
+        return !nonSortablePropertyIds.contains(propertyId);
+    }
+
+    public void setSortable(String propertyId, boolean isSortable) {
+        if (nonSortablePropertyIds.contains(propertyId) && isSortable) {
+            nonSortablePropertyIds.remove(propertyId);
+        } else if (!isSortable) {
+            nonSortablePropertyIds.add(propertyId);
+        }
+    }
+
     public void clear() {
-        setOrderByField(null);
+        setOrderByPropertyId(null);
         setOrderDirection(OrderDirection.ASC);
 
         try {

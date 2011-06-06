@@ -77,11 +77,7 @@ public abstract class EntitySearchForm<T> extends FormComponent<T> {
     }
 
     public void search() {
-        try {
-            getForm().commit();
-            // todo hack, not sure why this is happening , since invalid data is allowed
-        } catch (com.vaadin.data.Validator.InvalidValueException e) {
-        }
+        getForm().commit();
         getEntityResults().search();
     }
 }

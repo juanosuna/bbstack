@@ -98,6 +98,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         form = new ConfigurableForm();
         form.setWriteThrough(true);
         form.setInvalidCommitted(true);
+        form.setInvalidAllowed(true);
         form.setImmediate(true);
         form.setValidationVisibleOnCommit(true);
         form.setStyleName("entityForm");

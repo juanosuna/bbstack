@@ -160,8 +160,7 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
         valuesRemoved(selectedValues.toArray());
     }
 
-    // todo try removing param
-    public void selectionChanged(Property.ValueChangeEvent event) {
+    public void selectionChanged() {
         Collection itemIds = (Collection) getEntityTable().getValue();
         if (itemIds.size() > 0) {
             getEntityTable().addActionHandler(contextMenu);

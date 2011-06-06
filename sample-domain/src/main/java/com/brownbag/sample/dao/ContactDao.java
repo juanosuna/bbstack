@@ -43,7 +43,7 @@ public class ContactDao extends EntityDao<Contact, Long> {
 
         if (query.getResultCount() > 0) {
             List<Long> ids = findImpl(query, false);
-            return findByIds(ids, query.getOrderByField(), query.getOrderDirection());
+            return findByIds(ids, query.getOrderByPropertyId(), query.getOrderDirection());
         } else {
             return new ArrayList<Contact>();
         }
@@ -74,9 +74,9 @@ public class ContactDao extends EntityDao<Contact, Long> {
 
         c.where(b.and(criteria.toArray(new Predicate[0])));
 
-        if (!isCount && contactQuery.getOrderByField() != null) {
+        if (!isCount && contactQuery.getOrderByPropertyId() != null) {
             Path path;
-            String orderField = contactQuery.getOrderByField();
+            String orderField = contactQuery.getOrderByPropertyId();
             if (orderField.equals("address.country")) {
                 path = contact.get("address").get("country");
 
@@ -111,7 +111,7 @@ public class ContactDao extends EntityDao<Contact, Long> {
 
         List<Long> ids = findImpl(query, false);
         if (ids.size() > 0) {
-            return findByIds(ids, query.getOrderByField(), query.getOrderDirection());
+            return findByIds(ids, query.getOrderByPropertyId(), query.getOrderDirection());
         } else {
             return new ArrayList<Contact>();
         }
@@ -144,9 +144,9 @@ public class ContactDao extends EntityDao<Contact, Long> {
 
         c.where(b.and(criteria.toArray(new Predicate[0])));
 
-        if (!isCount && query.getOrderByField() != null) {
+        if (!isCount && query.getOrderByPropertyId() != null) {
             Path path;
-            String orderField = query.getOrderByField();
+            String orderField = query.getOrderByPropertyId();
             if (orderField.equals("address.country")) {
                 path = contact.get("address").get("country");
             } else if (orderField.equals("address.state")) {

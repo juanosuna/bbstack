@@ -120,8 +120,7 @@ public abstract class EntityResults<T> extends EntityResultsComponent<T> {
         searchImpl(false);
     }
 
-    // todo try removing param
-    public void selectionChanged(Property.ValueChangeEvent event) {
+    public void selectionChanged() {
         Collection itemIds = (Collection) getEntityTable().getValue();
         if (itemIds.size() == 1) {
             contextMenu.setActionEnabled("entityResults.edit", true);

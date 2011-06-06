@@ -194,11 +194,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void save() {
-        try {
-            getForm().commit();
-            // todo hack, not sure why this is happening , since invalid data is allowed
-        } catch (com.vaadin.data.Validator.InvalidValueException e) {
-        }
+        getForm().commit();
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         WritableEntity entity = (WritableEntity) beanItem.getBean();
 

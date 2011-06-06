@@ -41,7 +41,7 @@ public class AccountDao extends EntityDao<Account, Long> {
 
         List<Long> ids = findImpl(accountQuery, false);
         if (ids.size() > 0) {
-            return findByIds(ids, accountQuery.getOrderByField(), accountQuery.getOrderDirection());
+            return findByIds(ids, accountQuery.getOrderByPropertyId(), accountQuery.getOrderDirection());
         } else {
             return new ArrayList<Account>();
         }
@@ -74,9 +74,9 @@ public class AccountDao extends EntityDao<Account, Long> {
 
         c.where(b.and(criteria.toArray(new Predicate[0])));
 
-        if (!isCount && accountQuery.getOrderByField() != null) {
+        if (!isCount && accountQuery.getOrderByPropertyId() != null) {
             Path path;
-            String orderField = accountQuery.getOrderByField();
+            String orderField = accountQuery.getOrderByPropertyId();
             if (orderField.equals("address.country")) {
                 path = account.get("address").get("country");
 

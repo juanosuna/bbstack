@@ -51,8 +51,7 @@ public abstract class EntitySingleSelectResults<T> extends EntityResultsComponen
         getButtonPanel().addComponent(selectButton);
     }
 
-    // todo try removing param
-    public void selectionChanged(Property.ValueChangeEvent event) {
+    public void selectionChanged() {
         Object itemId = getEntityTable().getValue();
         if (itemId instanceof Collection) {
             if (((Collection) itemId).size() > 0) {

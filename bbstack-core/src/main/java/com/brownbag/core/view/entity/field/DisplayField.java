@@ -34,7 +34,6 @@ public class DisplayField {
     private String propertyId;
     private String label;
     private Class propertyType;
-    private boolean isDerived;
 
     public DisplayField(DisplayFields displayFields, String propertyId) {
         this.displayFields = displayFields;
@@ -43,7 +42,6 @@ public class DisplayField {
         BeanProperty beanProperty = BeanProperty.getBeanProperty(getDisplayFields().getEntityType(),
                 getPropertyId());
         propertyType = beanProperty.getType();
-        isDerived = beanProperty.isDerived();
     }
 
     public DisplayFields getDisplayFields() {
@@ -56,10 +54,6 @@ public class DisplayField {
 
     public Class getPropertyType() {
         return propertyType;
-    }
-
-    public boolean isDerived() {
-        return isDerived;
     }
 
     public String getLabel() {

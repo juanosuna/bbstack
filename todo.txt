@@ -1,19 +1,20 @@
 boolean checkboxes
-one-to-manys
 multi-select box for searching things like multiple states/countries
-multi- short list with ajax
-high-volume popup wit clear button, editable/non-editable
+custom formatting dates, currency, numbers
+default values
 
-audit trail
+excel export
 
 roles/permissions
 admin, create users, roles, reference entities
 active/deactivate users
 pw reset
+registration
 
-I18N, localization, currency conversion
+audit trail
+
+I18N, localization
 user-specific locale
-
 
 UI Design Improvements
 Fonts

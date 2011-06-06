@@ -49,7 +49,5 @@ public abstract class EntityEntryPoint<T> extends SearchableEntityComposition<T>
 
     private void postConstructRelatedBeans() {
         getEntityForm().postConstruct();
-// todo why not necessary?
-//        getEntityResults().postConstruct();
     }
 }

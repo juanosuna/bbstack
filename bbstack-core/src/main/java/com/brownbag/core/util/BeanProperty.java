@@ -81,19 +81,4 @@ public class BeanProperty {
 
         return true;
     }
-
-    public boolean isDerived() {
-        Class checkClass = containerType;
-
-        while (!checkClass.equals(Object.class)) {
-            try {
-                checkClass.getDeclaredField(id);
-                return false;
-            } catch (NoSuchFieldException e) {
-                checkClass = checkClass.getSuperclass();
-            }
-        }
-
-        return true;
-    }
 }

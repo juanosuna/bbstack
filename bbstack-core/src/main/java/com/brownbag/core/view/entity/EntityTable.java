@@ -84,9 +84,8 @@ public class EntityTable extends Table {
         if (propertyId.length > 1) {
             throw new RuntimeException("Cannot sort on more than one column");
         } else if (propertyId.length == 1) {
-            // todo reevaluate
-            if (!entityResults.getDisplayFields().getField(propertyId[0].toString()).isDerived()) {
-                getEntityQuery().setOrderByField(propertyId[0]);
+            if (getEntityQuery().isSortable(propertyId.toString())) {
+                getEntityQuery().setOrderByPropertyId(propertyId[0].toString());
                 if (ascending[0]) {
                     getEntityQuery().setOrderDirection(EntityQuery.OrderDirection.ASC);
                 } else {
