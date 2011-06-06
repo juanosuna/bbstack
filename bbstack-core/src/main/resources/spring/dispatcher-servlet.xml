@@ -42,7 +42,7 @@
             <props>
                 <prop key="application">com.brownbag.core.view.MainApplication</prop>
                 <prop key="productionMode">true</prop>
-                <prop key="widgetset">com.brownbag.core.view.MyAppWidgetSet</prop>
+                <prop key="widgetset">com.brownbag.core.view.AppWidgetSet</prop>
             </props>
         </property>
     </bean>

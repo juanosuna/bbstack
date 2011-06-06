@@ -112,7 +112,7 @@
                         <configuration>
                             <!-- if you don't specify any modules, the plugin will find them -->
                             <!--<modules>-->
-                            <!--<module>com.brownbag.core.ui.MyAppWidgetSet</module>-->
+                            <!--<module>com.brownbag.core.view.AppWidgetSet</module>-->
                             <!--</modules>-->
                         </configuration>
                         <goals>
