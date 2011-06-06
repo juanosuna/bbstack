@@ -28,10 +28,10 @@
 
     <description>BBStack Web Application</description>
     <groupId>com.brownbag</groupId>
-    <artifactId>bbstack-web</artifactId>
+    <artifactId>sample-web</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>BBSTACK :: WEB APPLICATION</name>
+    <name>SAMPLE WEB APPLICATION</name>
 
     <dependencies>
 
@@ -68,7 +68,7 @@
     </dependencies>
 
     <build>
-        <finalName>bbstack-web</finalName>
+        <finalName>sample-web</finalName>
         <plugins>
 
             <!-- Compiles your custom GWT components with the GWT compiler -->

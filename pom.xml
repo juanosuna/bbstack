@@ -30,7 +30,7 @@
         <module>bbstack-parent</module>
         <module>bbstack-core</module>
         <module>sample-domain</module>
-        <module>bbstack-web</module>
+        <module>sample-web</module>
     </modules>
 
 </project>

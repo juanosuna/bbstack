@@ -13,22 +13,9 @@
     </facet>
     <facet type="gwt" name="GWT">
       <configuration>
-        <setting name="compilerMaxHeapSize" value="128" />
-        <setting name="gwtScriptOutputStyle" value="DETAILED" />
         <setting name="gwtSdkUrl" value="file://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.3.0/" />
         <setting name="gwtSdkType" value="maven" />
         <setting name="webFacet" value="Web" />
-      </configuration>
-    </facet>
-    <facet type="Spring" name="Spring">
-      <configuration>
-        <fileset id="fileset1" name="My Fileset" removed="false">
-          <file>file://$MODULE_DIR$/../sample-domain/src/main/resources/spring/applicationContext-scan.xml</file>
-          <file>file://$MODULE_DIR$/../bbstack-core/src/main/resources/spring/applicationContext-data-access.xml</file>
-          <file>file://$MODULE_DIR$/../bbstack-core/src/main/resources/spring/applicationContext-security.xml</file>
-          <file>file://$MODULE_DIR$/../bbstack-core/src/main/resources/spring/applicationContext-service.xml</file>
-          <file>file://$MODULE_DIR$/../bbstack-core/src/main/resources/spring/dispatcher-servlet.xml</file>
-        </fileset>
       </configuration>
     </facet>
   </component>

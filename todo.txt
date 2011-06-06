@@ -25,4 +25,4 @@ clear icon for many-to-ones
 breadcrumbs
 
 
-mvn deploy:deploy-file -Durl=scp://www.brownbagconsulting.com -DrepositoryId=brownbag -Dfile=bbstack-web.war
+mvn deploy:deploy-file -Durl=scp://www.brownbagconsulting.com -DrepositoryId=brownbag -Dfile=sample-web.war

@@ -5,13 +5,16 @@
       <configuration>
         <setting name="compilerMaxHeapSize" value="128" />
         <setting name="gwtScriptOutputStyle" value="DETAILED" />
+        <setting name="gwtSdkUrl" value="file://" />
       </configuration>
     </facet>
     <facet type="jpa" name="JPA">
       <configuration>
         <setting name="validation-enabled" value="true" />
-        <setting name="provider-name" value="" />
-        <datasource-mapping />
+        <setting name="provider-name" value="Hibernate" />
+        <datasource-mapping>
+          <factory-entry name="persistence-unit" value="fe97d41f-b3c7-47b7-8887-7f7a147475b6" />
+        </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>
     </facet>
@@ -19,9 +22,10 @@
       <configuration>
         <fileset id="fileset1" name="My Fileset" removed="false">
           <file>file://$MODULE_DIR$/../bbstack-core/src/main/resources/spring/applicationContext-data-access.xml</file>
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-data-init.xml</file>
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-display.xml</file>
           <file>file://$MODULE_DIR$/../bbstack-core/src/main/resources/spring/applicationContext-service.xml</file>
+          <file>file://$MODULE_DIR$/../bbstack-core/src/main/resources/spring/applicationContext-security.xml</file>
+          <file>file://$MODULE_DIR$/../bbstack-core/src/main/resources/spring/dispatcher-servlet.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/spring/applicationContext-scan.xml</file>
         </fileset>
       </configuration>
     </facet>
