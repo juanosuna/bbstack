@@ -78,7 +78,7 @@
 
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 
-        <property name="jndiName" value="sample-datasource"/>
+        <property name="jndiName" value="bbstackDatasource"/>
         <property name="defaultObject" ref="developmentDataSource"/>
     </bean>
 
