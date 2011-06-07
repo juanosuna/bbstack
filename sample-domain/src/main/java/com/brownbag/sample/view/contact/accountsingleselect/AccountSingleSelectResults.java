@@ -15,11 +15,11 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.account.contactmanyselect.contactselect;
+package com.brownbag.sample.view.contact.accountsingleselect;
 
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.core.view.entity.singleselect.SingleSelectResults;
-import com.brownbag.sample.entity.Contact;
+import com.brownbag.sample.entity.Account;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public class ContactSingleSelectResults extends SingleSelectResults<Contact> {
+public class AccountSingleSelectResults extends SingleSelectResults<Account> {
 
     @Override
     public void configureFields(DisplayFields displayFields) {

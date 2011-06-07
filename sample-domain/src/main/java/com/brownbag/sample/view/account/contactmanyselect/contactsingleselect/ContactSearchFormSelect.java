@@ -15,7 +15,7 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.account.contactmanyselect.contactselect;
+package com.brownbag.sample.view.account.contactmanyselect.contactsingleselect;
 
 import com.brownbag.sample.view.contact.ContactSearchForm;
 import org.springframework.context.annotation.Scope;

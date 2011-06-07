@@ -20,7 +20,7 @@ package com.brownbag.sample.view.account.contactmanyselect;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.core.view.entity.manyselect.ManySelectResults;
 import com.brownbag.sample.entity.Contact;
-import com.brownbag.sample.view.account.contactmanyselect.contactselect.ContactSingleSelect;
+import com.brownbag.sample.view.account.contactmanyselect.contactsingleselect.ContactSingleSelect;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

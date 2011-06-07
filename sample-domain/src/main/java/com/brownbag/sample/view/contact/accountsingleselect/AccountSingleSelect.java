@@ -15,7 +15,7 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.contact.accountselect;
+package com.brownbag.sample.view.contact.accountsingleselect;
 
 import com.brownbag.core.view.entity.singleselect.SingleSelect;
 import com.brownbag.sample.dao.AccountDao;
