@@ -42,6 +42,8 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     @Resource
     private StateDao stateDao;
 
+    private ListSelect stateField;
+
     @Override
     public String getEntityCaption() {
         return "Contact Search Form";
@@ -51,10 +53,11 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     public void configureFields(FormFields formFields) {
 
         formFields.setPosition("lastName", 0, 0);
-        formFields.setPosition("state", 1, 0);
-        formFields.setPosition("country", 2, 0);
+        formFields.setPosition("country", 1, 0);
+        formFields.setPosition("state", 2, 0);
 
-        ListSelect stateField = new ListSelect();
+        stateField = new ListSelect();
+        stateField.setVisible(false);
         stateField.setMultiSelect(true);
         stateField.setRows(4);
         formFields.getFormField("state").setField(stateField);
@@ -68,5 +71,6 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
         getFormFields().setSelectItems("state", states);
+        stateField.setVisible(states.size() > 0);
     }
 }

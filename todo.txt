@@ -1,5 +1,6 @@
-boolean checkboxes
 multi-select box for searching things like multiple states/countries
+enums
+boolean checkboxes, radio buttons
 custom formatting dates, currency, numbers
 default values
 
