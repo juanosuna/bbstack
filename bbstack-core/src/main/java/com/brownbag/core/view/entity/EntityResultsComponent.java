@@ -18,13 +18,12 @@
 package com.brownbag.core.view.entity;
 
 import com.brownbag.core.dao.EntityDao;
-import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.util.ReflectionUtil;
+import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Runo;
 
 import java.util.Collection;
 
@@ -44,7 +43,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
     private EntityQuery entityQuery;
     private DisplayFields displayFields;
 
-    private Panel buttonPanel;
+    private ComponentContainer buttonRow;
 
     protected EntityResultsComponent() {
     }
@@ -103,54 +102,68 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         this.entityQuery = entityQuery;
     }
 
-    protected Panel getButtonPanel() {
-        return buttonPanel;
+    protected ComponentContainer getButtonRow() {
+        return buttonRow;
     }
 
     public void postConstruct() {
         displayFields = new DisplayFields(getEntityType(), entityMessageSource);
         configureEntityFields(displayFields);
         entityTable = new EntityTable(this);
+        entityTable.setSizeUndefined();
 
-        Panel resultsPanel = new Panel();
-        resultsPanel.addStyleName("borderless");
-        buttonPanel = createButtonPanel();
-        resultsPanel.addComponent(buttonPanel);
-        resultsPanel.addComponent(entityTable);
+        VerticalLayout verticalLayout = new VerticalLayout();
+        setCompositionRoot(verticalLayout);
 
-        setCompositionRoot(resultsPanel);
+        buttonRow = createButtonRow();
+        addComponent(buttonRow);
+        addComponent(entityTable);
+
+        setCustomSizeUndefined();
+
         search();
     }
 
-    private Panel createButtonPanel() {
-        Panel buttonPanel = new Panel();
-        buttonPanel.addStyleName("borderless");
+    @Override
+    public void addComponent(Component c) {
+        ((ComponentContainer) getCompositionRoot()).addComponent(c);
+    }
+
+    public void setCustomWidth(String width) {
+        setWidth(width);
+        getCompositionRoot().setWidth(width);
+    }
+
+    public void setCustomSizeUndefined() {
+        setSizeUndefined();
+        getCompositionRoot().setSizeUndefined();
+    }
+
+    private ComponentContainer createButtonRow() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(false);
         layout.setSpacing(true);
-//        buttonPanel.setSizeUndefined();
-        buttonPanel.addStyleName(Runo.PANEL_LIGHT);
-        buttonPanel.setContent(layout);
 
         Button firstButton = new Button(uiMessageSource.getMessage("entityResults.first"), getEntityTable(), "firstPage");
         firstButton.addStyleName("small default");
-        buttonPanel.addComponent(firstButton);
+        layout.addComponent(firstButton);
 
         Button previousButton = new Button(uiMessageSource.getMessage("entityResults.previous"), getEntityTable(), "previousPage");
         previousButton.addStyleName("small default");
-        buttonPanel.addComponent(previousButton);
+        layout.addComponent(previousButton);
 
         Button nextButton = new Button(uiMessageSource.getMessage("entityResults.next"), getEntityTable(), "nextPage");
         nextButton.addStyleName("small default");
-        buttonPanel.addComponent(nextButton);
+        layout.addComponent(nextButton);
 
         Button lastButton = new Button(uiMessageSource.getMessage("entityResults.last"), getEntityTable(), "lastPage");
         lastButton.addStyleName("small default");
-        buttonPanel.addComponent(lastButton);
+        layout.addComponent(lastButton);
 
         Label pageSizeLabel = new Label(uiMessageSource.getMessage("entityResults.pageSize") + ": ");
+        pageSizeLabel.setSizeUndefined();
         pageSizeLabel.addStyleName("small");
-        buttonPanel.addComponent(pageSizeLabel);
+        layout.addComponent(pageSizeLabel);
         Select pageSizeMenu = new Select();
         pageSizeMenu.addStyleName("small");
         pageSizeMenu.addItem(10);
@@ -162,11 +175,11 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         pageSizeMenu.setFilteringMode(Select.FILTERINGMODE_OFF);
         pageSizeMenu.setNullSelectionAllowed(false);
         pageSizeMenu.setImmediate(true);
-        pageSizeMenu.setWidth(5, UNITS_EM);
+        pageSizeMenu.setWidth(3, UNITS_EM);
         pageSizeMenu.addListener(Property.ValueChangeEvent.class, this, "search");
-        buttonPanel.addComponent(pageSizeMenu);
+        layout.addComponent(pageSizeMenu);
 
-        return buttonPanel;
+        return layout;
     }
 
     public int getPageSize() {

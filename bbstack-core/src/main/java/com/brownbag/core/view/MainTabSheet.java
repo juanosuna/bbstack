@@ -27,6 +27,7 @@ public abstract class MainTabSheet extends TabSheet {
     public abstract List<EntityEntryPoint> getTabEntryPoints();
 
     public void postConstruct() {
+        setSizeUndefined();
         List<EntityEntryPoint> entryPoints = getTabEntryPoints();
         for (EntityEntryPoint entryPoint : entryPoints) {
             addTab(entryPoint);

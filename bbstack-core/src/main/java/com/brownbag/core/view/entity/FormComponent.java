@@ -17,14 +17,14 @@
 
 package com.brownbag.core.view.entity;
 
-import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.util.ReflectionUtil;
+import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
-import com.vaadin.data.util.NullCapableBeanItem;
-import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.NullCapableBeanItem;
+import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
 import com.vaadin.data.util.VaadinPropertyDescriptor;
 import com.vaadin.ui.*;
 
@@ -42,14 +42,13 @@ public abstract class FormComponent<T> extends CustomComponent {
     private MessageSource entityMessageSource;
     private MessageSource uiMessageSource;
 
-    private Panel formPanel;
     private Form form;
     private EntityResultsComponent entityResults;
     private FormFields formFields;
 
-    public abstract void configureFormFields(FormFields formFields);
-
     public abstract String getEntityCaption();
+
+    public abstract void configureFormFields(FormFields formFields);
 
     public Form getForm() {
         return form;
@@ -87,22 +86,14 @@ public abstract class FormComponent<T> extends CustomComponent {
         return formFields;
     }
 
-    public Panel getFormPanel() {
-        return formPanel;
-    }
-
     public void postConstruct() {
-        VerticalLayout layout = new VerticalLayout();
-        formPanel = EntityComposition.createPanel(layout);
-
         form = new ConfigurableForm();
+        form.setSizeUndefined();
         form.setWriteThrough(true);
         form.setInvalidCommitted(true);
-        form.setInvalidAllowed(true);
         form.setImmediate(true);
         form.setValidationVisibleOnCommit(true);
         form.setStyleName("entityForm");
-        formPanel.addComponent(form);
 
         formFields = createFormFields();
         configureFormFields(formFields);
@@ -111,7 +102,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         GridLayout gridLayout = new GridLayout(getFormFields().getColumns(), getFormFields().getRows());
         gridLayout.setMargin(true, false, false, true);
         gridLayout.setSpacing(true);
-        gridLayout.setWidth("100%");
+        gridLayout.setSizeUndefined();
         form.setLayout(gridLayout);
 
         HorizontalLayout footerLayout = createFooterButtons();
@@ -119,7 +110,26 @@ public abstract class FormComponent<T> extends CustomComponent {
         form.getFooter().addComponent(footerLayout);
         form.setCaption(getEntityCaption());
 
-        setCompositionRoot(formPanel);
+        VerticalLayout layout = new VerticalLayout();
+        layout.addComponent(form);
+        setCompositionRoot(layout);
+
+        setCustomSizeUndefined();
+    }
+
+    @Override
+    public void addComponent(Component c) {
+        ((ComponentContainer) getCompositionRoot()).addComponent(c);
+    }
+
+    public void setCustomWidth(String width) {
+        setWidth(width);
+        getCompositionRoot().setWidth(width);
+    }
+
+    public void setCustomSizeUndefined() {
+        setSizeUndefined();
+        getCompositionRoot().setSizeUndefined();
     }
 
     public T getEntity() {

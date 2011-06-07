@@ -66,11 +66,8 @@ public class MainApplication extends Application implements HttpServletRequestLi
 
         setTheme("customTheme");
 
-        VerticalLayout mainLayout = new VerticalLayout();
-        mainLayout.setMargin(true);
-        mainLayout.setSpacing(true);
         Window mainWindow = new Window(messageSource.getMessage("mainApplication.caption"));
-        mainWindow.setContent(mainLayout);
+        mainWindow.getContent().setSizeUndefined();
         setMainWindow(mainWindow);
 
         tabSheet.postConstruct();
@@ -95,7 +92,7 @@ public class MainApplication extends Application implements HttpServletRequestLi
         errorWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) errorWindow.getContent();
         layout.setSpacing(true);
-        layout.setSizeUndefined();
+        layout.setWidth("100%");
         errorWindow.setModal(true);
         Label label = new Label(message);
         label.setContentMode(Label.CONTENT_PREFORMATTED);

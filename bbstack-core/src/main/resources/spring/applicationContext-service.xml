@@ -38,6 +38,8 @@
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>
 
+    <context:component-scan base-package="com.brownbag.core"/>
+
     <context:annotation-config/>
     <aop:aspectj-autoproxy/>
 

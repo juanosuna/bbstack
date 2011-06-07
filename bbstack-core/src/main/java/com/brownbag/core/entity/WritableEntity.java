@@ -90,12 +90,12 @@ public abstract class WritableEntity implements IdentifiableEntity {
         this.lastModified = lastModified;
     }
 
-    public String getLastModifiedBy() {
+    public String getModifiedBy() {
         return modifiedBy;
     }
 
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.modifiedBy = lastModifiedBy;
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
     }
 
     public Date getCreated() {

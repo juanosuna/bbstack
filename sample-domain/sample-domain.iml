@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
-    <facet type="gwt" name="GWT">
-      <configuration>
-        <setting name="compilerMaxHeapSize" value="128" />
-        <setting name="gwtScriptOutputStyle" value="DETAILED" />
-        <setting name="gwtSdkUrl" value="file://" />
-      </configuration>
-    </facet>
     <facet type="jpa" name="JPA">
       <configuration>
         <setting name="validation-enabled" value="true" />
@@ -28,6 +21,9 @@
           <file>file://$MODULE_DIR$/src/main/resources/spring/applicationContext-scan.xml</file>
         </fileset>
       </configuration>
+    </facet>
+    <facet type="gwt" name="GWT">
+      <configuration />
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">

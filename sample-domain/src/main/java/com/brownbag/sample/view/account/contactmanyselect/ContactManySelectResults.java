@@ -45,7 +45,7 @@ public class ContactManySelectResults extends EntityManySelectResults<Contact> {
                 "address.state",
                 "address.country",
                 "lastModified",
-                "lastModifiedBy"
+                "modifiedBy"
         });
     }
 

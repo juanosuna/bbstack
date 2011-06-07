@@ -5,7 +5,6 @@ import com.brownbag.core.view.entity.EntityForm;
 import com.brownbag.core.view.entity.singleselect.EntitySingleSelect;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import org.apache.commons.beanutils.BeanUtils;
@@ -41,6 +40,7 @@ public class EntitySelectField extends CustomField {
     }
 
     public void postConstruct() {
+        setSizeUndefined();
         field = new TextField();
         FormField.initAbstractFieldDefaults(field);
         FormField.initTextFieldDefaults(field);
@@ -50,7 +50,7 @@ public class EntitySelectField extends CustomField {
         layout.addComponent(field);
 
         final Button searchButton = new Button();
-        searchButton.setWidth(Sizeable.UNITS_EM, 3);
+        searchButton.setSizeUndefined();
         searchButton.addStyleName("borderless");
         searchButton.setIcon(new ThemeResource("../chameleon/img/magnifier.png"));
         searchButton.addListener(new Button.ClickListener() {
@@ -61,7 +61,7 @@ public class EntitySelectField extends CustomField {
         layout.addComponent(searchButton);
 
         clearButton = new Button();
-        clearButton.setWidth(Sizeable.UNITS_EM, 3);
+        clearButton.setSizeUndefined();
         clearButton.addStyleName("borderless");
         clearButton.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
         layout.addComponent(clearButton);
@@ -113,6 +113,7 @@ public class EntitySelectField extends CustomField {
         layout.setMargin(true);
         layout.setSpacing(true);
         layout.setSizeUndefined();
+        popupWindow.setSizeUndefined();
         popupWindow.setModal(true);
         popupWindow.addComponent(entitySingleSelect);
         popupWindow.setClosable(true);

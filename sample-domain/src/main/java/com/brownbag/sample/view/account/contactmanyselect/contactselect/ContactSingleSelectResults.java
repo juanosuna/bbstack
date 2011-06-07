@@ -39,7 +39,7 @@ public class ContactSingleSelectResults extends EntitySingleSelectResults<Contac
                 "address.state",
                 "address.country",
                 "lastModified",
-                "lastModifiedBy"
+                "modifiedBy"
         });
     }
 }

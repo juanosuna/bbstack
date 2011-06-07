@@ -18,9 +18,9 @@
 package com.brownbag.core.view.entity;
 
 import com.brownbag.core.view.entity.field.DisplayFields;
-import com.vaadin.data.util.NullCapableBeanItemContainer;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.NullCapableBeanItemContainer;
 import com.vaadin.ui.Table;
 
 import java.text.SimpleDateFormat;

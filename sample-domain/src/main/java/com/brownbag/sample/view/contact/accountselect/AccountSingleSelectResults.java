@@ -39,7 +39,7 @@ public class AccountSingleSelectResults extends EntitySingleSelectResults<Accoun
                 "address.state",
                 "address.country",
                 "lastModified",
-                "lastModifiedBy"
+                "modifiedBy"
         });
     }
 }

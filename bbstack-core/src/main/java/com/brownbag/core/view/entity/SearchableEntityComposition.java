@@ -19,9 +19,6 @@ package com.brownbag.core.view.entity;
 
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 import org.vaadin.jouni.animator.Animator;
 
 import javax.annotation.PostConstruct;
@@ -32,8 +29,8 @@ import javax.annotation.PostConstruct;
  * Time: 5:27 PM
  */
 public abstract class SearchableEntityComposition<T> extends EntityComposition<T> {
-    private Button toggleSearchFormPanelButton;
-    private Animator searchFormPanelAnimator;
+    private Button toggleSearchFormButton;
+    private Animator searchFormAnimator;
 
     protected SearchableEntityComposition() {
         super();
@@ -50,19 +47,15 @@ public abstract class SearchableEntityComposition<T> extends EntityComposition<T
         wireRelationships();
         postConstructRelatedBeans();
 
-        toggleSearchFormPanelButton = new Button(null, this, "toggleSearchFormPanel");
-        toggleSearchFormPanelButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
-        toggleSearchFormPanelButton.addStyleName("borderless");
-        getMainPanel().addComponent(toggleSearchFormPanelButton);
+        toggleSearchFormButton = new Button(null, this, "toggleSearchForm");
+        toggleSearchFormButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
+        toggleSearchFormButton.addStyleName("borderless");
+        addComponent(toggleSearchFormButton);
 
-        Panel searchFormPanel = createPanel(new HorizontalLayout());
-        searchFormPanelAnimator = new Animator(searchFormPanel);
-        searchFormPanel.addComponent(getEntitySearchForm());
-        getMainPanel().addComponent(searchFormPanelAnimator);
-
-        Panel resultsPanel = createPanel(new VerticalLayout());
-        resultsPanel.addComponent(getEntityResults());
-        getMainPanel().addComponent(resultsPanel);
+        searchFormAnimator = new Animator(getEntitySearchForm());
+        searchFormAnimator.setSizeUndefined();
+        addComponent(searchFormAnimator);
+        addComponent(getEntityResults());
     }
 
     private void wireRelationships() {
@@ -76,13 +69,13 @@ public abstract class SearchableEntityComposition<T> extends EntityComposition<T
         getEntitySearchForm().postConstruct();
     }
 
-    public void toggleSearchFormPanel() {
-        searchFormPanelAnimator.setRolledUp(!searchFormPanelAnimator.isRolledUp());
+    public void toggleSearchForm() {
+        searchFormAnimator.setRolledUp(!searchFormAnimator.isRolledUp());
         // todo beautify icons
-        if (searchFormPanelAnimator.isRolledUp()) {
-            toggleSearchFormPanelButton.setIcon(new ThemeResource("../customTheme/icons/expand-icon.png"));
+        if (searchFormAnimator.isRolledUp()) {
+            toggleSearchFormButton.setIcon(new ThemeResource("../customTheme/icons/expand-icon.png"));
         } else {
-            toggleSearchFormPanelButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
+            toggleSearchFormButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
         }
     }
 }

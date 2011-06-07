@@ -1,8 +1,8 @@
 package com.brownbag.core.view.entity.util;
 
-import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.util.MethodDelegate;
 import com.brownbag.core.util.assertion.Assert;
+import com.brownbag.core.view.MessageSource;
 import com.vaadin.event.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

@@ -39,7 +39,7 @@ public class AccountResults extends EntityResults<Account> {
                 "address.state",
                 "address.country",
                 "lastModified",
-                "lastModifiedBy"
+                "modifiedBy"
         });
     }
 }

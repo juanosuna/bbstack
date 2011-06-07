@@ -23,6 +23,7 @@ import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
 import com.vaadin.data.Property;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Select;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -54,7 +55,11 @@ public class ContactSearchForm extends EntitySearchForm<ContactQuery> {
         formFields.setPosition("state", 1, 0);
         formFields.setPosition("country", 2, 0);
 
-        Select stateField = (Select) formFields.getFormField("state").getField();
+        ListSelect stateField = new ListSelect();
+        stateField.setMultiSelect(true);
+        stateField.setRows(4);
+        formFields.getFormField("state").setField(stateField);
+        stateField = (ListSelect) formFields.getFormField("state").getField();
         stateField.getContainerDataSource().removeAllItems();
 
         formFields.addValueChangeListener("country", this, "countryChanged");

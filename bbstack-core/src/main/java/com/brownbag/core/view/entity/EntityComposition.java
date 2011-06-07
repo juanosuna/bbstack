@@ -19,9 +19,9 @@ package com.brownbag.core.view.entity;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.view.MessageSource;
-import com.vaadin.ui.AbstractOrderedLayout;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 import javax.annotation.PostConstruct;
@@ -40,22 +40,19 @@ public abstract class EntityComposition<T> extends CustomComponent {
     @Resource(name = "entityMessageSource")
     private MessageSource entityMessageSource;
 
-    private Panel mainPanel;
-
     protected EntityComposition() {
     }
 
     public abstract EntityDao getEntityDao();
+
     public abstract EntityQuery getEntityQuery();
+
     public abstract EntityResultsComponent getEntityResults();
+
     public abstract String getEntityCaption();
 
     public String getCaption() {
         return getEntityMessageSource().getMessageWithDefault(getEntityCaption());
-    }
-
-    public Panel getMainPanel() {
-        return mainPanel;
     }
 
     public MessageSource getUiMessageSource() {
@@ -72,9 +69,26 @@ public abstract class EntityComposition<T> extends CustomComponent {
         postConstructRelatedBeans();
 
         VerticalLayout layout = new VerticalLayout();
-        mainPanel = createPanel(layout);
+        layout.setMargin(true);
+        layout.setSpacing(true);
+        setCompositionRoot(layout);
 
-        setCompositionRoot(mainPanel);
+        setCustomSizeUndefined();
+    }
+
+    public void setCustomWidth(String width) {
+        setWidth(width);
+        getCompositionRoot().setWidth(width);
+    }
+
+    public void setCustomSizeUndefined() {
+        setSizeUndefined();
+        getCompositionRoot().setSizeUndefined();
+    }
+
+    @Override
+    public void addComponent(Component c) {
+        ((ComponentContainer) getCompositionRoot()).addComponent(c);
     }
 
     private void wireRelationships() {
@@ -86,15 +100,5 @@ public abstract class EntityComposition<T> extends CustomComponent {
 
     private void postConstructRelatedBeans() {
         getEntityResults().postConstruct();
-    }
-
-    protected static Panel createPanel(AbstractOrderedLayout layout) {
-        Panel panel = new Panel();
-        panel.addStyleName("borderless");
-        layout.setMargin(false);
-        layout.setSpacing(true);
-        panel.setContent(layout);
-
-        return panel;
     }
 }

@@ -41,7 +41,7 @@ public class ContactResults extends EntityResults<Contact> {
                 "address.state",
                 "address.country",
                 "lastModified",
-                "lastModifiedBy"
+                "modifiedBy"
         });
 
         displayFields.getField("account.name").setLabel("Account");

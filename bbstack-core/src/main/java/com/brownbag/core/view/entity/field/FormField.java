@@ -104,9 +104,9 @@ public class FormField extends DisplayField {
         Object selectedItem = getSelectedItem();
 
         Field field = getField();
-        Assert.PROGRAMMING.assertTrue(field instanceof Select,
-                "property " + getPropertyId() + " is not a Select field");
-        Select selectField = (Select) field;
+        Assert.PROGRAMMING.assertTrue(field instanceof AbstractSelect,
+                "property " + getPropertyId() + " is not a AbstractSelect field");
+        AbstractSelect selectField = (AbstractSelect) field;
         if (selectField.getContainerDataSource() == null
                 || !(selectField.getContainerDataSource() instanceof BeanItemContainer)) {
             BeanItemContainer container = new BeanItemContainer(getPropertyType(), items);
@@ -131,9 +131,9 @@ public class FormField extends DisplayField {
 
     public Object getSelectedItem() {
         Field field = getField();
-        Assert.PROGRAMMING.assertTrue(field instanceof Select,
-                "property " + getPropertyId() + " is not a Select field");
-        Select selectField = (Select) field;
+        Assert.PROGRAMMING.assertTrue(field instanceof AbstractSelect,
+                "property " + getPropertyId() + " is not a AbstractSelect field");
+        AbstractSelect selectField = (AbstractSelect) field;
         return selectField.getValue();
     }
 
@@ -196,8 +196,12 @@ public class FormField extends DisplayField {
             initDateFieldDefaults((DateField) field);
         }
 
-        if (field instanceof Select) {
-            initSelectDefaults((Select) field);
+        if (field instanceof AbstractSelect) {
+            initAbstractSelectDefaults((AbstractSelect) field);
+
+            if (field instanceof Select) {
+                initSelectDefaults((Select) field);
+            }
 
             EntityDao propertyDao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class,
                     getPropertyType());
@@ -221,11 +225,14 @@ public class FormField extends DisplayField {
         field.setResolution(DateField.RESOLUTION_DAY);
     }
 
-    public static void initSelectDefaults(Select field) {
-        field.setFilteringMode(Select.FILTERINGMODE_CONTAINS);
+    public static void initAbstractSelectDefaults(AbstractSelect field) {
         field.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
         field.setNullSelectionAllowed(true);
         field.setItemCaptionPropertyId(DEFAULT_DISPLAY_PROPERTY_ID);
         field.setImmediate(true);
+    }
+
+    public static void initSelectDefaults(Select field) {
+        field.setFilteringMode(Select.FILTERINGMODE_CONTAINS);
     }
 }

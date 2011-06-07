@@ -19,7 +19,6 @@ package com.brownbag.core.view.entity.singleselect;
 
 import com.brownbag.core.view.entity.EntityResultsComponent;
 import com.brownbag.core.view.entity.util.ContextMenu;
-import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -48,7 +47,7 @@ public abstract class EntitySingleSelectResults<T> extends EntityResultsComponen
         selectButton = new Button(getUiMessageSource().getMessage("entityResults.select"));
         selectButton.setEnabled(false);
         selectButton.addStyleName("small default");
-        getButtonPanel().addComponent(selectButton);
+        getButtonRow().addComponent(selectButton);
     }
 
     public void selectionChanged() {

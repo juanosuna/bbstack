@@ -20,7 +20,6 @@ package com.brownbag.core.view.entity;
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.assertion.Assert;
 import com.brownbag.core.view.entity.util.ContextMenu;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Button;
@@ -70,17 +69,17 @@ public abstract class EntityResults<T> extends EntityResultsComponent<T> {
 
         Button newButton = new Button(getUiMessageSource().getMessage("entityResults.new"), this, "create");
         newButton.addStyleName("small default");
-        getButtonPanel().addComponent(newButton);
+        getButtonRow().addComponent(newButton);
 
         editButton = new Button(getUiMessageSource().getMessage("entityResults.edit"), this, "edit");
         editButton.setEnabled(false);
         editButton.addStyleName("small default");
-        getButtonPanel().addComponent(editButton);
+        getButtonRow().addComponent(editButton);
 
         deleteButton = new Button(getUiMessageSource().getMessage("entityResults.delete"), this, "delete");
         deleteButton.setEnabled(false);
         deleteButton.addStyleName("small default");
-        getButtonPanel().addComponent(deleteButton);
+        getButtonRow().addComponent(deleteButton);
 
         addSelectionChangedListener(this, "selectionChanged");
         contextMenu.addAction("entityResults.edit", this, "edit");

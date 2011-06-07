@@ -22,7 +22,6 @@ import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.EntityResultsComponent;
 import com.brownbag.core.view.entity.singleselect.EntitySingleSelect;
 import com.brownbag.core.view.entity.util.ContextMenu;
-import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -54,11 +53,11 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
         super();
     }
 
-    public abstract EntitySingleSelect getEntitySelect();
+    public abstract String getEntityCaption();
 
     public abstract String getPropertyId();
 
-    public abstract String getEntityCaption();
+    public abstract EntitySingleSelect getEntitySelect();
 
     public EntityDao getEntityDao() {
         return entityDao;
@@ -73,12 +72,12 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
 
         addButton = new Button(getUiMessageSource().getMessage("entityResults.add"), this, "add");
         addButton.addStyleName("small default");
-        getButtonPanel().addComponent(addButton);
+        getButtonRow().addComponent(addButton);
 
         removeButton = new Button(getUiMessageSource().getMessage("entityResults.remove"), this, "remove");
         removeButton.setEnabled(false);
         removeButton.addStyleName("small default");
-        getButtonPanel().addComponent(removeButton);
+        getButtonRow().addComponent(removeButton);
 
         getEntityTable().setMultiSelect(true);
         getEntitySelect().getEntityResults().getEntityTable().setMultiSelect(true);
@@ -95,6 +94,7 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
         layout.setMargin(true);
         layout.setSpacing(true);
         layout.setSizeUndefined();
+        popupWindow.setSizeUndefined();
         popupWindow.setModal(true);
         EntitySingleSelect entitySingleSelect = getEntitySelect();
         entitySingleSelect.getEntityResults().getEntityQuery().clear();

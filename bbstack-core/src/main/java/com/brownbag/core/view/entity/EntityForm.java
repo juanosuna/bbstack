@@ -74,10 +74,11 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         List<EntityManySelect> manySelects = getManySelects();
         if (manySelects.size() > 0) {
             tabSheet = new TabSheet();
+            tabSheet.setSizeUndefined();
             for (EntityManySelect manySelect : manySelects) {
                 tabSheet.addTab(manySelect);
             }
-            getFormPanel().addComponent(tabSheet);
+            addComponent(tabSheet);
         }
     }
 
@@ -162,6 +163,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         layout.setMargin(true);
         layout.setSpacing(true);
         layout.setSizeUndefined();
+        formWindow.setSizeUndefined();
         formWindow.setModal(true);
         formWindow.addComponent(this);
         formWindow.setClosable(true);

@@ -18,8 +18,6 @@
 package com.brownbag.core.view.entity.manyselect;
 
 import com.brownbag.core.view.entity.EntityComposition;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 
 import javax.annotation.PostConstruct;
 
@@ -35,18 +33,14 @@ public abstract class EntityManySelect<T> extends EntityComposition<T> {
     }
 
     public abstract EntityManySelectResults getEntityResults();
-
     public abstract EntityManySelectQuery getEntityQuery();
 
     @PostConstruct
     public void postConstruct() {
         super.postConstruct();
-
         wireRelationships();
 
-        Panel resultsPanel = createPanel(new VerticalLayout());
-        resultsPanel.addComponent(getEntityResults());
-        getMainPanel().addComponent(resultsPanel);
+        addComponent(getEntityResults());
     }
 
     private void wireRelationships() {
