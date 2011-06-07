@@ -17,8 +17,8 @@
 
 package com.brownbag.core.view.entity.manyselect;
 
-import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.view.MainApplication;
+import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.EntityResultsComponent;
 import com.brownbag.core.view.entity.singleselect.EntitySingleSelect;
 import com.brownbag.core.view.entity.util.ContextMenu;
@@ -28,6 +28,7 @@ import com.vaadin.ui.Window;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
@@ -38,16 +39,19 @@ import java.util.Collection;
  */
 public abstract class EntityManySelectResults<T> extends EntityResultsComponent<T> {
 
-    private Window popupWindow;
+    @Resource(name = "uiMessageSource")
+    private MessageSource uiMessageSource;
 
-    private Button addButton;
-    private Button removeButton;
-
+    @Resource(name = "entityMessageSource")
+    private MessageSource entityMessageSource;
 
     @Autowired
     private ContextMenu contextMenu;
 
-    private EntityDao entityDao;
+    private Window popupWindow;
+
+    private Button addButton;
+    private Button removeButton;
 
     protected EntityManySelectResults() {
         super();
@@ -59,25 +63,17 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
 
     public abstract EntitySingleSelect getEntitySelect();
 
-    public EntityDao getEntityDao() {
-        return entityDao;
-    }
-
-    void setEntityDao(EntityDao entityDao) {
-        this.entityDao = entityDao;
-    }
-
     public void postConstruct() {
         super.postConstruct();
 
-        addButton = new Button(getUiMessageSource().getMessage("entityResults.add"), this, "add");
+        addButton = new Button(uiMessageSource.getMessage("entityResults.add"), this, "add");
         addButton.addStyleName("small default");
-        getButtonRow().addComponent(addButton);
+        getResultsButtons().addComponent(addButton);
 
-        removeButton = new Button(getUiMessageSource().getMessage("entityResults.remove"), this, "remove");
+        removeButton = new Button(uiMessageSource.getMessage("entityResults.remove"), this, "remove");
         removeButton.setEnabled(false);
         removeButton.addStyleName("small default");
-        getButtonRow().addComponent(removeButton);
+        getResultsButtons().addComponent(removeButton);
 
         getEntityTable().setMultiSelect(true);
         getEntitySelect().getEntityResults().getEntityTable().setMultiSelect(true);
@@ -88,7 +84,7 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
     }
 
     public void add() {
-        popupWindow = new Window(getEntityMessageSource().getMessageWithDefault(getEntityCaption()));
+        popupWindow = new Window(entityMessageSource.getMessageWithDefault(getEntityCaption()));
         popupWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
         layout.setMargin(true);
@@ -119,7 +115,7 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
     public void valuesSelected(Object... values) {
         Object parent = getEntityQuery().getParent();
         for (Object value : values) {
-            value = entityDao.getReference(value);
+            value = getEntityDao().getReference(value);
             try {
                 BeanUtils.setProperty(value, getPropertyId(), parent);
             } catch (IllegalAccessException e) {
@@ -127,14 +123,14 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
             } catch (InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
-            entityDao.persist(value);
+            getEntityDao().persist(value);
         }
         searchImpl(false);
     }
 
     public void valuesRemoved(Object... values) {
         for (Object value : values) {
-            value = entityDao.getReference(value);
+            value = getEntityDao().getReference(value);
             try {
                 BeanUtils.setProperty(value, getPropertyId(), null);
             } catch (IllegalAccessException e) {
@@ -142,7 +138,7 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
             } catch (InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
-            entityDao.persist(value);
+            getEntityDao().persist(value);
         }
         searchImpl(false);
     }

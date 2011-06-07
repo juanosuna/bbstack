@@ -25,6 +25,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.*;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 
 /**
@@ -34,7 +35,10 @@ import java.util.Collection;
  */
 public abstract class EntityResultsComponent<T> extends CustomComponent {
 
+    @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
+
+    @Resource(name = "entityMessageSource")
     private MessageSource entityMessageSource;
 
     private EntityDao entityDao;
@@ -43,7 +47,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
     private EntityQuery entityQuery;
     private DisplayFields displayFields;
 
-    private ComponentContainer buttonRow;
+    private ComponentContainer resultsButtons;
 
     protected EntityResultsComponent() {
     }
@@ -58,23 +62,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         return ReflectionUtil.getGenericArgumentType(getClass());
     }
 
-    protected MessageSource getUiMessageSource() {
-        return uiMessageSource;
-    }
-
-    void setUiMessageSource(MessageSource uiMessageSource) {
-        this.uiMessageSource = uiMessageSource;
-    }
-
-    public MessageSource getEntityMessageSource() {
-        return entityMessageSource;
-    }
-
-    public void setEntityMessageSource(MessageSource entityMessageSource) {
-        this.entityMessageSource = entityMessageSource;
-    }
-
-    EntityDao getEntityDao() {
+    public EntityDao getEntityDao() {
         return entityDao;
     }
 
@@ -86,7 +74,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         return entityTable;
     }
 
-    EntityForm getEntityForm() {
+    public EntityForm getEntityForm() {
         return entityForm;
     }
 
@@ -102,8 +90,8 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         this.entityQuery = entityQuery;
     }
 
-    protected ComponentContainer getButtonRow() {
-        return buttonRow;
+    public ComponentContainer getResultsButtons() {
+        return resultsButtons;
     }
 
     public void postConstruct() {
@@ -115,8 +103,8 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         VerticalLayout verticalLayout = new VerticalLayout();
         setCompositionRoot(verticalLayout);
 
-        buttonRow = createButtonRow();
-        addComponent(buttonRow);
+        resultsButtons = createResultsButtons();
+        addComponent(resultsButtons);
         addComponent(entityTable);
 
         setCustomSizeUndefined();
@@ -129,17 +117,12 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         ((ComponentContainer) getCompositionRoot()).addComponent(c);
     }
 
-    public void setCustomWidth(String width) {
-        setWidth(width);
-        getCompositionRoot().setWidth(width);
-    }
-
     public void setCustomSizeUndefined() {
         setSizeUndefined();
         getCompositionRoot().setSizeUndefined();
     }
 
-    private ComponentContainer createButtonRow() {
+    private ComponentContainer createResultsButtons() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setMargin(false);
         layout.setSpacing(true);
@@ -208,7 +191,9 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
     }
 
     protected void searchImpl(boolean clearSelection) {
-        getEntityTable().search();
+        getEntityQuery().firstPage();
+        getEntityTable().executeCurrentQuery();
+
         String caption = uiMessageSource.getMessage("entityResults.caption",
                 new Object[]{getEntityQuery().getResultCount()});
         getEntityTable().setCaption(caption);

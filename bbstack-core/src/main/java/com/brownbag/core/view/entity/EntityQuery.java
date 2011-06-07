@@ -54,10 +54,6 @@ public abstract class EntityQuery<T> {
         return firstResult;
     }
 
-    public void setFirstResult(Integer firstResult) {
-        this.firstResult = firstResult;
-    }
-
     public Long getResultCount() {
         return resultCount;
     }

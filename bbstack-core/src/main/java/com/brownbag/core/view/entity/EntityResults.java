@@ -19,12 +19,14 @@ package com.brownbag.core.view.entity;
 
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.assertion.Assert;
+import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.util.ContextMenu;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Button;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 
 /**
@@ -34,11 +36,12 @@ import java.util.Collection;
  */
 public abstract class EntityResults<T> extends EntityResultsComponent<T> {
 
+    @Resource(name = "uiMessageSource")
+    private MessageSource uiMessageSource;
+
     @Autowired
     private ContextMenu contextMenu;
 
-    private EntityForm entityForm;
-    private EntityQuery entityQuery;
     private Button editButton;
     private Button deleteButton;
 
@@ -46,40 +49,24 @@ public abstract class EntityResults<T> extends EntityResultsComponent<T> {
         super();
     }
 
-    EntityForm getEntityForm() {
-        return entityForm;
-    }
-
-    void setEntityForm(EntityForm entityForm) {
-        this.entityForm = entityForm;
-    }
-
-    public EntityQuery getEntityQuery() {
-        return entityQuery;
-    }
-
-    void setEntityQuery(EntityQuery entityQuery) {
-        this.entityQuery = entityQuery;
-    }
-
     public void postConstruct() {
         super.postConstruct();
 
         getEntityTable().setMultiSelect(true);
 
-        Button newButton = new Button(getUiMessageSource().getMessage("entityResults.new"), this, "create");
+        Button newButton = new Button(uiMessageSource.getMessage("entityResults.new"), this, "create");
         newButton.addStyleName("small default");
-        getButtonRow().addComponent(newButton);
+        getResultsButtons().addComponent(newButton);
 
-        editButton = new Button(getUiMessageSource().getMessage("entityResults.edit"), this, "edit");
+        editButton = new Button(uiMessageSource.getMessage("entityResults.edit"), this, "edit");
         editButton.setEnabled(false);
         editButton.addStyleName("small default");
-        getButtonRow().addComponent(editButton);
+        getResultsButtons().addComponent(editButton);
 
-        deleteButton = new Button(getUiMessageSource().getMessage("entityResults.delete"), this, "delete");
+        deleteButton = new Button(uiMessageSource.getMessage("entityResults.delete"), this, "delete");
         deleteButton.setEnabled(false);
         deleteButton.addStyleName("small default");
-        getButtonRow().addComponent(deleteButton);
+        getResultsButtons().addComponent(deleteButton);
 
         addSelectionChangedListener(this, "selectionChanged");
         contextMenu.addAction("entityResults.edit", this, "edit");

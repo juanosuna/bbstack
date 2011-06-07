@@ -55,12 +55,11 @@ public abstract class SearchableEntityComposition<T> extends EntityComposition<T
         searchFormAnimator = new Animator(getEntitySearchForm());
         searchFormAnimator.setSizeUndefined();
         addComponent(searchFormAnimator);
+
         addComponent(getEntityResults());
     }
 
     private void wireRelationships() {
-        getEntitySearchForm().setUiMessageSource(getUiMessageSource());
-        getEntitySearchForm().setEntityMessageSource(getEntityMessageSource());
         getEntitySearchForm().setEntityQuery(getEntityQuery());
         getEntitySearchForm().setEntityResults(getEntityResults());
     }

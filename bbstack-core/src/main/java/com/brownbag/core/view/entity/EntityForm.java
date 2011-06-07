@@ -46,7 +46,6 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     @Autowired
     private Validation validation;
-    private EntityDao entityDao;
 
     private Window formWindow;
     private TabSheet tabSheet;
@@ -55,16 +54,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         return new ArrayList<EntityManySelect>();
     }
 
-    EntityDao getEntityDao() {
-        return entityDao;
-    }
-
-    void setEntityDao(EntityDao entityDao) {
-        this.entityDao = entityDao;
-    }
-
     FormFields createFormFields() {
-        return new FormFields(getEntityType(), getEntityMessageSource(), true);
+        return new FormFields(getEntityType(), entityMessageSource, true);
     }
 
     @Override
@@ -86,15 +77,15 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         HorizontalLayout footerLayout = new HorizontalLayout();
         footerLayout.setSpacing(true);
 
-        Button cancelButton = new Button(getUiMessageSource().getMessage("entityForm.cancel"), this, "cancel");
+        Button cancelButton = new Button(uiMessageSource.getMessage("entityForm.cancel"), this, "cancel");
         cancelButton.addStyleName("default");
         footerLayout.addComponent(cancelButton);
 
-        Button resetButton = new Button(getUiMessageSource().getMessage("entityForm.reset"), this, "reset");
+        Button resetButton = new Button(uiMessageSource.getMessage("entityForm.reset"), this, "reset");
         resetButton.addStyleName("default");
         footerLayout.addComponent(resetButton);
 
-        Button saveButton = new Button(getUiMessageSource().getMessage("entityForm.save"), this, "save");
+        Button saveButton = new Button(uiMessageSource.getMessage("entityForm.save"), this, "save");
         saveButton.addStyleName("default");
         footerLayout.addComponent(saveButton);
 
@@ -103,11 +94,16 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     public void load(WritableEntity entity) {
         clearComponentErrors();
+
         WritableEntity loadedEntity = (WritableEntity) getEntityDao().find(entity.getId());
         BeanItem beanItem = createBeanItem(loadedEntity);
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
         loadManySelects();
+    }
+
+    private EntityDao getEntityDao() {
+        return getEntityResults().getEntityDao();
     }
 
     public void loadManySelects() {

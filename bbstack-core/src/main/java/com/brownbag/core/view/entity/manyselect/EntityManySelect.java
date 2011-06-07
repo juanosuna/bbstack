@@ -32,18 +32,14 @@ public abstract class EntityManySelect<T> extends EntityComposition<T> {
         super();
     }
 
-    public abstract EntityManySelectResults getEntityResults();
     public abstract EntityManySelectQuery getEntityQuery();
+
+    public abstract EntityManySelectResults getEntityResults();
 
     @PostConstruct
     public void postConstruct() {
         super.postConstruct();
-        wireRelationships();
 
         addComponent(getEntityResults());
-    }
-
-    private void wireRelationships() {
-        getEntityResults().setEntityDao(getEntityDao());
     }
 }

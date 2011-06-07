@@ -43,10 +43,6 @@ public class EntityTable extends Table {
         postConstruct();
     }
 
-    public EntityQuery getEntityQuery() {
-        return entityResults.getEntityQuery();
-    }
-
     public DisplayFields getEntityFields() {
         return entityResults.getDisplayFields();
     }
@@ -84,15 +80,14 @@ public class EntityTable extends Table {
         if (propertyId.length > 1) {
             throw new RuntimeException("Cannot sort on more than one column");
         } else if (propertyId.length == 1) {
-            if (getEntityQuery().isSortable(propertyId.toString())) {
-                getEntityQuery().setOrderByPropertyId(propertyId[0].toString());
+            if (entityResults.getEntityQuery().isSortable(propertyId.toString())) {
+                entityResults.getEntityQuery().setOrderByPropertyId(propertyId[0].toString());
                 if (ascending[0]) {
-                    getEntityQuery().setOrderDirection(EntityQuery.OrderDirection.ASC);
+                    entityResults.getEntityQuery().setOrderDirection(EntityQuery.OrderDirection.ASC);
                 } else {
-                    getEntityQuery().setOrderDirection(EntityQuery.OrderDirection.DESC);
+                    entityResults.getEntityQuery().setOrderDirection(EntityQuery.OrderDirection.DESC);
                 }
-                clearSelection();
-                search();
+                firstPage();
             } else {
                 throw new UnsupportedOperationException("No sorting on this column");
             }
@@ -101,35 +96,30 @@ public class EntityTable extends Table {
 
     public void firstPage() {
         clearSelection();
-        getEntityQuery().firstPage();
-        executeQuery();
+        entityResults.getEntityQuery().firstPage();
+        executeCurrentQuery();
     }
 
     public void previousPage() {
         clearSelection();
-        getEntityQuery().previousPage();
-        executeQuery();
+        entityResults.getEntityQuery().previousPage();
+        executeCurrentQuery();
     }
 
     public void nextPage() {
         clearSelection();
-        getEntityQuery().nextPage();
-        executeQuery();
+        entityResults.getEntityQuery().nextPage();
+        executeCurrentQuery();
     }
 
     public void lastPage() {
         clearSelection();
-        getEntityQuery().lastPage();
-        executeQuery();
+        entityResults.getEntityQuery().lastPage();
+        executeCurrentQuery();
     }
 
-    public void search() {
-        getEntityQuery().firstPage();
-        executeQuery();
-    }
-
-    public void executeQuery() {
-        List entities = getEntityQuery().execute();
+    public void executeCurrentQuery() {
+        List entities = entityResults.getEntityQuery().execute();
         getContainerDataSource().removeAllItems();
         for (Object entity : entities) {
             getContainerDataSource().addBean(entity);

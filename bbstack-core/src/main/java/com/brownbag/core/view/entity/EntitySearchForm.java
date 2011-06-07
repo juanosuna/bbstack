@@ -52,11 +52,11 @@ public abstract class EntitySearchForm<T> extends FormComponent<T> {
         HorizontalLayout footerLayout = new HorizontalLayout();
         footerLayout.setSpacing(true);
 
-        Button clear = new Button(getUiMessageSource().getMessage("entitySearchForm.clear"), this, "clear");
+        Button clear = new Button(uiMessageSource.getMessage("entitySearchForm.clear"), this, "clear");
         clear.addStyleName("default");
         footerLayout.addComponent(clear);
 
-        Button search = new Button(getUiMessageSource().getMessage("entitySearchForm.search"), this, "search");
+        Button search = new Button(uiMessageSource.getMessage("entitySearchForm.search"), this, "search");
         search.addStyleName("default");
         footerLayout.addComponent(search);
 
@@ -65,7 +65,7 @@ public abstract class EntitySearchForm<T> extends FormComponent<T> {
 
     @Override
     FormFields createFormFields() {
-        return new FormFields(getEntityType(), getEntityMessageSource(), false);
+        return new FormFields(getEntityType(), entityMessageSource, false);
     }
 
     public void clear() {

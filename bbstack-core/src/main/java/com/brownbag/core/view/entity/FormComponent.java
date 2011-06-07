@@ -28,6 +28,7 @@ import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
 import com.vaadin.data.util.VaadinPropertyDescriptor;
 import com.vaadin.ui.*;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +40,11 @@ import java.util.Map;
  */
 public abstract class FormComponent<T> extends CustomComponent {
 
-    private MessageSource entityMessageSource;
-    private MessageSource uiMessageSource;
+    @Resource
+    protected MessageSource uiMessageSource;
+
+    @Resource
+    protected MessageSource entityMessageSource;
 
     private Form form;
     private EntityResultsComponent entityResults;
@@ -50,24 +54,20 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     public abstract void configureFormFields(FormFields formFields);
 
+    abstract HorizontalLayout createFooterButtons();
+
+    abstract FormFields createFormFields();
+
+    public Class getEntityType() {
+        return ReflectionUtil.getGenericArgumentType(getClass());
+    }
+
     public Form getForm() {
         return form;
     }
 
-    MessageSource getEntityMessageSource() {
-        return entityMessageSource;
-    }
-
-    void setEntityMessageSource(MessageSource entityMessageSource) {
-        this.entityMessageSource = entityMessageSource;
-    }
-
-    MessageSource getUiMessageSource() {
-        return uiMessageSource;
-    }
-
-    void setUiMessageSource(MessageSource uiMessageSource) {
-        this.uiMessageSource = uiMessageSource;
+    public FormFields getFormFields() {
+        return formFields;
     }
 
     EntityResultsComponent getEntityResults() {
@@ -76,14 +76,6 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     void setEntityResults(EntityResultsComponent entityResults) {
         this.entityResults = entityResults;
-    }
-
-    public Class getEntityType() {
-        return ReflectionUtil.getGenericArgumentType(getClass());
-    }
-
-    public FormFields getFormFields() {
-        return formFields;
     }
 
     public void postConstruct() {
@@ -100,7 +92,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         form.setFormFieldFactory(new EntityFieldFactory(formFields));
 
         GridLayout gridLayout = new GridLayout(getFormFields().getColumns(), getFormFields().getRows());
-        gridLayout.setMargin(true, false, false, true);
+        gridLayout.setMargin(true, true, true, true);
         gridLayout.setSpacing(true);
         gridLayout.setSizeUndefined();
         form.setLayout(gridLayout);
@@ -122,11 +114,6 @@ public abstract class FormComponent<T> extends CustomComponent {
         ((ComponentContainer) getCompositionRoot()).addComponent(c);
     }
 
-    public void setCustomWidth(String width) {
-        setWidth(width);
-        getCompositionRoot().setWidth(width);
-    }
-
     public void setCustomSizeUndefined() {
         setSizeUndefined();
         getCompositionRoot().setSizeUndefined();
@@ -141,10 +128,6 @@ public abstract class FormComponent<T> extends CustomComponent {
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
     }
-
-    protected abstract HorizontalLayout createFooterButtons();
-
-    abstract FormFields createFormFields();
 
     protected BeanItem createBeanItem(Object entity) {
         List<String> propertyIds = getFormFields().getPropertyIds();

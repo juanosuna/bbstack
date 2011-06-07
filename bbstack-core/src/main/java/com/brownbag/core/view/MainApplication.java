@@ -38,7 +38,7 @@ public class MainApplication extends Application implements HttpServletRequestLi
     private MessageSource messageSource;
 
     @Autowired
-    private MainTabSheet tabSheet;
+    private MainTabSheet mainTabSheet;
 
     public static MainApplication getInstance() {
         return threadLocal.get();
@@ -70,8 +70,8 @@ public class MainApplication extends Application implements HttpServletRequestLi
         mainWindow.getContent().setSizeUndefined();
         setMainWindow(mainWindow);
 
-        tabSheet.postConstruct();
-        mainWindow.addComponent(tabSheet);
+        mainTabSheet.postConstruct();
+        mainWindow.addComponent(mainTabSheet);
     }
 
     @Override
@@ -93,6 +93,7 @@ public class MainApplication extends Application implements HttpServletRequestLi
         VerticalLayout layout = (VerticalLayout) errorWindow.getContent();
         layout.setSpacing(true);
         layout.setWidth("100%");
+        errorWindow.setWidth("100%");
         errorWindow.setModal(true);
         Label label = new Label(message);
         label.setContentMode(Label.CONTENT_PREFORMATTED);

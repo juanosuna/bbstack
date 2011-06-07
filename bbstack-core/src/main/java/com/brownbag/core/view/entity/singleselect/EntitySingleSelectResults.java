@@ -17,11 +17,13 @@
 
 package com.brownbag.core.view.entity.singleselect;
 
+import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.EntityResultsComponent;
 import com.brownbag.core.view.entity.util.ContextMenu;
 import com.vaadin.ui.Button;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 
 /**
@@ -30,6 +32,9 @@ import java.util.Collection;
  * Time: 5:27 PM
  */
 public abstract class EntitySingleSelectResults<T> extends EntityResultsComponent<T> {
+
+    @Resource(name = "uiMessageSource")
+    private MessageSource uiMessageSource;
 
     @Autowired
     private ContextMenu contextMenu;
@@ -44,10 +49,10 @@ public abstract class EntitySingleSelectResults<T> extends EntityResultsComponen
         super.postConstruct();
         addSelectionChangedListener(this, "selectionChanged");
 
-        selectButton = new Button(getUiMessageSource().getMessage("entityResults.select"));
+        selectButton = new Button(uiMessageSource.getMessage("entityResults.select"));
         selectButton.setEnabled(false);
         selectButton.addStyleName("small default");
-        getButtonRow().addComponent(selectButton);
+        getResultsButtons().addComponent(selectButton);
     }
 
     public void selectionChanged() {

@@ -34,9 +34,6 @@ import javax.annotation.Resource;
  */
 public abstract class EntityComposition<T> extends CustomComponent {
 
-    @Resource(name = "uiMessageSource")
-    private MessageSource uiMessageSource;
-
     @Resource(name = "entityMessageSource")
     private MessageSource entityMessageSource;
 
@@ -52,15 +49,7 @@ public abstract class EntityComposition<T> extends CustomComponent {
     public abstract String getEntityCaption();
 
     public String getCaption() {
-        return getEntityMessageSource().getMessageWithDefault(getEntityCaption());
-    }
-
-    public MessageSource getUiMessageSource() {
-        return uiMessageSource;
-    }
-
-    public MessageSource getEntityMessageSource() {
-        return entityMessageSource;
+        return entityMessageSource.getMessageWithDefault(getEntityCaption());
     }
 
     @PostConstruct
@@ -76,9 +65,13 @@ public abstract class EntityComposition<T> extends CustomComponent {
         setCustomSizeUndefined();
     }
 
-    public void setCustomWidth(String width) {
-        setWidth(width);
-        getCompositionRoot().setWidth(width);
+    private void wireRelationships() {
+        getEntityResults().setEntityDao(getEntityDao());
+        getEntityResults().setEntityQuery(getEntityQuery());
+    }
+
+    private void postConstructRelatedBeans() {
+        getEntityResults().postConstruct();
     }
 
     public void setCustomSizeUndefined() {
@@ -89,16 +82,5 @@ public abstract class EntityComposition<T> extends CustomComponent {
     @Override
     public void addComponent(Component c) {
         ((ComponentContainer) getCompositionRoot()).addComponent(c);
-    }
-
-    private void wireRelationships() {
-        getEntityResults().setUiMessageSource(uiMessageSource);
-        getEntityResults().setEntityMessageSource(entityMessageSource);
-        getEntityResults().setEntityDao(getEntityDao());
-        getEntityResults().setEntityQuery(getEntityQuery());
-    }
-
-    private void postConstructRelatedBeans() {
-        getEntityResults().postConstruct();
     }
 }

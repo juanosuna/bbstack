@@ -42,9 +42,6 @@ public abstract class EntityEntryPoint<T> extends SearchableEntityComposition<T>
 
     private void wireRelationships() {
         getEntityResults().setEntityForm(getEntityForm());
-        getEntityForm().setUiMessageSource(getUiMessageSource());
-        getEntityForm().setEntityMessageSource(getEntityMessageSource());
-        getEntityForm().setEntityDao(getEntityDao());
     }
 
     private void postConstructRelatedBeans() {
