@@ -27,7 +27,7 @@ import com.vaadin.ui.HorizontalLayout;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntitySearchForm<T> extends FormComponent<T> {
+public abstract class SearchForm<T> extends FormComponent<T> {
 
     private EntityQuery entityQuery;
 
@@ -73,11 +73,11 @@ public abstract class EntitySearchForm<T> extends FormComponent<T> {
         BeanItem beanItem = createBeanItem(getEntityQuery());
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
-        getEntityResults().search();
+        getResults().search();
     }
 
     public void search() {
         getForm().commit();
-        getEntityResults().search();
+        getResults().search();
     }
 }

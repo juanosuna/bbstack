@@ -17,8 +17,6 @@
 
 package com.brownbag.core.util;
 
-import com.vaadin.data.util.BeanItem;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;

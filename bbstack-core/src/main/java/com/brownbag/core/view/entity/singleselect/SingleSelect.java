@@ -17,20 +17,20 @@
 
 package com.brownbag.core.view.entity.singleselect;
 
-import com.brownbag.core.view.entity.SearchableEntityComposition;
+import com.brownbag.core.view.entity.SearchFormResults;
 
 /**
  * User: Juan
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntitySingleSelect<T> extends SearchableEntityComposition<T> {
+public abstract class SingleSelect<T> extends SearchFormResults<T> {
 
-    protected EntitySingleSelect() {
+    protected SingleSelect() {
         super();
     }
 
-    public abstract EntitySingleSelectResults getEntityResults();
+    public abstract SingleSelectResults getEntityResults();
 
     public String getEntityCaption() {
         return null;

@@ -15,9 +15,7 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity.manyselect;
-
-import com.brownbag.core.view.entity.EntityComposition;
+package com.brownbag.core.view.entity;
 
 import javax.annotation.PostConstruct;
 
@@ -26,20 +24,27 @@ import javax.annotation.PostConstruct;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityManySelect<T> extends EntityComposition<T> {
+public abstract class EntryPoint<T> extends SearchFormResults<T> {
 
-    protected EntityManySelect() {
+    protected EntryPoint() {
         super();
     }
 
-    public abstract EntityManySelectQuery getEntityQuery();
-
-    public abstract EntityManySelectResults getEntityResults();
+    public abstract EntityForm getEntityForm();
 
     @PostConstruct
     public void postConstruct() {
         super.postConstruct();
 
-        addComponent(getEntityResults());
+        wireRelationships();
+        postConstructRelatedBeans();
+    }
+
+    private void wireRelationships() {
+        getEntityResults().setEntityForm(getEntityForm());
+    }
+
+    private void postConstructRelatedBeans() {
+        getEntityForm().postConstruct();
     }
 }

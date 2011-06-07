@@ -2,7 +2,7 @@ package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.singleselect.EntitySingleSelect;
+import com.brownbag.core.view.entity.singleselect.SingleSelect;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.terminal.ThemeResource;
@@ -18,11 +18,11 @@ import java.util.Collection;
  * Date: 5/12/11
  * Time: 4:45 PM
  */
-public class EntitySelectField extends CustomField {
+public class SelectField extends CustomField {
 
     private TextField field;
 
-    private EntitySingleSelect entitySingleSelect;
+    private SingleSelect singleSelect;
 
     private Button clearButton;
 
@@ -32,10 +32,10 @@ public class EntitySelectField extends CustomField {
     private String propertyId;
 
 
-    public EntitySelectField(EntityForm entityForm, String propertyId, EntitySingleSelect entitySingleSelect) {
+    public SelectField(EntityForm entityForm, String propertyId, SingleSelect singleSelect) {
         this.entityForm = entityForm;
         this.propertyId = propertyId;
-        this.entitySingleSelect = entitySingleSelect;
+        this.singleSelect = singleSelect;
         postConstruct();
     }
 
@@ -66,7 +66,7 @@ public class EntitySelectField extends CustomField {
         clearButton.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
         layout.addComponent(clearButton);
 
-        entitySingleSelect.getEntityResults().addSelectButtonListener(this, "itemSelected");
+        singleSelect.getEntityResults().addSelectButtonListener(this, "itemSelected");
         addClearListener(this, "itemCleared");
 
         setCompositionRoot(layout);
@@ -103,7 +103,7 @@ public class EntitySelectField extends CustomField {
     }
 
     public Object getSelectedValue() {
-        return entitySingleSelect.getEntityResults().getSelectedValue();
+        return singleSelect.getEntityResults().getSelectedValue();
     }
 
     public void open() {
@@ -115,10 +115,10 @@ public class EntitySelectField extends CustomField {
         layout.setSizeUndefined();
         popupWindow.setSizeUndefined();
         popupWindow.setModal(true);
-        popupWindow.addComponent(entitySingleSelect);
+        popupWindow.addComponent(singleSelect);
         popupWindow.setClosable(true);
-        entitySingleSelect.getEntityResults().getEntityQuery().clear();
-        entitySingleSelect.getEntityResults().search();
+        singleSelect.getEntityResults().getEntityQuery().clear();
+        singleSelect.getEntityResults().search();
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
     }
 

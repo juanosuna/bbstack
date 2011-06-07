@@ -18,7 +18,7 @@
 package com.brownbag.core.view.entity.singleselect;
 
 import com.brownbag.core.view.MessageSource;
-import com.brownbag.core.view.entity.EntityResultsComponent;
+import com.brownbag.core.view.entity.ResultsComponent;
 import com.brownbag.core.view.entity.util.ContextMenu;
 import com.vaadin.ui.Button;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ import java.util.Collection;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntitySingleSelectResults<T> extends EntityResultsComponent<T> {
+public abstract class SingleSelectResults<T> extends ResultsComponent<T> {
 
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
@@ -41,7 +41,7 @@ public abstract class EntitySingleSelectResults<T> extends EntityResultsComponen
 
     private Button selectButton;
 
-    protected EntitySingleSelectResults() {
+    protected SingleSelectResults() {
         super();
     }
 
@@ -56,22 +56,22 @@ public abstract class EntitySingleSelectResults<T> extends EntityResultsComponen
     }
 
     public void selectionChanged() {
-        Object itemId = getEntityTable().getValue();
+        Object itemId = getResultsTable().getValue();
         if (itemId instanceof Collection) {
             if (((Collection) itemId).size() > 0) {
                 selectButton.setEnabled(true);
-                getEntityTable().addActionHandler(contextMenu);
+                getResultsTable().addActionHandler(contextMenu);
             } else {
                 selectButton.setEnabled(false);
-                getEntityTable().removeActionHandler(contextMenu);
+                getResultsTable().removeActionHandler(contextMenu);
             }
         } else {
             if (itemId != null) {
                 selectButton.setEnabled(true);
-                getEntityTable().addActionHandler(contextMenu);
+                getResultsTable().addActionHandler(contextMenu);
             } else {
                 selectButton.setEnabled(false);
-                getEntityTable().removeActionHandler(contextMenu);
+                getResultsTable().removeActionHandler(contextMenu);
             }
         }
     }

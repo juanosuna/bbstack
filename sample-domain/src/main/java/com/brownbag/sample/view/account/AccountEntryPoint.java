@@ -17,7 +17,7 @@
 
 package com.brownbag.sample.view.account;
 
-import com.brownbag.core.view.entity.EntityEntryPoint;
+import com.brownbag.core.view.entity.EntryPoint;
 import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
 import org.springframework.context.annotation.Scope;
@@ -27,7 +27,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("session")
-public class AccountEntryPoint extends EntityEntryPoint<Account> {
+public class AccountEntryPoint extends EntryPoint<Account> {
 
     @Resource
     private AccountDao accountDao;

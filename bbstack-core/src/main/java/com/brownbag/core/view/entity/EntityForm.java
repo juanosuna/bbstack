@@ -24,7 +24,7 @@ import com.brownbag.core.validation.Validation;
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
-import com.brownbag.core.view.entity.manyselect.EntityManySelect;
+import com.brownbag.core.view.entity.manyselect.ManySelect;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
@@ -50,8 +50,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     private Window formWindow;
     private TabSheet tabSheet;
 
-    public List<EntityManySelect> getManySelects() {
-        return new ArrayList<EntityManySelect>();
+    public List<ManySelect> getManySelects() {
+        return new ArrayList<ManySelect>();
     }
 
     FormFields createFormFields() {
@@ -62,11 +62,11 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
-        List<EntityManySelect> manySelects = getManySelects();
+        List<ManySelect> manySelects = getManySelects();
         if (manySelects.size() > 0) {
             tabSheet = new TabSheet();
             tabSheet.setSizeUndefined();
-            for (EntityManySelect manySelect : manySelects) {
+            for (ManySelect manySelect : manySelects) {
                 tabSheet.addTab(manySelect);
             }
             addComponent(tabSheet);
@@ -103,13 +103,13 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     private EntityDao getEntityDao() {
-        return getEntityResults().getEntityDao();
+        return getResults().getEntityDao();
     }
 
     public void loadManySelects() {
-        List<EntityManySelect> manySelects = getManySelects();
+        List<ManySelect> manySelects = getManySelects();
         if (manySelects.size() > 0) {
-            for (EntityManySelect manySelect : manySelects) {
+            for (ManySelect manySelect : manySelects) {
                 Object parent = getEntity();
                 manySelect.getEntityQuery().clear();
                 manySelect.getEntityQuery().setParent(parent);
@@ -168,7 +168,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void close() {
-        getEntityResults().search();
+        getResults().search();
         MainApplication.getInstance().getMainWindow().removeWindow(formWindow);
         formWindow = null;
     }

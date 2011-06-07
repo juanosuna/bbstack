@@ -17,7 +17,7 @@
 
 package com.brownbag.sample.view.account.contactmanyselect;
 
-import com.brownbag.core.view.entity.manyselect.EntityManySelect;
+import com.brownbag.core.view.entity.manyselect.ManySelect;
 import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Contact;
 import org.springframework.context.annotation.Scope;
@@ -27,7 +27,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("session")
-public class ContactManySelect extends EntityManySelect<Contact> {
+public class ContactManySelect extends ManySelect<Contact> {
 
     @Resource
     private ContactDao contactDao;

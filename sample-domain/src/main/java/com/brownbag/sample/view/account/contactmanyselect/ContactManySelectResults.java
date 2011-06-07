@@ -17,8 +17,8 @@
 
 package com.brownbag.sample.view.account.contactmanyselect;
 
-import com.brownbag.core.view.entity.manyselect.EntityManySelectResults;
 import com.brownbag.core.view.entity.field.DisplayFields;
+import com.brownbag.core.view.entity.manyselect.ManySelectResults;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.view.account.contactmanyselect.contactselect.ContactSingleSelect;
 import org.springframework.context.annotation.Scope;
@@ -33,7 +33,7 @@ import javax.annotation.Resource;
  */
 @Component
 @Scope("session")
-public class ContactManySelectResults extends EntityManySelectResults<Contact> {
+public class ContactManySelectResults extends ManySelectResults<Contact> {
 
     @Resource
     private ContactSingleSelect contactSelect;

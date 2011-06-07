@@ -18,8 +18,8 @@
 package com.brownbag.sample.view.contact;
 
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.field.EntitySelectField;
 import com.brownbag.core.view.entity.field.FormFields;
+import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.entity.Country;
@@ -71,8 +71,8 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setSelectItems("address.state", new ArrayList());
         formFields.addValueChangeListener("address.country", this, "countryChanged");
 
-        EntitySelectField entitySelectField = new EntitySelectField(this, "account", accountSelect);
-        formFields.setField("account.name", entitySelectField);
+        SelectField selectField = new SelectField(this, "account", accountSelect);
+        formFields.setField("account.name", selectField);
     }
 
     public void countryChanged(Property.ValueChangeEvent event) {

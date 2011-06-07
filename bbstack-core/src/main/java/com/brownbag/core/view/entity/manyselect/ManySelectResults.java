@@ -19,8 +19,8 @@ package com.brownbag.core.view.entity.manyselect;
 
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.MessageSource;
-import com.brownbag.core.view.entity.EntityResultsComponent;
-import com.brownbag.core.view.entity.singleselect.EntitySingleSelect;
+import com.brownbag.core.view.entity.ResultsComponent;
+import com.brownbag.core.view.entity.singleselect.SingleSelect;
 import com.brownbag.core.view.entity.util.ContextMenu;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
@@ -37,7 +37,7 @@ import java.util.Collection;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityManySelectResults<T> extends EntityResultsComponent<T> {
+public abstract class ManySelectResults<T> extends ResultsComponent<T> {
 
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
@@ -53,7 +53,7 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
     private Button addButton;
     private Button removeButton;
 
-    protected EntityManySelectResults() {
+    protected ManySelectResults() {
         super();
     }
 
@@ -61,7 +61,7 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
 
     public abstract String getPropertyId();
 
-    public abstract EntitySingleSelect getEntitySelect();
+    public abstract SingleSelect getEntitySelect();
 
     public void postConstruct() {
         super.postConstruct();
@@ -75,8 +75,8 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
         removeButton.addStyleName("small default");
         getResultsButtons().addComponent(removeButton);
 
-        getEntityTable().setMultiSelect(true);
-        getEntitySelect().getEntityResults().getEntityTable().setMultiSelect(true);
+        getResultsTable().setMultiSelect(true);
+        getEntitySelect().getEntityResults().getResultsTable().setMultiSelect(true);
 
         contextMenu.addAction("entityResults.remove", this, "remove");
         contextMenu.setActionEnabled("entityResults.remove", true);
@@ -92,10 +92,10 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
         layout.setSizeUndefined();
         popupWindow.setSizeUndefined();
         popupWindow.setModal(true);
-        EntitySingleSelect entitySingleSelect = getEntitySelect();
-        entitySingleSelect.getEntityResults().getEntityQuery().clear();
-        entitySingleSelect.getEntityResults().search();
-        popupWindow.addComponent(entitySingleSelect);
+        SingleSelect singleSelect = getEntitySelect();
+        singleSelect.getEntityResults().getEntityQuery().clear();
+        singleSelect.getEntityResults().search();
+        popupWindow.addComponent(singleSelect);
         popupWindow.setClosable(true);
         getEntitySelect().getEntityResults().addSelectButtonListener(this, "itemsSelected");
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
@@ -108,8 +108,8 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
     }
 
     @Override
-    public EntityManySelectQuery getEntityQuery() {
-        return (EntityManySelectQuery) super.getEntityQuery();
+    public ManySelectQuery getEntityQuery() {
+        return (ManySelectQuery) super.getEntityQuery();
     }
 
     public void valuesSelected(Object... values) {
@@ -157,12 +157,12 @@ public abstract class EntityManySelectResults<T> extends EntityResultsComponent<
     }
 
     public void selectionChanged() {
-        Collection itemIds = (Collection) getEntityTable().getValue();
+        Collection itemIds = (Collection) getResultsTable().getValue();
         if (itemIds.size() > 0) {
-            getEntityTable().addActionHandler(contextMenu);
+            getResultsTable().addActionHandler(contextMenu);
             removeButton.setEnabled(true);
         } else {
-            getEntityTable().removeActionHandler(contextMenu);
+            getResultsTable().removeActionHandler(contextMenu);
             removeButton.setEnabled(false);
         }
     }

@@ -17,8 +17,8 @@
 
 package com.brownbag.sample.view.account.contactmanyselect.contactselect;
 
-import com.brownbag.core.view.entity.singleselect.EntitySingleSelectResults;
 import com.brownbag.core.view.entity.field.DisplayFields;
+import com.brownbag.core.view.entity.singleselect.SingleSelectResults;
 import com.brownbag.sample.entity.Contact;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public class ContactSingleSelectResults extends EntitySingleSelectResults<Contact> {
+public class ContactSingleSelectResults extends SingleSelectResults<Contact> {
 
     @Override
     public void configureEntityFields(DisplayFields displayFields) {

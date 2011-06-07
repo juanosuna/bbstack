@@ -17,7 +17,7 @@
 
 package com.brownbag.sample.view.account;
 
-import com.brownbag.core.view.entity.EntitySearchForm;
+import com.brownbag.core.view.entity.SearchForm;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Country;
@@ -37,7 +37,7 @@ import java.util.List;
  */
 @Component
 @Scope("session")
-public class AccountSearchForm extends EntitySearchForm<AccountQuery> {
+public class AccountSearchForm extends SearchForm<AccountQuery> {
 
     @Resource
     private StateDao stateDao;

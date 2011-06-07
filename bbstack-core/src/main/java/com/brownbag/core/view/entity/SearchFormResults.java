@@ -28,17 +28,17 @@ import javax.annotation.PostConstruct;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class SearchableEntityComposition<T> extends EntityComposition<T> {
+public abstract class SearchFormResults<T> extends EntityComponent<T> {
     private Button toggleSearchFormButton;
     private Animator searchFormAnimator;
 
-    protected SearchableEntityComposition() {
+    protected SearchFormResults() {
         super();
     }
 
-    public abstract EntitySearchForm getEntitySearchForm();
+    public abstract SearchForm getEntitySearchForm();
 
-    public abstract EntityResultsComponent getEntityResults();
+    public abstract ResultsComponent getEntityResults();
 
     @PostConstruct
     public void postConstruct() {
@@ -61,7 +61,7 @@ public abstract class SearchableEntityComposition<T> extends EntityComposition<T
 
     private void wireRelationships() {
         getEntitySearchForm().setEntityQuery(getEntityQuery());
-        getEntitySearchForm().setEntityResults(getEntityResults());
+        getEntitySearchForm().setResults(getEntityResults());
     }
 
     private void postConstructRelatedBeans() {

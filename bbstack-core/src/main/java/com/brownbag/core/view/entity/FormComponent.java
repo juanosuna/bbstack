@@ -47,7 +47,7 @@ public abstract class FormComponent<T> extends CustomComponent {
     protected MessageSource entityMessageSource;
 
     private Form form;
-    private EntityResultsComponent entityResults;
+    private ResultsComponent results;
     private FormFields formFields;
 
     public abstract String getEntityCaption();
@@ -70,12 +70,12 @@ public abstract class FormComponent<T> extends CustomComponent {
         return formFields;
     }
 
-    EntityResultsComponent getEntityResults() {
-        return entityResults;
+    ResultsComponent getResults() {
+        return results;
     }
 
-    void setEntityResults(EntityResultsComponent entityResults) {
-        this.entityResults = entityResults;
+    void setResults(ResultsComponent results) {
+        this.results = results;
     }
 
     public void postConstruct() {

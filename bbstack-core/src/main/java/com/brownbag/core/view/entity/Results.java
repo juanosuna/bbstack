@@ -34,7 +34,7 @@ import java.util.Collection;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityResults<T> extends EntityResultsComponent<T> {
+public abstract class Results<T> extends ResultsComponent<T> {
 
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
@@ -45,14 +45,14 @@ public abstract class EntityResults<T> extends EntityResultsComponent<T> {
     private Button editButton;
     private Button deleteButton;
 
-    protected EntityResults() {
+    protected Results() {
         super();
     }
 
     public void postConstruct() {
         super.postConstruct();
 
-        getEntityTable().setMultiSelect(true);
+        getResultsTable().setMultiSelect(true);
 
         Button newButton = new Button(uiMessageSource.getMessage("entityResults.new"), this, "create");
         newButton.addStyleName("small default");
@@ -72,32 +72,32 @@ public abstract class EntityResults<T> extends EntityResultsComponent<T> {
         contextMenu.addAction("entityResults.edit", this, "edit");
         contextMenu.addAction("entityResults.delete", this, "delete");
 
-        getEntityTable().addListener(new DoubleClickListener());
+        getResultsTable().addListener(new DoubleClickListener());
     }
 
     public void create() {
-        getEntityForm().setEntityResults(this);
+        getEntityForm().setResults(this);
         getEntityForm().create();
     }
 
     public void edit() {
-        Collection itemIds = (Collection) getEntityTable().getValue();
+        Collection itemIds = (Collection) getResultsTable().getValue();
         Assert.PROGRAMMING.assertTrue(itemIds.size() == 1);
         edit(itemIds.iterator().next());
     }
 
     public void edit(Object itemId) {
 //        getEntityTable().setValue(itemId);
-        BeanItem beanItem = getEntityTable().getContainerDataSource().getItem(itemId);
-        getEntityForm().setEntityResults(this);
+        BeanItem beanItem = getResultsTable().getContainerDataSource().getItem(itemId);
+        getEntityForm().setResults(this);
         getEntityForm().load((WritableEntity) beanItem.getBean());
         getEntityForm().open();
     }
 
     public void delete() {
-        Collection itemIds = (Collection) getEntityTable().getValue();
+        Collection itemIds = (Collection) getResultsTable().getValue();
         for (Object itemId : itemIds) {
-            BeanItem beanItem = getEntityTable().getContainerDataSource().getItem(itemId);
+            BeanItem beanItem = getResultsTable().getContainerDataSource().getItem(itemId);
             Object entity = beanItem.getBean();
             getEntityDao().remove(entity);
         }
@@ -107,23 +107,23 @@ public abstract class EntityResults<T> extends EntityResultsComponent<T> {
     }
 
     public void selectionChanged() {
-        Collection itemIds = (Collection) getEntityTable().getValue();
+        Collection itemIds = (Collection) getResultsTable().getValue();
         if (itemIds.size() == 1) {
             contextMenu.setActionEnabled("entityResults.edit", true);
             contextMenu.setActionEnabled("entityResults.delete", true);
-            getEntityTable().removeActionHandler(contextMenu);
-            getEntityTable().addActionHandler(contextMenu);
+            getResultsTable().removeActionHandler(contextMenu);
+            getResultsTable().addActionHandler(contextMenu);
             editButton.setEnabled(true);
             deleteButton.setEnabled(true);
         } else if (itemIds.size() > 1) {
             contextMenu.setActionEnabled("entityResults.edit", false);
             contextMenu.setActionEnabled("entityResults.delete", true);
-            getEntityTable().removeActionHandler(contextMenu);
-            getEntityTable().addActionHandler(contextMenu);
+            getResultsTable().removeActionHandler(contextMenu);
+            getResultsTable().addActionHandler(contextMenu);
             editButton.setEnabled(false);
             deleteButton.setEnabled(true);
         } else {
-            getEntityTable().removeActionHandler(contextMenu);
+            getResultsTable().removeActionHandler(contextMenu);
             editButton.setEnabled(false);
             deleteButton.setEnabled(false);
         }

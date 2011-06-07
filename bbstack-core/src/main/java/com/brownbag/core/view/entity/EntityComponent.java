@@ -32,19 +32,19 @@ import javax.annotation.Resource;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityComposition<T> extends CustomComponent {
+public abstract class EntityComponent<T> extends CustomComponent {
 
     @Resource(name = "entityMessageSource")
     private MessageSource entityMessageSource;
 
-    protected EntityComposition() {
+    protected EntityComponent() {
     }
 
     public abstract EntityDao getEntityDao();
 
     public abstract EntityQuery getEntityQuery();
 
-    public abstract EntityResultsComponent getEntityResults();
+    public abstract ResultsComponent getEntityResults();
 
     public abstract String getEntityCaption();
 

@@ -50,8 +50,8 @@
 }
 
 .v-tabsheet-tabitem {
-    background-color: rgb(5,134,252) !important;
-    color: rgb(247,248,249) !important;
+    background-color: rgb(5, 134, 252) !important;
+    color: rgb(247, 248, 249) !important;
 }
 
 .v-tabsheet-tabitem-selected .v-caption {

@@ -18,8 +18,8 @@
 package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.manyselect.EntityManySelect;
 import com.brownbag.core.view.entity.field.FormFields;
+import com.brownbag.core.view.entity.manyselect.ManySelect;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Country;
@@ -73,8 +73,8 @@ public class AccountForm extends EntityForm<Account> {
     }
 
     @Override
-    public List<EntityManySelect> getManySelects() {
-        List<EntityManySelect> manySelects = new ArrayList<EntityManySelect>();
+    public List<ManySelect> getManySelects() {
+        List<ManySelect> manySelects = new ArrayList<ManySelect>();
         manySelects.add(contactManySelect);
 
         return manySelects;

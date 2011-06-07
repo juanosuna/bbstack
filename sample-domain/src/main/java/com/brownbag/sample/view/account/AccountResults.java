@@ -17,7 +17,7 @@
 
 package com.brownbag.sample.view.account;
 
-import com.brownbag.core.view.entity.EntityResults;
+import com.brownbag.core.view.entity.Results;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.entity.Account;
 import org.springframework.context.annotation.Scope;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public class AccountResults extends EntityResults<Account> {
+public class AccountResults extends Results<Account> {
 
     @Override
     public void configureEntityFields(DisplayFields displayFields) {

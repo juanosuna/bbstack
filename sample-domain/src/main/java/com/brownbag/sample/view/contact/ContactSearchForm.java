@@ -17,14 +17,13 @@
 
 package com.brownbag.sample.view.contact;
 
-import com.brownbag.core.view.entity.EntitySearchForm;
+import com.brownbag.core.view.entity.SearchForm;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
 import com.vaadin.data.Property;
 import com.vaadin.ui.ListSelect;
-import com.vaadin.ui.Select;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +37,7 @@ import java.util.List;
  */
 @Component
 @Scope("session")
-public class ContactSearchForm extends EntitySearchForm<ContactQuery> {
+public class ContactSearchForm extends SearchForm<ContactQuery> {
 
     @Resource
     private StateDao stateDao;

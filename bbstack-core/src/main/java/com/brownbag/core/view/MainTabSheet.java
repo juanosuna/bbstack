@@ -17,19 +17,19 @@
 
 package com.brownbag.core.view;
 
-import com.brownbag.core.view.entity.EntityEntryPoint;
+import com.brownbag.core.view.entity.EntryPoint;
 import com.vaadin.ui.TabSheet;
 
 import java.util.List;
 
 public abstract class MainTabSheet extends TabSheet {
 
-    public abstract List<EntityEntryPoint> getTabEntryPoints();
+    public abstract List<EntryPoint> getTabEntryPoints();
 
     public void postConstruct() {
         setSizeUndefined();
-        List<EntityEntryPoint> entryPoints = getTabEntryPoints();
-        for (EntityEntryPoint entryPoint : entryPoints) {
+        List<EntryPoint> entryPoints = getTabEntryPoints();
+        for (EntryPoint entryPoint : entryPoints) {
             addTab(entryPoint);
         }
 
@@ -40,8 +40,8 @@ public abstract class MainTabSheet extends TabSheet {
 
         @Override
         public void selectedTabChange(SelectedTabChangeEvent event) {
-            EntityEntryPoint entityEntryPoint = (EntityEntryPoint) getSelectedTab();
-            entityEntryPoint.getEntityResults().search();
+            EntryPoint entryPoint = (EntryPoint) getSelectedTab();
+            entryPoint.getEntityResults().search();
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.brownbag.sample.view;
 
 import com.brownbag.core.view.MainTabSheet;
-import com.brownbag.core.view.entity.EntityEntryPoint;
+import com.brownbag.core.view.entity.EntryPoint;
 import com.brownbag.sample.view.account.AccountEntryPoint;
 import com.brownbag.sample.view.contact.ContactEntryPoint;
 import org.springframework.context.annotation.Scope;
@@ -26,11 +26,11 @@ public class SampleEntryPoints extends MainTabSheet {
     private AccountEntryPoint accountEntryPoint;
 
     @Override
-    public List<EntityEntryPoint> getTabEntryPoints() {
-        List<EntityEntryPoint> entityEntryPoints = new ArrayList<EntityEntryPoint>();
-        entityEntryPoints.add(contactEntryPoint);
-        entityEntryPoints.add(accountEntryPoint);
+    public List<EntryPoint> getTabEntryPoints() {
+        List<EntryPoint> entryPoints = new ArrayList<EntryPoint>();
+        entryPoints.add(contactEntryPoint);
+        entryPoints.add(accountEntryPoint);
 
-        return entityEntryPoints;
+        return entryPoints;
     }
 }

@@ -33,7 +33,7 @@ import java.util.Collection;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntityResultsComponent<T> extends CustomComponent {
+public abstract class ResultsComponent<T> extends CustomComponent {
 
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
@@ -42,14 +42,14 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
     private MessageSource entityMessageSource;
 
     private EntityDao entityDao;
-    private EntityTable entityTable;
+    private ResultsTable resultsTable;
     private EntityForm entityForm;
     private EntityQuery entityQuery;
     private DisplayFields displayFields;
 
     private ComponentContainer resultsButtons;
 
-    protected EntityResultsComponent() {
+    protected ResultsComponent() {
     }
 
     public abstract void configureEntityFields(DisplayFields displayFields);
@@ -70,8 +70,8 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         this.entityDao = entityDao;
     }
 
-    public EntityTable getEntityTable() {
-        return entityTable;
+    public ResultsTable getResultsTable() {
+        return resultsTable;
     }
 
     public EntityForm getEntityForm() {
@@ -97,15 +97,15 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
     public void postConstruct() {
         displayFields = new DisplayFields(getEntityType(), entityMessageSource);
         configureEntityFields(displayFields);
-        entityTable = new EntityTable(this);
-        entityTable.setSizeUndefined();
+        resultsTable = new ResultsTable(this);
+        resultsTable.setSizeUndefined();
 
         VerticalLayout verticalLayout = new VerticalLayout();
         setCompositionRoot(verticalLayout);
 
         resultsButtons = createResultsButtons();
         addComponent(resultsButtons);
-        addComponent(entityTable);
+        addComponent(resultsTable);
 
         setCustomSizeUndefined();
 
@@ -127,19 +127,19 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         layout.setMargin(false);
         layout.setSpacing(true);
 
-        Button firstButton = new Button(uiMessageSource.getMessage("entityResults.first"), getEntityTable(), "firstPage");
+        Button firstButton = new Button(uiMessageSource.getMessage("entityResults.first"), getResultsTable(), "firstPage");
         firstButton.addStyleName("small default");
         layout.addComponent(firstButton);
 
-        Button previousButton = new Button(uiMessageSource.getMessage("entityResults.previous"), getEntityTable(), "previousPage");
+        Button previousButton = new Button(uiMessageSource.getMessage("entityResults.previous"), getResultsTable(), "previousPage");
         previousButton.addStyleName("small default");
         layout.addComponent(previousButton);
 
-        Button nextButton = new Button(uiMessageSource.getMessage("entityResults.next"), getEntityTable(), "nextPage");
+        Button nextButton = new Button(uiMessageSource.getMessage("entityResults.next"), getResultsTable(), "nextPage");
         nextButton.addStyleName("small default");
         layout.addComponent(nextButton);
 
-        Button lastButton = new Button(uiMessageSource.getMessage("entityResults.last"), getEntityTable(), "lastPage");
+        Button lastButton = new Button(uiMessageSource.getMessage("entityResults.last"), getResultsTable(), "lastPage");
         lastButton.addStyleName("small default");
         layout.addComponent(lastButton);
 
@@ -158,7 +158,7 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
         pageSizeMenu.setFilteringMode(Select.FILTERINGMODE_OFF);
         pageSizeMenu.setNullSelectionAllowed(false);
         pageSizeMenu.setImmediate(true);
-        pageSizeMenu.setWidth(3, UNITS_EM);
+        pageSizeMenu.setWidth(4, UNITS_EM);
         pageSizeMenu.addListener(Property.ValueChangeEvent.class, this, "search");
         layout.addComponent(pageSizeMenu);
 
@@ -171,19 +171,19 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
 
     public void setPageSize(int pageSize) {
         getEntityQuery().setPageSize(pageSize);
-        getEntityTable().setPageLength(pageSize);
+        getResultsTable().setPageLength(pageSize);
     }
 
     public void addSelectionChangedListener(Object target, String methodName) {
-        entityTable.addListener(Property.ValueChangeEvent.class, target, methodName);
+        resultsTable.addListener(Property.ValueChangeEvent.class, target, methodName);
     }
 
     public Object getSelectedValue() {
-        return getEntityTable().getValue();
+        return getResultsTable().getValue();
     }
 
     public Collection getSelectedValues() {
-        return (Collection) getEntityTable().getValue();
+        return (Collection) getResultsTable().getValue();
     }
 
     public void search() {
@@ -192,13 +192,13 @@ public abstract class EntityResultsComponent<T> extends CustomComponent {
 
     protected void searchImpl(boolean clearSelection) {
         getEntityQuery().firstPage();
-        getEntityTable().executeCurrentQuery();
+        getResultsTable().executeCurrentQuery();
 
         String caption = uiMessageSource.getMessage("entityResults.caption",
                 new Object[]{getEntityQuery().getResultCount()});
-        getEntityTable().setCaption(caption);
+        getResultsTable().setCaption(caption);
         if (clearSelection) {
-            getEntityTable().clearSelection();
+            getResultsTable().clearSelection();
         }
     }
 }

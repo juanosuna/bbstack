@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public abstract class EntityManySelectQuery<T, P> extends EntityQuery<T> {
+public abstract class ManySelectQuery<T, P> extends EntityQuery<T> {
 
     private P parent;
 
