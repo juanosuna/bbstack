@@ -30,7 +30,7 @@ public abstract class SingleSelect<T> extends SearchFormResults<T> {
         super();
     }
 
-    public abstract SingleSelectResults getEntityResults();
+    public abstract SingleSelectResults getResultsComponent();
 
     public String getEntityCaption() {
         return null;

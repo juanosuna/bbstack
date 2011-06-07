@@ -113,7 +113,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
                 Object parent = getEntity();
                 manySelect.getEntityQuery().clear();
                 manySelect.getEntityQuery().setParent(parent);
-                manySelect.getEntityResults().search();
+                manySelect.getResultsComponent().search();
 
             }
             tabSheet.setVisible(true);

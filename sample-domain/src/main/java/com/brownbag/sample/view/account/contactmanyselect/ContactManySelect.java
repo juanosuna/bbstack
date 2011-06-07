@@ -54,7 +54,7 @@ public class ContactManySelect extends ManySelect<Contact> {
     }
 
     @Override
-    public ContactManySelectResults getEntityResults() {
+    public ContactManySelectResults getResultsComponent() {
         return contactResultsManySelect;
     }
 }

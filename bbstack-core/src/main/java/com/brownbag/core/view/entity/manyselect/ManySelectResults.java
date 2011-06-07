@@ -61,7 +61,7 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
 
     public abstract String getPropertyId();
 
-    public abstract SingleSelect getEntitySelect();
+    public abstract SingleSelect getSingleSelect();
 
     public void postConstruct() {
         super.postConstruct();
@@ -76,7 +76,7 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
         getResultsButtons().addComponent(removeButton);
 
         getResultsTable().setMultiSelect(true);
-        getEntitySelect().getEntityResults().getResultsTable().setMultiSelect(true);
+        getSingleSelect().getResultsComponent().getResultsTable().setMultiSelect(true);
 
         contextMenu.addAction("entityResults.remove", this, "remove");
         contextMenu.setActionEnabled("entityResults.remove", true);
@@ -92,18 +92,18 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
         layout.setSizeUndefined();
         popupWindow.setSizeUndefined();
         popupWindow.setModal(true);
-        SingleSelect singleSelect = getEntitySelect();
-        singleSelect.getEntityResults().getEntityQuery().clear();
-        singleSelect.getEntityResults().search();
+        SingleSelect singleSelect = getSingleSelect();
+        singleSelect.getResultsComponent().getEntityQuery().clear();
+        singleSelect.getResultsComponent().search();
         popupWindow.addComponent(singleSelect);
         popupWindow.setClosable(true);
-        getEntitySelect().getEntityResults().addSelectButtonListener(this, "itemsSelected");
+        getSingleSelect().getResultsComponent().addSelectButtonListener(this, "itemsSelected");
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
     }
 
     public void itemsSelected() {
         close();
-        Collection selectedValues = getEntitySelect().getEntityResults().getSelectedValues();
+        Collection selectedValues = getSingleSelect().getResultsComponent().getSelectedValues();
         valuesSelected(selectedValues.toArray());
     }
 

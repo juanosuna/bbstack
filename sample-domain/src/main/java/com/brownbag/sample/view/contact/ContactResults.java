@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 public class ContactResults extends Results<Contact> {
 
     @Override
-    public void configureEntityFields(DisplayFields displayFields) {
+    public void configureFields(DisplayFields displayFields) {
         displayFields.setPropertyIds(new String[]{
                 "firstName",
                 "lastName",

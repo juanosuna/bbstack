@@ -52,12 +52,12 @@ public class AccountSingleSelect extends SingleSelect<Account> {
     }
 
     @Override
-    public AccountSearchFormSelect getEntitySearchForm() {
+    public AccountSearchFormSelect getSearchForm() {
         return accountSearchFormSelect;
     }
 
     @Override
-    public AccountSingleSelectResults getEntityResults() {
+    public AccountSingleSelectResults getResultsComponent() {
         return accountResultsSelect;
     }
 }

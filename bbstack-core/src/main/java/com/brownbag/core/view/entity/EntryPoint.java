@@ -41,7 +41,7 @@ public abstract class EntryPoint<T> extends SearchFormResults<T> {
     }
 
     private void wireRelationships() {
-        getEntityResults().setEntityForm(getEntityForm());
+        getResultsComponent().setEntityForm(getEntityForm());
     }
 
     private void postConstructRelatedBeans() {

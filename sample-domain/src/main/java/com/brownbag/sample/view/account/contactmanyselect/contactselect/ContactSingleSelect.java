@@ -52,12 +52,12 @@ public class ContactSingleSelect extends SingleSelect<Contact> {
     }
 
     @Override
-    public ContactSearchFormSelect getEntitySearchForm() {
+    public ContactSearchFormSelect getSearchForm() {
         return contactSearchFormSelect;
     }
 
     @Override
-    public ContactSingleSelectResults getEntityResults() {
+    public ContactSingleSelectResults getResultsComponent() {
         return contactResultsSelect;
     }
 }

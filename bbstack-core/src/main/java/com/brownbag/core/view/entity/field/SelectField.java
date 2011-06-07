@@ -66,7 +66,7 @@ public class SelectField extends CustomField {
         clearButton.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
         layout.addComponent(clearButton);
 
-        singleSelect.getEntityResults().addSelectButtonListener(this, "itemSelected");
+        singleSelect.getResultsComponent().addSelectButtonListener(this, "itemSelected");
         addClearListener(this, "itemCleared");
 
         setCompositionRoot(layout);
@@ -103,7 +103,7 @@ public class SelectField extends CustomField {
     }
 
     public Object getSelectedValue() {
-        return singleSelect.getEntityResults().getSelectedValue();
+        return singleSelect.getResultsComponent().getSelectedValue();
     }
 
     public void open() {
@@ -117,8 +117,8 @@ public class SelectField extends CustomField {
         popupWindow.setModal(true);
         popupWindow.addComponent(singleSelect);
         popupWindow.setClosable(true);
-        singleSelect.getEntityResults().getEntityQuery().clear();
-        singleSelect.getEntityResults().search();
+        singleSelect.getResultsComponent().getEntityQuery().clear();
+        singleSelect.getResultsComponent().search();
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
     }
 

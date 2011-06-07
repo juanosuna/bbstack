@@ -34,12 +34,12 @@ public abstract class ManySelect<T> extends EntityComponent<T> {
 
     public abstract ManySelectQuery getEntityQuery();
 
-    public abstract ManySelectResults getEntityResults();
+    public abstract ManySelectResults getResultsComponent();
 
     @PostConstruct
     public void postConstruct() {
         super.postConstruct();
 
-        addComponent(getEntityResults());
+        addComponent(getResultsComponent());
     }
 }

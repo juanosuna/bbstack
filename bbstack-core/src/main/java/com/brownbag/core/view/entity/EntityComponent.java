@@ -44,7 +44,7 @@ public abstract class EntityComponent<T> extends CustomComponent {
 
     public abstract EntityQuery getEntityQuery();
 
-    public abstract ResultsComponent getEntityResults();
+    public abstract ResultsComponent getResultsComponent();
 
     public abstract String getEntityCaption();
 
@@ -66,12 +66,12 @@ public abstract class EntityComponent<T> extends CustomComponent {
     }
 
     private void wireRelationships() {
-        getEntityResults().setEntityDao(getEntityDao());
-        getEntityResults().setEntityQuery(getEntityQuery());
+        getResultsComponent().setEntityDao(getEntityDao());
+        getResultsComponent().setEntityQuery(getEntityQuery());
     }
 
     private void postConstructRelatedBeans() {
-        getEntityResults().postConstruct();
+        getResultsComponent().postConstruct();
     }
 
     public void setCustomSizeUndefined() {

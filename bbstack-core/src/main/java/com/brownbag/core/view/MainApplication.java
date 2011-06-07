@@ -38,7 +38,7 @@ public class MainApplication extends Application implements HttpServletRequestLi
     private MessageSource messageSource;
 
     @Autowired
-    private MainTabSheet mainTabSheet;
+    private MainEntryPoints mainEntryPoints;
 
     public static MainApplication getInstance() {
         return threadLocal.get();
@@ -70,8 +70,8 @@ public class MainApplication extends Application implements HttpServletRequestLi
         mainWindow.getContent().setSizeUndefined();
         setMainWindow(mainWindow);
 
-        mainTabSheet.postConstruct();
-        mainWindow.addComponent(mainTabSheet);
+        mainEntryPoints.postConstruct();
+        mainWindow.addComponent(mainEntryPoints);
     }
 
     @Override

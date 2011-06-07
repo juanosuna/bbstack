@@ -60,12 +60,12 @@ public class AccountEntryPoint extends EntryPoint<Account> {
     }
 
     @Override
-    public AccountSearchForm getEntitySearchForm() {
+    public AccountSearchForm getSearchForm() {
         return accountSearchForm;
     }
 
     @Override
-    public AccountResults getEntityResults() {
+    public AccountResults getResultsComponent() {
         return accountResults;
     }
 

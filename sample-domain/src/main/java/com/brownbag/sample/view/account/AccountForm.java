@@ -54,7 +54,7 @@ public class AccountForm extends EntityForm<Account> {
     }
 
     @Override
-    public void configureFormFields(FormFields formFields) {
+    public void configureFields(FormFields formFields) {
         formFields.setPosition("name", 0, 0);
         formFields.setPosition("address.street", 0, 2);
         formFields.setPosition("address.city", 1, 2);

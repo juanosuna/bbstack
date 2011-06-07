@@ -48,7 +48,7 @@ public class AccountSearchForm extends SearchForm<AccountQuery> {
     }
 
     @Override
-    public void configureFormFields(FormFields formFields) {
+    public void configureFields(FormFields formFields) {
 
         formFields.setPosition("name", 0, 0);
         formFields.setPosition("state", 1, 0);

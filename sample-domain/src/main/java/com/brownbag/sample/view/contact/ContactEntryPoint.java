@@ -60,12 +60,12 @@ public class ContactEntryPoint extends EntryPoint<Contact> {
     }
 
     @Override
-    public ContactSearchForm getEntitySearchForm() {
+    public ContactSearchForm getSearchForm() {
         return contactSearchForm;
     }
 
     @Override
-    public ContactResults getEntityResults() {
+    public ContactResults getResultsComponent() {
         return contactResults;
     }
 

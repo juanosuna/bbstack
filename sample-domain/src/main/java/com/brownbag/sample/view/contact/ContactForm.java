@@ -54,7 +54,7 @@ public class ContactForm extends EntityForm<Contact> {
     }
 
     @Override
-    public void configureFormFields(FormFields formFields) {
+    public void configureFields(FormFields formFields) {
         formFields.setPosition("firstName", 0, 0);
         formFields.setPosition("lastName", 1, 0);
         formFields.setPosition("birthDate", 0, 1);

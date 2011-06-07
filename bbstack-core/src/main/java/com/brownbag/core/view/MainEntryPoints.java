@@ -22,13 +22,13 @@ import com.vaadin.ui.TabSheet;
 
 import java.util.List;
 
-public abstract class MainTabSheet extends TabSheet {
+public abstract class MainEntryPoints extends TabSheet {
 
-    public abstract List<EntryPoint> getTabEntryPoints();
+    public abstract List<EntryPoint> getEntryPoints();
 
     public void postConstruct() {
         setSizeUndefined();
-        List<EntryPoint> entryPoints = getTabEntryPoints();
+        List<EntryPoint> entryPoints = getEntryPoints();
         for (EntryPoint entryPoint : entryPoints) {
             addTab(entryPoint);
         }
@@ -41,7 +41,7 @@ public abstract class MainTabSheet extends TabSheet {
         @Override
         public void selectedTabChange(SelectedTabChangeEvent event) {
             EntryPoint entryPoint = (EntryPoint) getSelectedTab();
-            entryPoint.getEntityResults().search();
+            entryPoint.getResultsComponent().search();
         }
     }
 }

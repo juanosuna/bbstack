@@ -39,7 +39,7 @@ public class ContactManySelectResults extends ManySelectResults<Contact> {
     private ContactSingleSelect contactSelect;
 
     @Override
-    public void configureEntityFields(DisplayFields displayFields) {
+    public void configureFields(DisplayFields displayFields) {
         displayFields.setPropertyIds(new String[]{
                 "name",
                 "address.state",
@@ -50,7 +50,7 @@ public class ContactManySelectResults extends ManySelectResults<Contact> {
     }
 
     @Override
-    public ContactSingleSelect getEntitySelect() {
+    public ContactSingleSelect getSingleSelect() {
         return contactSelect;
     }
 

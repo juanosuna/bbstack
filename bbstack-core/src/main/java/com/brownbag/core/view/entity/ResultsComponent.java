@@ -52,7 +52,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
     protected ResultsComponent() {
     }
 
-    public abstract void configureEntityFields(DisplayFields displayFields);
+    public abstract void configureFields(DisplayFields displayFields);
 
     public DisplayFields getDisplayFields() {
         return displayFields;
@@ -96,7 +96,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
 
     public void postConstruct() {
         displayFields = new DisplayFields(getEntityType(), entityMessageSource);
-        configureEntityFields(displayFields);
+        configureFields(displayFields);
         resultsTable = new ResultsTable(this);
         resultsTable.setSizeUndefined();
 

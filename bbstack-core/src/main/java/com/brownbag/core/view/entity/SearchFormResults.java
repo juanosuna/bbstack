@@ -36,9 +36,9 @@ public abstract class SearchFormResults<T> extends EntityComponent<T> {
         super();
     }
 
-    public abstract SearchForm getEntitySearchForm();
+    public abstract SearchForm getSearchForm();
 
-    public abstract ResultsComponent getEntityResults();
+    public abstract ResultsComponent getResultsComponent();
 
     @PostConstruct
     public void postConstruct() {
@@ -52,20 +52,20 @@ public abstract class SearchFormResults<T> extends EntityComponent<T> {
         toggleSearchFormButton.addStyleName("borderless");
         addComponent(toggleSearchFormButton);
 
-        searchFormAnimator = new Animator(getEntitySearchForm());
+        searchFormAnimator = new Animator(getSearchForm());
         searchFormAnimator.setSizeUndefined();
         addComponent(searchFormAnimator);
 
-        addComponent(getEntityResults());
+        addComponent(getResultsComponent());
     }
 
     private void wireRelationships() {
-        getEntitySearchForm().setEntityQuery(getEntityQuery());
-        getEntitySearchForm().setResults(getEntityResults());
+        getSearchForm().setEntityQuery(getEntityQuery());
+        getSearchForm().setResults(getResultsComponent());
     }
 
     private void postConstructRelatedBeans() {
-        getEntitySearchForm().postConstruct();
+        getSearchForm().postConstruct();
     }
 
     public void toggleSearchForm() {

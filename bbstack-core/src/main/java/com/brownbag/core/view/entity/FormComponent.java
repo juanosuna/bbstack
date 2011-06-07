@@ -52,7 +52,7 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     public abstract String getEntityCaption();
 
-    public abstract void configureFormFields(FormFields formFields);
+    public abstract void configureFields(FormFields formFields);
 
     abstract HorizontalLayout createFooterButtons();
 
@@ -88,7 +88,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         form.setStyleName("entityForm");
 
         formFields = createFormFields();
-        configureFormFields(formFields);
+        configureFields(formFields);
         form.setFormFieldFactory(new EntityFieldFactory(formFields));
 
         GridLayout gridLayout = new GridLayout(getFormFields().getColumns(), getFormFields().getRows());
