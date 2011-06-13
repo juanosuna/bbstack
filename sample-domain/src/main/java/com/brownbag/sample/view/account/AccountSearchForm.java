@@ -18,6 +18,7 @@
 package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.SearchForm;
+import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Country;
@@ -28,6 +29,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +44,8 @@ public class AccountSearchForm extends SearchForm<AccountQuery> {
     @Resource
     private StateDao stateDao;
 
+    private FormField stateField;
+
     @Override
     public String getEntityCaption() {
         return "Account Search Form";
@@ -54,8 +58,9 @@ public class AccountSearchForm extends SearchForm<AccountQuery> {
         formFields.setPosition("state", 1, 0);
         formFields.setPosition("country", 2, 0);
 
-        Select stateField = (Select) formFields.getFormField("state").getField();
-        stateField.getContainerDataSource().removeAllItems();
+        stateField = formFields.getFormField("state");
+        stateField.setSelectItems(new ArrayList());
+        stateField.setVisible(false);
 
         formFields.addValueChangeListener("country", this, "countryChanged");
     }
@@ -63,6 +68,7 @@ public class AccountSearchForm extends SearchForm<AccountQuery> {
     public void countryChanged(Property.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
-        getFormFields().setSelectItems("state", states);
+        stateField.setSelectItems(states);
+        stateField.setVisible(states.size() > 0);
     }
 }

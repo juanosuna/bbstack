@@ -18,16 +18,17 @@
 package com.brownbag.sample.view.contact;
 
 import com.brownbag.core.view.entity.SearchForm;
+import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
 import com.vaadin.data.Property;
-import com.vaadin.ui.ListSelect;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     @Resource
     private StateDao stateDao;
 
-    private ListSelect stateField;
+    private FormField stateField;
 
     @Override
     public String getEntityCaption() {
@@ -53,16 +54,12 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     public void configureFields(FormFields formFields) {
 
         formFields.setPosition("lastName", 0, 0);
-        formFields.setPosition("country", 1, 0);
-        formFields.setPosition("state", 2, 0);
+        formFields.setPosition("state", 1, 0);
+        formFields.setPosition("country", 2, 0);
 
-        stateField = new ListSelect();
+        stateField = formFields.getFormField("state");
+        stateField.setSelectItems(new ArrayList());
         stateField.setVisible(false);
-        stateField.setMultiSelect(true);
-        stateField.setRows(4);
-        formFields.getFormField("state").setField(stateField);
-        stateField = (ListSelect) formFields.getFormField("state").getField();
-        stateField.getContainerDataSource().removeAllItems();
 
         formFields.addValueChangeListener("country", this, "countryChanged");
     }
@@ -70,7 +67,7 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     public void countryChanged(Property.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
-        getFormFields().setSelectItems("state", states);
+        stateField.setSelectItems(states);
         stateField.setVisible(states.size() > 0);
     }
 }

@@ -20,9 +20,12 @@ package com.brownbag.core.view.entity.field;
 import com.brownbag.core.view.MessageSource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.GridLayout;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * User: Juan
@@ -39,13 +42,19 @@ public class FormFields extends DisplayFields {
     }
 
     public int getColumns() {
+        return getColumns("");
+    }
+
+    public int getColumns(String tabName) {
         int columns = 0;
         Collection<DisplayField> fields = getFields();
         for (DisplayField field : fields) {
             FormField formField = (FormField) field;
-            columns = Math.max(columns, formField.getColumnStart());
-            if (formField.getColumnEnd() != null) {
-                columns = Math.max(columns, formField.getColumnEnd());
+            if (formField.getTabName().equals(tabName)) {
+                columns = Math.max(columns, formField.getColumnStart());
+                if (formField.getColumnEnd() != null) {
+                    columns = Math.max(columns, formField.getColumnEnd());
+                }
             }
         }
 
@@ -53,22 +62,49 @@ public class FormFields extends DisplayFields {
     }
 
     public int getRows() {
+        return getRows("");
+    }
+
+    public int getRows(String tabName) {
         int rows = 0;
         Collection<DisplayField> fields = getFields();
         for (DisplayField field : fields) {
             FormField formField = (FormField) field;
-            rows = Math.max(rows, formField.getRowStart());
-            if (formField.getRowEnd() != null) {
-                rows = Math.max(rows, formField.getRowEnd());
+            if (formField.getTabName().equals(tabName)) {
+                rows = Math.max(rows, formField.getRowStart());
+                if (formField.getRowEnd() != null) {
+                    rows = Math.max(rows, formField.getRowEnd());
+                }
             }
         }
 
         return ++rows;
     }
 
+    public GridLayout createGridLayout() {
+        return createGridLayout(getFirstTabName());
+    }
+
+    public String getFirstTabName() {
+        return getTabNames().iterator().next();
+    }
+
+    public GridLayout createGridLayout(String tabName) {
+        GridLayout gridLayout = new GridLayout(getColumns(tabName), getRows(tabName));
+        gridLayout.setMargin(true, true, true, true);
+        gridLayout.setSpacing(true);
+        gridLayout.setSizeUndefined();
+
+        return gridLayout;
+    }
+
     @Override
     protected FormField createField(String propertyId) {
         return new FormField(this, propertyId);
+    }
+
+    public void setPosition(String tabName, String propertyId, int columnStart, int rowStart) {
+        setPosition(tabName, propertyId, columnStart, rowStart, null, null);
     }
 
     public void setPosition(String propertyId, int columnStart, int rowStart) {
@@ -77,7 +113,13 @@ public class FormFields extends DisplayFields {
 
     public void setPosition(String propertyId, int columnStart, int rowStart, Integer columnEnd,
                             Integer rowEnd) {
+        setPosition("", propertyId, columnStart, rowStart, columnEnd, rowEnd);
+    }
+
+    public void setPosition(String tabName, String propertyId, int columnStart, int rowStart, Integer columnEnd,
+                            Integer rowEnd) {
         FormField formField = (FormField) getField(propertyId);
+        formField.setTabName(tabName);
         formField.setColumnStart(columnStart);
         formField.setRowStart(rowStart);
         formField.setColumnEnd(columnEnd);
@@ -91,6 +133,21 @@ public class FormFields extends DisplayFields {
     public void setField(String propertyId, Field field) {
         FormField formField = (FormField) getField(propertyId);
         formField.setField(field);
+    }
+
+    public boolean containsPropertyId(String tabName, String propertyId) {
+        return containsPropertyId(propertyId) && getFormField(propertyId).getTabName().equals(tabName);
+    }
+
+    public Set<String> getTabNames() {
+        Set<String> tabNames = new LinkedHashSet<String>();
+        Collection<DisplayField> displayFields = getFields();
+        for (DisplayField displayField : displayFields) {
+            FormField formField = (FormField) displayField;
+            tabNames.add(formField.getTabName());
+        }
+
+        return tabNames;
     }
 
     public String getLabel(String propertyId) {
@@ -108,6 +165,15 @@ public class FormFields extends DisplayFields {
 
     public Object getSelectedItem(String propertyId) {
         return getFormField(propertyId).getSelectedItem();
+    }
+
+    public void setRequiredDeep(String propertyId, boolean isRequired) {
+        List<String> propertyIds = getPropertyIds();
+        for (String id : propertyIds) {
+            if (id.startsWith(propertyId + ".")) {
+                getFormField(id).setRequired(isRequired);
+            }
+        }
     }
 
     public void addValueChangeListener(String propertyId, Object target, String methodName) {

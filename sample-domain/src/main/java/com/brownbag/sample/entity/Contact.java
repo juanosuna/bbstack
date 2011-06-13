@@ -62,10 +62,16 @@ public class Contact extends WritableEntity {
     private String socialSecurityNumber;
 
     @Valid
-    @Index(name = "IDX_CONTACT_ADDRESS")
-    @ForeignKey(name = "FK_CONTACT_ADDRESS")
+    @Index(name = "IDX_CONTACT_PHYSICAL_ADDRESS")
+    @ForeignKey(name = "FK_CONTACT_PHYSICAL_ADDRESS")
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Address address;
+
+    @Valid
+    @Index(name = "IDX_CONTACT_MAILING_ADDRESS")
+    @ForeignKey(name = "FK_CONTACT_MAILING_ADDRESS")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Address mailingAddress;
 
     public Contact() {
     }
@@ -133,7 +139,17 @@ public class Contact extends WritableEntity {
     }
 
     public void setAddress(Address address) {
+        address.setType(AddressType.PHYSICAL);
         this.address = address;
+    }
+
+    public Address getMailingAddress() {
+        return mailingAddress;
+    }
+
+    public void setMailingAddress(Address mailingAddress) {
+        address.setType(AddressType.MAILING);
+        this.mailingAddress = mailingAddress;
     }
 
     @PreRemove

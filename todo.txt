@@ -17,6 +17,9 @@ audit trail
 I18N, localization
 user-specific locale
 
+Last Viewed
+Favorites
+
 UI Design Improvements
 Fonts
 Change tabs when selected, e.g. make a bit bigger

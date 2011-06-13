@@ -32,6 +32,7 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: Juan
@@ -49,6 +50,7 @@ public abstract class FormComponent<T> extends CustomComponent {
     private Form form;
     private ResultsComponent results;
     private FormFields formFields;
+    private TabSheet tabSheet;
 
     public abstract String getEntityCaption();
 
@@ -91,10 +93,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         configureFields(formFields);
         form.setFormFieldFactory(new EntityFieldFactory(formFields));
 
-        GridLayout gridLayout = new GridLayout(getFormFields().getColumns(), getFormFields().getRows());
-        gridLayout.setMargin(true, true, true, true);
-        gridLayout.setSpacing(true);
-        gridLayout.setSizeUndefined();
+        final GridLayout gridLayout = formFields.createGridLayout();
         form.setLayout(gridLayout);
 
         HorizontalLayout footerLayout = createFooterButtons();
@@ -103,10 +102,38 @@ public abstract class FormComponent<T> extends CustomComponent {
         form.setCaption(getEntityCaption());
 
         VerticalLayout layout = new VerticalLayout();
+
+        final Set<String> tabNames = formFields.getTabNames();
+        if (tabNames.size() > 1) {
+            tabSheet = new TabSheet();
+            tabSheet.setSizeUndefined();
+            for (String tabName : tabNames) {
+                tabSheet.addTab(new Label(), tabName, null);
+            }
+            layout.addComponent(tabSheet);
+
+            tabSheet.addListener(new TabSheet.SelectedTabChangeListener() {
+                @Override
+                public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
+                    String tabName = getCurrentTabName();
+                    GridLayout gridLayout = formFields.createGridLayout(tabName);
+                    form.setLayout(gridLayout);
+                    refreshFromDataSource();
+                }
+            });
+        }
+
         layout.addComponent(form);
         setCompositionRoot(layout);
-
         setCustomSizeUndefined();
+    }
+
+    public String getCurrentTabName() {
+        if (tabSheet == null) {
+            return formFields.getFirstTabName();
+        } else {
+            return tabSheet.getTab(tabSheet.getSelectedTab()).getCaption();
+        }
     }
 
     @Override
@@ -161,7 +188,8 @@ public abstract class FormComponent<T> extends CustomComponent {
         protected void attachField(Object propertyId, Field field) {
             GridLayout gridLayout = (GridLayout) form.getLayout();
             FormFields formFields = getFormFields();
-            if (formFields.containsPropertyId(propertyId.toString())) {
+            String currentTabName = getCurrentTabName();
+            if (formFields.containsPropertyId(currentTabName, propertyId.toString())) {
                 Integer columnStart = formFields.getFormField(propertyId.toString()).getColumnStart();
                 Integer rowStart = formFields.getFormField(propertyId.toString()).getRowStart();
                 Integer columnEnd = formFields.getFormField(propertyId.toString()).getColumnEnd();

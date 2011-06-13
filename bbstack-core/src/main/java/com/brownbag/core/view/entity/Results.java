@@ -83,10 +83,10 @@ public abstract class Results<T> extends ResultsComponent<T> {
     public void edit() {
         Collection itemIds = (Collection) getResultsTable().getValue();
         Assert.PROGRAMMING.assertTrue(itemIds.size() == 1);
-        edit(itemIds.iterator().next());
+        editImpl(itemIds.iterator().next());
     }
 
-    public void edit(Object itemId) {
+    public void editImpl(Object itemId) {
 //        getEntityTable().setValue(itemId);
         BeanItem beanItem = getResultsTable().getContainerDataSource().getItem(itemId);
         getEntityForm().setResults(this);
@@ -132,7 +132,7 @@ public abstract class Results<T> extends ResultsComponent<T> {
     public class DoubleClickListener implements ItemClickEvent.ItemClickListener {
         public void itemClick(ItemClickEvent event) {
             if (event.isDoubleClick()) {
-                edit(event.getItemId());
+                editImpl(event.getItemId());
             }
         }
     }

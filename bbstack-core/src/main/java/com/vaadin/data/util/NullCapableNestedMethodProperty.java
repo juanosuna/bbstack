@@ -30,7 +30,7 @@ public class NullCapableNestedMethodProperty extends NestedMethodProperty {
         }
     }
 
-    private boolean hasNullInPropertyPath() {
+    public boolean hasNullInPropertyPath() {
         try {
             List<Method> getMethods = getGetMethods();
             Object object = instance;

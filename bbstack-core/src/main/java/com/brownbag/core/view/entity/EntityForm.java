@@ -48,7 +48,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     private Validation validation;
 
     private Window formWindow;
-    private TabSheet tabSheet;
+    private TabSheet manySelectTabs;
 
     public List<ManySelect> getManySelects() {
         return new ArrayList<ManySelect>();
@@ -64,12 +64,12 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
         List<ManySelect> manySelects = getManySelects();
         if (manySelects.size() > 0) {
-            tabSheet = new TabSheet();
-            tabSheet.setSizeUndefined();
+            manySelectTabs = new TabSheet();
+            manySelectTabs.setSizeUndefined();
             for (ManySelect manySelect : manySelects) {
-                tabSheet.addTab(manySelect);
+                manySelectTabs.addTab(manySelect);
             }
-            addComponent(tabSheet);
+            addComponent(manySelectTabs);
         }
     }
 
@@ -116,7 +116,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
                 manySelect.getResultsComponent().search();
 
             }
-            tabSheet.setVisible(true);
+            manySelectTabs.setVisible(true);
         }
     }
 
@@ -130,7 +130,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         open();
 
         if (getManySelects().size() > 0) {
-            tabSheet.setVisible(false);
+            manySelectTabs.setVisible(false);
         }
     }
 
@@ -211,7 +211,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     private boolean validatePatternIfThens(WritableEntity entity) {
-        Set<ConstraintViolation> constraintViolations = (Set<ConstraintViolation>) validation.validate(entity);
+        Set<ConstraintViolation<WritableEntity>> constraintViolations = validation.validate(entity);
         for (ConstraintViolation constraintViolation : constraintViolations) {
             String message = constraintViolation.getMessage();
             UserError error = new UserError(message);

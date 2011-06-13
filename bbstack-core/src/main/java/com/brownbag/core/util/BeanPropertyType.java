@@ -5,29 +5,29 @@ import org.springframework.beans.BeanUtils;
 import javax.validation.Valid;
 import java.lang.reflect.Field;
 
-public class BeanProperty {
-    private BeanProperty parent;
+public class BeanPropertyType {
+    private BeanPropertyType parent;
     private String id;
     private Class type;
     private Class containerType;
 
-    public BeanProperty(BeanProperty parent, String id, Class type, Class containerType) {
+    public BeanPropertyType(BeanPropertyType parent, String id, Class type, Class containerType) {
         this(id, type, containerType);
         this.parent = parent;
     }
 
-    private BeanProperty(String id, Class type, Class containerType) {
+    private BeanPropertyType(String id, Class type, Class containerType) {
         this.id = id;
         this.type = type;
         this.containerType = containerType;
     }
 
-    public static BeanProperty getBeanProperty(Class clazz, String propertyPath) {
+    public static BeanPropertyType getBeanProperty(Class clazz, String propertyPath) {
         String[] properties = propertyPath.split("\\.");
         Class containingType;
         Class currentPropertyType = clazz;
         String propertyId;
-        BeanProperty beanProperty = null;
+        BeanPropertyType beanPropertyType = null;
         for (String property : properties) {
             Class propertyType = BeanUtils.findPropertyType(property, new Class[]{currentPropertyType});
             if (propertyType == null || propertyType.equals(Object.class)) {
@@ -38,19 +38,23 @@ public class BeanProperty {
                 currentPropertyType = propertyType;
                 propertyId = property;
 
-                beanProperty = new BeanProperty(beanProperty, propertyId, currentPropertyType, containingType);
+                beanPropertyType = new BeanPropertyType(beanPropertyType, propertyId, currentPropertyType, containingType);
             }
         }
 
-        return beanProperty;
+        return beanPropertyType;
     }
 
-    public BeanProperty getParent() {
+    public BeanPropertyType getParent() {
         return parent;
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getLeafId() {
+        return StringUtil.extractAfterPeriod(id);
     }
 
     public Class getType() {
@@ -61,18 +65,18 @@ public class BeanProperty {
         return containerType;
     }
 
-    public boolean isValidationOn() {
-        BeanProperty beanProperty = parent;
-        while (beanProperty != null) {
+    public boolean isValidatable() {
+        BeanPropertyType beanPropertyType = parent;
+        while (beanPropertyType != null) {
             try {
-                Class containingType = beanProperty.getContainerType();
-                String id = beanProperty.getId();
+                Class containingType = beanPropertyType.getContainerType();
+                String id = beanPropertyType.getId();
                 Field field = containingType.getDeclaredField(id);
                 Valid validAnnotation = field.getAnnotation(Valid.class);
                 if (validAnnotation == null) {
                     return false;
                 } else {
-                    beanProperty = beanProperty.getParent();
+                    beanPropertyType = beanPropertyType.getParent();
                 }
             } catch (NoSuchFieldException e) {
                 throw new RuntimeException(e);
@@ -80,5 +84,13 @@ public class BeanProperty {
         }
 
         return true;
+    }
+
+    public BeanPropertyType getRoot() {
+        if (parent == null) {
+            return this;
+        } else {
+            return getParent().getRoot();
+        }
     }
 }

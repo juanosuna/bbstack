@@ -38,6 +38,10 @@ import java.util.Set;
 public class Address extends WritableEntity {
 
     @NotNull
+    @Enumerated(EnumType.STRING)
+    private AddressType type = AddressType.PHYSICAL;
+
+    @NotNull
     @NotBlank
     @Size(min = 1, max = 16)
     private String street;
@@ -68,6 +72,14 @@ public class Address extends WritableEntity {
     private Set<Account> accounts = new HashSet<Account>();
 
     public Address() {
+    }
+
+    public AddressType getType() {
+        return type;
+    }
+
+    public void setType(AddressType type) {
+        this.type = type;
     }
 
     public String getStreet() {

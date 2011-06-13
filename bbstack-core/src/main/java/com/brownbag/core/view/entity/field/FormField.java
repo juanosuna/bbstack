@@ -19,11 +19,13 @@ package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.ReferenceEntity;
-import com.brownbag.core.util.BeanProperty;
+import com.brownbag.core.util.BeanPropertyType;
 import com.brownbag.core.util.SpringApplicationContext;
 import com.brownbag.core.util.assertion.Assert;
+import com.brownbag.core.validation.FormValidator;
 import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.*;
 
@@ -38,14 +40,26 @@ import java.util.List;
 public class FormField extends DisplayField {
     public static final String DEFAULT_DISPLAY_PROPERTY_ID = "name";
 
+    private String tabName = "";
     private Field field;
     private Integer columnStart;
     private Integer rowStart;
     private Integer columnEnd;
     private Integer rowEnd;
+    private Validator validator;
+    BeanPropertyType beanPropertyType;
 
     public FormField(FormFields formFields, String propertyId) {
         super(formFields, propertyId);
+        beanPropertyType = com.brownbag.core.util.BeanPropertyType.getBeanProperty(formFields.getEntityType(), propertyId);
+    }
+
+    public String getTabName() {
+        return tabName;
+    }
+
+    public void setTabName(String tabName) {
+        this.tabName = tabName;
     }
 
     public Integer getColumnStart() {
@@ -146,6 +160,14 @@ public class FormField extends DisplayField {
         return (FormFields) getDisplayFields();
     }
 
+    public void setVisible(boolean isVisible) {
+        field.setVisible(isVisible);
+    }
+
+    public void setRequired(boolean isRequired) {
+        field.setRequired(isRequired);
+    }
+
     private Field generateField() {
         Class propertyType = getPropertyType();
 
@@ -177,9 +199,9 @@ public class FormField extends DisplayField {
         field.setInvalidAllowed(true);
 
         if (getFormFields().attachValidators()) {
-            BeanProperty beanProperty = BeanProperty.getBeanProperty(getDisplayFields().getEntityType(),
+            BeanPropertyType beanProperty = com.brownbag.core.util.BeanPropertyType.getBeanProperty(getDisplayFields().getEntityType(),
                     getPropertyId());
-            if (beanProperty.isValidationOn()) {
+            if (beanProperty.isValidatable()) {
                 BeanValidationValidator.addValidator(field, beanProperty.getId(), beanProperty.getContainerType());
             }
         }
@@ -208,6 +230,13 @@ public class FormField extends DisplayField {
             List referenceEntities = propertyDao.findAll();
             setSelectItems(referenceEntities);
         }
+    }
+
+    public void attachValidator(FormValidator formValidator) {
+        if (validator != null) {
+            field.removeValidator(validator);
+        }
+        validator = formValidator.addValidator(field, beanPropertyType.getId());
     }
 
     public static void initAbstractFieldDefaults(AbstractField field) {

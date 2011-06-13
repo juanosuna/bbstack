@@ -34,6 +34,7 @@
         VERSION integer,
         CITY varchar(16) not null,
         STREET varchar(16) not null,
+        TYPE varchar(255) not null,
         ZIP_CODE varchar(255),
         COUNTRY varchar(255) not null,
         STATE varchar(255) not null,
@@ -56,6 +57,7 @@
         TITLE varchar(16),
         ACCOUNT bigint,
         ADDRESS bigint,
+        MAILING_ADDRESS bigint,
         primary key (ID),
         unique (UUID)
     );
@@ -114,13 +116,20 @@
         foreign key (COUNTRY) 
         references SAMPLE.COUNTRY;
 
-    create index IDX_CONTACT_ADDRESS on SAMPLE.CONTACT (ADDRESS);
+    create index IDX_CONTACT_MAILING_ADDRESS on SAMPLE.CONTACT (MAILING_ADDRESS);
+
+    create index IDX_CONTACT_PHYSICAL_ADDRESS on SAMPLE.CONTACT (ADDRESS);
 
     create index IDX_CONTACT_ACCOUNT on SAMPLE.CONTACT (ACCOUNT);
 
     alter table SAMPLE.CONTACT 
-        add constraint FK_CONTACT_ADDRESS 
+        add constraint FK_CONTACT_PHYSICAL_ADDRESS 
         foreign key (ADDRESS) 
+        references SAMPLE.ADDRESS;
+
+    alter table SAMPLE.CONTACT 
+        add constraint FK_CONTACT_MAILING_ADDRESS 
+        foreign key (MAILING_ADDRESS) 
         references SAMPLE.ADDRESS;
 
     alter table SAMPLE.CONTACT 

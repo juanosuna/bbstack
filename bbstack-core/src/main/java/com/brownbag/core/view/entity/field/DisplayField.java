@@ -17,7 +17,7 @@
 
 package com.brownbag.core.view.entity.field;
 
-import com.brownbag.core.util.BeanProperty;
+import com.brownbag.core.util.BeanPropertyType;
 import com.brownbag.core.util.StringUtil;
 import org.springframework.beans.BeanUtils;
 
@@ -39,9 +39,9 @@ public class DisplayField {
         this.displayFields = displayFields;
         this.propertyId = propertyId;
 
-        BeanProperty beanProperty = BeanProperty.getBeanProperty(getDisplayFields().getEntityType(),
+        BeanPropertyType beanPropertyType = com.brownbag.core.util.BeanPropertyType.getBeanProperty(getDisplayFields().getEntityType(),
                 getPropertyId());
-        propertyType = beanProperty.getType();
+        propertyType = beanPropertyType.getType();
     }
 
     public DisplayFields getDisplayFields() {
@@ -86,9 +86,9 @@ public class DisplayField {
     }
 
     private String getLabelFromAnnotation() {
-        BeanProperty beanProperty = BeanProperty.getBeanProperty(displayFields.getEntityType(), propertyId);
-        Class propertyContainerType = beanProperty.getContainerType();
-        String propertyIdRelativeToContainerType = beanProperty.getId();
+        BeanPropertyType beanPropertyType = com.brownbag.core.util.BeanPropertyType.getBeanProperty(displayFields.getEntityType(), propertyId);
+        Class propertyContainerType = beanPropertyType.getContainerType();
+        String propertyIdRelativeToContainerType = beanPropertyType.getId();
         PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(propertyContainerType,
                 propertyIdRelativeToContainerType);
         Method method = descriptor.getReadMethod();

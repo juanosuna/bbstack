@@ -55,21 +55,31 @@ public class ContactForm extends EntityForm<Contact> {
 
     @Override
     public void configureFields(FormFields formFields) {
-        formFields.setPosition("firstName", 0, 0);
-        formFields.setPosition("lastName", 1, 0);
-        formFields.setPosition("birthDate", 0, 1);
-        formFields.setPosition("socialSecurityNumber", 1, 1);
-        formFields.setPosition("address.street", 0, 2);
-        formFields.setPosition("address.city", 1, 2);
-        formFields.setPosition("address.state", 0, 3);
-        formFields.setPosition("address.zipCode", 1, 3);
-        formFields.setPosition("address.country", 0, 4);
-        formFields.setPosition("account.name", 1, 4);
+        formFields.setPosition("Overview", "firstName", 0, 0);
+        formFields.setPosition("Overview", "lastName", 1, 0);
+        formFields.setPosition("Overview", "birthDate", 0, 1);
+        formFields.setPosition("Overview", "socialSecurityNumber", 1, 1);
+        formFields.setPosition("Overview", "account.name", 0, 2);
+
+        formFields.setPosition("Physical Address", "address.street", 0, 0);
+        formFields.setPosition("Physical Address", "address.city", 1, 0);
+        formFields.setPosition("Physical Address", "address.state", 0, 1);
+        formFields.setPosition("Physical Address", "address.zipCode", 1, 1);
+        formFields.setPosition("Physical Address", "address.country", 0, 2);
+
+        formFields.setPosition("Mailing Address", "mailingAddress.street", 0, 0);
+        formFields.setPosition("Mailing Address", "mailingAddress.city", 1, 0);
+        formFields.setPosition("Mailing Address", "mailingAddress.state", 0, 1);
+        formFields.setPosition("Mailing Address", "mailingAddress.zipCode", 1, 1);
+        formFields.setPosition("Mailing Address", "mailingAddress.country", 0, 2);
 
         formFields.setLabel("account.name", "Account");
 
         formFields.setSelectItems("address.state", new ArrayList());
         formFields.addValueChangeListener("address.country", this, "countryChanged");
+
+        formFields.setSelectItems("mailingAddress.state", new ArrayList());
+        formFields.addValueChangeListener("mailingAddress.country", this, "mailingCountryChanged");
 
         SelectField selectField = new SelectField(this, "account", accountSelect);
         formFields.setField("account.name", selectField);
@@ -79,5 +89,11 @@ public class ContactForm extends EntityForm<Contact> {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
         getFormFields().setSelectItems("address.state", states);
+    }
+
+    public void mailingCountryChanged(Property.ValueChangeEvent event) {
+        Country newCountry = (Country) event.getProperty().getValue();
+        List<State> states = stateDao.findByCountry(newCountry);
+        getFormFields().setSelectItems("mailingAddress.state", states);
     }
 }
