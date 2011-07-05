@@ -168,7 +168,7 @@
                 <executions>
                     <execution>
                         <id>upload-war</id>
-                        <phase>install</phase>
+                        <!--<phase>install</phase>-->
                         <goals>
                             <goal>upload</goal>
                         </goals>
