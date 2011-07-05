@@ -24,6 +24,7 @@ import com.brownbag.sample.entity.Contact;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -42,5 +43,10 @@ public class ContactQueryManySelect extends ManySelectQuery<Contact, Account> {
     @Override
     public List<Contact> execute() {
         return contactDao.find(this);
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        setSortable("name", false);
     }
 }

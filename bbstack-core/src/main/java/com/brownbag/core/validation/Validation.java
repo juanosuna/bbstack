@@ -24,7 +24,11 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
 import javax.validation.metadata.BeanDescriptor;
+import javax.validation.metadata.ConstraintDescriptor;
+import javax.validation.metadata.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -106,4 +110,28 @@ public class Validation {
         return validator.unwrap(type);
     }
 
+    public boolean isCascaded(Class beanClass, String propertyName) {
+        PropertyDescriptor descriptor = validator.getConstraintsForClass(beanClass).getConstraintsForProperty(propertyName);
+        return descriptor != null && descriptor.isCascaded();
+    }
+
+    public boolean isRequired(Class beanClass, String propertyName) {
+        return hasAnnotation(beanClass, propertyName, NotNull.class);
+    }
+
+    public boolean hasAnnotation(Class beanClass, String propertyName, Class annotationClass) {
+        PropertyDescriptor descriptor = validator.getConstraintsForClass(beanClass).getConstraintsForProperty(propertyName);
+        if (descriptor != null) {
+            Iterator<ConstraintDescriptor<?>> it = descriptor.getConstraintDescriptors().iterator();
+            while (it.hasNext()) {
+                final ConstraintDescriptor<?> d = it.next();
+                Annotation annotation = d.getAnnotation();
+                if (annotationClass.isAssignableFrom(annotation.getClass())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

@@ -31,3 +31,12 @@ breadcrumbs
 
 
 mvn deploy:deploy-file -Durl=scp://www.brownbagconsulting.com -DrepositoryId=brownbag -Dfile=sample-web.war
+
+
+remove search form border
+shrink search buttons
+move search buttons to right
+play with section background colors
+example of mouseover text
+margin between tabs and form
+hide/show next to caption

@@ -21,9 +21,7 @@ import com.brownbag.core.view.entity.EntityForm;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.sample.dao.StateDao;
-import com.brownbag.sample.entity.Contact;
-import com.brownbag.sample.entity.Country;
-import com.brownbag.sample.entity.State;
+import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.contact.accountsingleselect.AccountSingleSelect;
 import com.vaadin.data.Property;
 import org.springframework.context.annotation.Scope;
@@ -72,6 +70,7 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setPosition("Mailing Address", "mailingAddress.state", 0, 1);
         formFields.setPosition("Mailing Address", "mailingAddress.zipCode", 1, 1);
         formFields.setPosition("Mailing Address", "mailingAddress.country", 0, 2);
+        formFields.setTabOptional("Mailing Address", this, "addMailingAddress", this, "removeMailingAddress");
 
         formFields.setLabel("account.name", "Account");
 
@@ -83,6 +82,15 @@ public class ContactForm extends EntityForm<Contact> {
 
         SelectField selectField = new SelectField(this, "account", accountSelect);
         formFields.setField("account.name", selectField);
+
+    }
+
+    public void addMailingAddress() {
+        getEntity().setMailingAddress(new Address(AddressType.MAILING));
+    }
+
+    public void removeMailingAddress() {
+        getEntity().setMailingAddress(null);
     }
 
     public void countryChanged(Property.ValueChangeEvent event) {

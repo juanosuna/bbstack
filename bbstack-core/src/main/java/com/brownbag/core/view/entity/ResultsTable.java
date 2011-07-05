@@ -52,7 +52,8 @@ public class ResultsTable extends Table {
     }
 
     public void postConstruct() {
-        BeanItemContainer dataSource = new NullCapableBeanItemContainer(getEntityType());
+        NullCapableBeanItemContainer dataSource = new NullCapableBeanItemContainer(getEntityType());
+        dataSource.setNonSortablePropertyIds(results.getEntityQuery().getNonSortablePropertyIds());
         String[] propertyIds = getEntityFields().getPropertyIdsAsArray();
         for (String propertyId : propertyIds) {
             dataSource.addNestedContainerProperty(propertyId);

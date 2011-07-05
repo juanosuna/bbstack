@@ -110,6 +110,10 @@ public abstract class EntityQuery<T> {
         }
     }
 
+    public Set<String> getNonSortablePropertyIds() {
+        return nonSortablePropertyIds;
+    }
+
     public void clear() {
         setOrderByPropertyId(null);
         setOrderDirection(OrderDirection.ASC);

@@ -21,12 +21,14 @@ import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
+import com.brownbag.core.view.entity.util.LayoutContextMenu;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.NullCapableBeanItem;
 import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
 import com.vaadin.data.util.VaadinPropertyDescriptor;
 import com.vaadin.ui.*;
+import org.vaadin.peter.contextmenu.ContextMenu;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -51,6 +53,8 @@ public abstract class FormComponent<T> extends CustomComponent {
     private ResultsComponent results;
     private FormFields formFields;
     private TabSheet tabSheet;
+    private Map<String, Integer> tabPositions = new HashMap<String, Integer>();
+    private LayoutContextMenu menu;
 
     public abstract String getEntityCaption();
 
@@ -103,24 +107,8 @@ public abstract class FormComponent<T> extends CustomComponent {
 
         VerticalLayout layout = new VerticalLayout();
 
-        final Set<String> tabNames = formFields.getTabNames();
-        if (tabNames.size() > 1) {
-            tabSheet = new TabSheet();
-            tabSheet.setSizeUndefined();
-            for (String tabName : tabNames) {
-                tabSheet.addTab(new Label(), tabName, null);
-            }
-            layout.addComponent(tabSheet);
-
-            tabSheet.addListener(new TabSheet.SelectedTabChangeListener() {
-                @Override
-                public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
-                    String tabName = getCurrentTabName();
-                    GridLayout gridLayout = formFields.createGridLayout(tabName);
-                    form.setLayout(gridLayout);
-                    refreshFromDataSource();
-                }
-            });
+        if (formFields.getTabNames().size() > 1) {
+            initializeTabs(layout);
         }
 
         layout.addComponent(form);
@@ -128,11 +116,128 @@ public abstract class FormComponent<T> extends CustomComponent {
         setCustomSizeUndefined();
     }
 
+    private void initializeTabs(VerticalLayout layout) {
+        final Set<String> tabNames = formFields.getTabNames();
+
+        tabSheet = new TabSheet();
+        tabSheet.setSizeUndefined();
+        menu = new LayoutContextMenu(layout);
+        int tabPosition = 0;
+        for (String tabName : tabNames) {
+            TabSheet.Tab tab = tabSheet.addTab(new Label(), tabName, null);
+            tabPositions.put(tabName, tabPosition++);
+            if (formFields.isTabOptional(tabName)) {
+                menu.addAction(uiMessageSource.getMessage("formComponent.add") + " " + tabName,
+                        this, "executeContextAction").setVisible(true);
+                menu.addAction(uiMessageSource.getMessage("formComponent.remove") + " " + tabName,
+                        this, "executeContextAction").setVisible(false);
+                setIsRequiredEnable(tabName, false);
+                tab.setVisible(false);
+            }
+        }
+
+        layout.addComponent(tabSheet);
+
+        tabSheet.addListener(new TabSheet.SelectedTabChangeListener() {
+            @Override
+            public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
+                String tabName = getCurrentTabName();
+                GridLayout gridLayout = formFields.createGridLayout(tabName);
+                form.setLayout(gridLayout);
+                refreshFromDataSource();
+            }
+        });
+    }
+
+    protected void resetTabs() {
+        if (tabSheet == null) return;
+
+        Set<String> tabNames = formFields.getTabNames();
+        for (String tabName : tabNames) {
+            if (formFields.isTabOptional(tabName)) {
+                Set<FormField> fields = formFields.getFormFields(tabName);
+                boolean isTabEmpty = true;
+                for (FormField field : fields) {
+                    if (field.getField().getValue() != null) {
+                        isTabEmpty = false;
+                        break;
+                    }
+                }
+                setIsRequiredEnable(tabName, !isTabEmpty);
+                TabSheet.Tab tab = getTabByName(tabName);
+                tab.setVisible(!isTabEmpty);
+            }
+        }
+
+        resetContextMenu();
+        selectFirstTab();
+    }
+
+    private void resetContextMenu() {
+        Set<String> tabNames = formFields.getTabNames();
+        for (String tabName : tabNames) {
+            TabSheet.Tab tab = getTabByName(tabName);
+
+            String caption = uiMessageSource.getMessage("formComponent.add") + " " + tabName;
+            if (menu.containsItem(caption)) {
+                menu.getContextMenuItem(caption).setVisible(!tab.isVisible());
+            }
+            caption = uiMessageSource.getMessage("formComponent.remove") + " " + tabName;
+            if (menu.containsItem(caption)) {
+                menu.getContextMenuItem(caption).setVisible(tab.isVisible());
+            }
+        }
+    }
+
+    public void executeContextAction(ContextMenu.ContextMenuItem item) {
+        String name = item.getName();
+
+        if (name.startsWith(uiMessageSource.getMessage("formComponent.add") + " ")) {
+            String tabName = name.substring(4);
+            FormFields.AddRemoveMethodDelegate addRemoveMethodDelegate = formFields.getTabAddRemoveDelegate(tabName);
+            addRemoveMethodDelegate.getAddMethodDelegate().execute();
+            TabSheet.Tab tab = getTabByName(tabName);
+            setIsRequiredEnable(tabName, true);
+            tab.setVisible(true);
+            tabSheet.setSelectedTab(tab.getComponent());
+        } else if (name.startsWith(uiMessageSource.getMessage("formComponent.remove") + " ")) {
+            String tabName = name.substring(7);
+            FormFields.AddRemoveMethodDelegate addRemoveMethodDelegate = formFields.getTabAddRemoveDelegate(tabName);
+            addRemoveMethodDelegate.getRemoveMethodDelegate().execute();
+            TabSheet.Tab tab = getTabByName(tabName);
+            setIsRequiredEnable(tabName, false);
+            tab.setVisible(false);
+        }
+        resetContextMenu();
+    }
+
+    private void setIsRequiredEnable(String tabName, boolean isEnabled) {
+        Set<FormField> fields = formFields.getFormFields(tabName);
+        for (FormField field : fields) {
+            if (isEnabled) {
+                field.restoreIsRequired();
+            } else {
+                field.disableIsRequired();
+            }
+        }
+    }
+
+    public TabSheet.Tab getTabByName(String tabName) {
+        Integer position = tabPositions.get(tabName);
+        return tabSheet.getTab(position);
+    }
+
     public String getCurrentTabName() {
-        if (tabSheet == null) {
+        if (tabSheet == null || tabSheet.getSelectedTab() == null) {
             return formFields.getFirstTabName();
         } else {
             return tabSheet.getTab(tabSheet.getSelectedTab()).getCaption();
+        }
+    }
+
+    public void selectFirstTab() {
+        if (tabSheet != null) {
+            tabSheet.setSelectedTab(tabSheet.getTab(0).getComponent());
         }
     }
 

@@ -6,4 +6,6 @@
     <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet"/>
 
     <inherits name="org.vaadin.jouni.animator.AnimatorWidgetset"/>
+
+    <inherits name="org.vaadin.peter.contextmenu.ContextmenuWidgetset" />
 </module>

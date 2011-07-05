@@ -62,15 +62,16 @@ public class Contact extends WritableEntity {
     private String socialSecurityNumber;
 
     @Valid
+    @NotNull
     @Index(name = "IDX_CONTACT_PHYSICAL_ADDRESS")
     @ForeignKey(name = "FK_CONTACT_PHYSICAL_ADDRESS")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Address address;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Address address = new Address(AddressType.PHYSICAL);
 
     @Valid
     @Index(name = "IDX_CONTACT_MAILING_ADDRESS")
     @ForeignKey(name = "FK_CONTACT_MAILING_ADDRESS")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Address mailingAddress;
 
     public Contact() {
@@ -139,7 +140,9 @@ public class Contact extends WritableEntity {
     }
 
     public void setAddress(Address address) {
-        address.setType(AddressType.PHYSICAL);
+        if (address != null) {
+            address.setType(AddressType.PHYSICAL);
+        }
         this.address = address;
     }
 
@@ -148,7 +151,9 @@ public class Contact extends WritableEntity {
     }
 
     public void setMailingAddress(Address mailingAddress) {
-        address.setType(AddressType.MAILING);
+        if (mailingAddress != null) {
+            mailingAddress.setType(AddressType.MAILING);
+        }
         this.mailingAddress = mailingAddress;
     }
 
@@ -156,4 +161,12 @@ public class Contact extends WritableEntity {
     public void preRemove() {
         setAccount(null);
     }
+
+//    @PreUpdate
+//    @PrePersist
+//    public void preUpdateOrPersist() {
+//        if (ReflectionUtil.isBeanEmpty(getMailingAddress())) {
+//            setMailingAddress(null);
+//        }
+//    }
 }

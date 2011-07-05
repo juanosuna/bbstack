@@ -64,7 +64,7 @@ public class ContactDaoTest extends AbstractDomainTest {
         address.setCountry(country);
         addressDao.persist(address);
         contact.setAddress(address);
-
+        contact.setMailingAddress(null);
         contactDao.persist(contact);
     }
 

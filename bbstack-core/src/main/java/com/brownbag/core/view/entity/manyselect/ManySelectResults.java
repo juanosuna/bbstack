@@ -21,7 +21,7 @@ import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.ResultsComponent;
 import com.brownbag.core.view.entity.singleselect.SingleSelect;
-import com.brownbag.core.view.entity.util.ContextMenu;
+import com.brownbag.core.view.entity.util.ActionContextMenu;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -46,7 +46,7 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
     private MessageSource entityMessageSource;
 
     @Autowired
-    private ContextMenu contextMenu;
+    private ActionContextMenu contextMenu;
 
     private Window popupWindow;
 

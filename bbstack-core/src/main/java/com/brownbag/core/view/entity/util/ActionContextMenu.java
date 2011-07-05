@@ -20,7 +20,7 @@ import java.util.Map;
  */
 @Scope("prototype")
 @Component
-public class ContextMenu implements Action.Handler {
+public class ActionContextMenu implements Action.Handler {
 
     @Autowired
     private MessageSource uiMessageSource;

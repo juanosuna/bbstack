@@ -21,6 +21,8 @@ import com.brownbag.sample.view.contact.ContactQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 /**
  * User: Juan
  * Date: 2/8/11
@@ -29,4 +31,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("session")
 public class ContactQuerySingleSelect extends ContactQuery {
+    @PostConstruct
+    public void postConstruct() {
+        setSortable("name", false);
+    }
 }

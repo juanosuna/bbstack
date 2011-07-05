@@ -66,12 +66,13 @@ public class Address extends WritableEntity {
     private Country country;
 
     @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
-    private Set<Contact> contacts = new HashSet<Contact>();
-
-    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
     private Set<Account> accounts = new HashSet<Account>();
 
     public Address() {
+    }
+
+    public Address(AddressType type) {
+        this.type = type;
     }
 
     public AddressType getType() {
@@ -120,14 +121,6 @@ public class Address extends WritableEntity {
 
     public void setCountry(Country country) {
         this.country = country;
-    }
-
-    public Set<Contact> getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(Set<Contact> contacts) {
-        this.contacts = contacts;
     }
 
     public Set<Account> getAccounts() {

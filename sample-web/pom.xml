@@ -92,7 +92,7 @@
                     <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
                     <noServer>true</noServer>
                     <port>7001</port>
-                    <soyc>false</soyc>
+                    <soycDetailed>false</soycDetailed>
                 </configuration>
                 <executions>
                     <execution>
@@ -168,7 +168,7 @@
                 <executions>
                     <execution>
                         <id>upload-war</id>
-                        <!--<phase>install</phase>-->
+                        <phase>install</phase>
                         <goals>
                             <goal>upload</goal>
                         </goals>

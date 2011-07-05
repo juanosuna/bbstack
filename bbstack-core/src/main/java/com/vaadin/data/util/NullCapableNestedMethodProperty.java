@@ -51,8 +51,14 @@ public class NullCapableNestedMethodProperty extends NestedMethodProperty {
 
     @Override
     protected void invokeSetMethod(Object value) {
-        fillNullsInPropertyPath();
-        super.invokeSetMethod(value);
+        if (hasNullInPropertyPath()) {
+            if (value != null) {
+                fillNullsInPropertyPath();
+                super.invokeSetMethod(value);
+            }
+        } else {
+            super.invokeSetMethod(value);
+        }
     }
 
     private void fillNullsInPropertyPath() {

@@ -100,6 +100,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
         loadManySelects();
+        resetTabs();
     }
 
     private EntityDao getEntityDao() {
@@ -140,6 +141,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         BeanItem beanItem = createBeanItem(newEntity);
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
         clearComponentErrors();
+
+        resetTabs();
     }
 
     private T createEntity() {
@@ -211,6 +214,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     private boolean validatePatternIfThens(WritableEntity entity) {
+        boolean isValid = true;
         Set<ConstraintViolation<WritableEntity>> constraintViolations = validation.validate(entity);
         for (ConstraintViolation constraintViolation : constraintViolations) {
             String message = constraintViolation.getMessage();
@@ -224,13 +228,14 @@ public abstract class EntityForm<T> extends FormComponent<T> {
                 FormField thenField = getFormFields().getFormField(thenProperty);
                 AbstractComponent fieldComponent = (AbstractComponent) thenField.getField();
                 fieldComponent.setComponentError(error);
+                isValid = false;
             }
         }
-        if (constraintViolations.isEmpty()) {
+        if (isValid) {
             clearComponentErrors();
         }
 
-        return constraintViolations.isEmpty();
+        return isValid;
     }
 
     public void clearComponentErrors() {

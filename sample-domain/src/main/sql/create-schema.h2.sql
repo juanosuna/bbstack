@@ -56,7 +56,7 @@
         SOCIAL_SECURITY_NUMBER varchar(9),
         TITLE varchar(16),
         ACCOUNT bigint,
-        ADDRESS bigint,
+        ADDRESS bigint not null,
         MAILING_ADDRESS bigint,
         primary key (ID),
         unique (UUID)

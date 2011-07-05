@@ -17,10 +17,18 @@
 
 package com.brownbag.core.util;
 
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.DynaProperty;
+import org.apache.commons.beanutils.WrapDynaBean;
+import org.springframework.beans.BeanUtils;
+
+import javax.persistence.PersistenceUnitUtil;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * User: Juan
@@ -66,5 +74,54 @@ public class ReflectionUtil {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean isBeanEmpty(Object bean, PersistenceUnitUtil unitUtil) {
+        if (bean == null) {
+            return true;
+        }
+
+        WrapDynaBean wrapDynaBean = new WrapDynaBean(bean);
+        DynaProperty[] properties = wrapDynaBean.getDynaClass().getDynaProperties();
+        for (DynaProperty property : properties) {
+            String propertyName = property.getName();
+            Class propertyType = property.getType();
+
+            Object value = wrapDynaBean.get(propertyName);
+            if (propertyType.isPrimitive()) {
+                if (value instanceof Number && !value.toString().equals("0")) {
+                    return false;
+                } else if (value instanceof Boolean && !value.toString().equals("false")) {
+                    return false;
+                } else if (!value.toString().isEmpty()) {
+                    return false;
+                }
+            } else if (value != null) {
+                if (!(value instanceof Collection)) {
+                    String convertedStringValue = ConvertUtils.convert(value);
+                    if (!StringUtil.isEmpty(convertedStringValue)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public static Collection<String> findComplexProperties(Object bean) {
+        Collection<String> complexProperties = new ArrayList<String>();
+
+        WrapDynaBean wrapDynaBean = new WrapDynaBean(bean);
+        DynaProperty[] properties = wrapDynaBean.getDynaClass().getDynaProperties();
+        for (DynaProperty property : properties) {
+            String propertyName = property.getName();
+            Class propertyType = property.getType();
+            if (!BeanUtils.isSimpleValueType(propertyType)) {
+                complexProperties.add(propertyName);
+            }
+        }
+
+        return complexProperties;
     }
 }

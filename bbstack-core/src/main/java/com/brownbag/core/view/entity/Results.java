@@ -20,7 +20,7 @@ package com.brownbag.core.view.entity;
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.assertion.Assert;
 import com.brownbag.core.view.MessageSource;
-import com.brownbag.core.view.entity.util.ContextMenu;
+import com.brownbag.core.view.entity.util.ActionContextMenu;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Button;
@@ -40,7 +40,7 @@ public abstract class Results<T> extends ResultsComponent<T> {
     private MessageSource uiMessageSource;
 
     @Autowired
-    private ContextMenu contextMenu;
+    private ActionContextMenu contextMenu;
 
     private Button editButton;
     private Button deleteButton;

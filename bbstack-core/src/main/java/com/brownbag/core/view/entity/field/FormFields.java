@@ -17,15 +17,13 @@
 
 package com.brownbag.core.view.entity.field;
 
+import com.brownbag.core.util.MethodDelegate;
 import com.brownbag.core.view.MessageSource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.GridLayout;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: Juan
@@ -35,6 +33,7 @@ import java.util.Set;
 public class FormFields extends DisplayFields {
 
     private boolean attachValidators = false;
+    private Map<String, AddRemoveMethodDelegate> optionalTabs = new HashMap<String, AddRemoveMethodDelegate>();
 
     public FormFields(Class type, MessageSource messageSource, boolean attachValidators) {
         super(type, messageSource);
@@ -126,6 +125,25 @@ public class FormFields extends DisplayFields {
         formField.setRowEnd(rowEnd);
     }
 
+    public AddRemoveMethodDelegate getTabAddRemoveDelegate(String tabName) {
+        return optionalTabs.get(tabName);
+    }
+
+    public boolean isTabOptional(String tabName) {
+        return optionalTabs.containsKey(tabName);
+    }
+
+    public void setTabOptional(String tabName, Object addTarget, String addMethod,
+                               Object removeTarget, String removeMethod) {
+
+        MethodDelegate addMethodDelegate = new MethodDelegate(addTarget, addMethod);
+        MethodDelegate removeMethodDelegate = new MethodDelegate(removeTarget, removeMethod);
+        AddRemoveMethodDelegate addRemoveMethodDelegate = new AddRemoveMethodDelegate(addMethodDelegate,
+                removeMethodDelegate);
+
+        optionalTabs.put(tabName, addRemoveMethodDelegate);
+    }
+
     public FormField getFormField(String propertyId) {
         return (FormField) getField(propertyId);
     }
@@ -137,6 +155,19 @@ public class FormFields extends DisplayFields {
 
     public boolean containsPropertyId(String tabName, String propertyId) {
         return containsPropertyId(propertyId) && getFormField(propertyId).getTabName().equals(tabName);
+    }
+
+    public Set<FormField> getFormFields(String tabName) {
+        Set<FormField> formFields = new HashSet<FormField>();
+        Collection<DisplayField> displayFields = getFields();
+        for (DisplayField displayField : displayFields) {
+            FormField formField = (FormField) displayField;
+            if (formField.getTabName().equals(tabName)) {
+                formFields.add(formField);
+            }
+        }
+
+        return formFields;
     }
 
     public Set<String> getTabNames() {
@@ -163,18 +194,6 @@ public class FormFields extends DisplayFields {
         formField.setSelectItems(items);
     }
 
-    public Object getSelectedItem(String propertyId) {
-        return getFormField(propertyId).getSelectedItem();
-    }
-
-    public void setRequiredDeep(String propertyId, boolean isRequired) {
-        List<String> propertyIds = getPropertyIds();
-        for (String id : propertyIds) {
-            if (id.startsWith(propertyId + ".")) {
-                getFormField(id).setRequired(isRequired);
-            }
-        }
-    }
 
     public void addValueChangeListener(String propertyId, Object target, String methodName) {
         FormField formField = (FormField) getField(propertyId);
@@ -193,6 +212,24 @@ public class FormFields extends DisplayFields {
                 AbstractComponent fieldComponent = (AbstractComponent) formField.getField();
                 fieldComponent.setComponentError(null);
             }
+        }
+    }
+
+    public static class AddRemoveMethodDelegate {
+        private MethodDelegate addMethodDelegate;
+        private MethodDelegate removeMethodDelegate;
+
+        private AddRemoveMethodDelegate(MethodDelegate addMethodDelegate, MethodDelegate removeMethodDelegate) {
+            this.addMethodDelegate = addMethodDelegate;
+            this.removeMethodDelegate = removeMethodDelegate;
+        }
+
+        public MethodDelegate getAddMethodDelegate() {
+            return addMethodDelegate;
+        }
+
+        public MethodDelegate getRemoveMethodDelegate() {
+            return removeMethodDelegate;
         }
     }
 }
