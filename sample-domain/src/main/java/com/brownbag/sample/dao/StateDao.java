@@ -37,4 +37,11 @@ public class StateDao extends EntityDao<State, String> {
         return query.getResultList();
     }
 
+    @Override
+    public List<State> findAll() {
+        Query query = getEntityManager().createQuery("SELECT s FROM State s JOIN FETCH s.country");
+        query.setHint("org.hibernate.cacheable", true);
+
+        return query.getResultList();
+    }
 }

@@ -63,7 +63,7 @@ public class Account extends WritableEntity {
     @Valid
     @Index(name = "IDX_ACCOUNT_ADDRESS")
     @ForeignKey(name = "FK_ACCOUNT_ADDRESS")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address = new Address();
 
     @OneToMany(mappedBy = "account")

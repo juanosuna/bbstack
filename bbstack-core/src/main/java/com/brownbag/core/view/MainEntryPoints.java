@@ -34,6 +34,7 @@ public abstract class MainEntryPoints extends TabSheet {
         }
 
         addListener(new TabChangeListener());
+        entryPoints.get(0).getResultsComponent().search();
     }
 
     private class TabChangeListener implements SelectedTabChangeListener {

@@ -108,8 +108,6 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         addComponent(resultsTable);
 
         setCustomSizeUndefined();
-
-        search();
     }
 
     @Override

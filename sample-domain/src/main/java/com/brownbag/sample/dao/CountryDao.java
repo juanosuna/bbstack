@@ -19,10 +19,23 @@ package com.brownbag.sample.dao;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.sample.entity.Country;
+import com.brownbag.sample.entity.State;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.Query;
+import java.util.List;
 
 @Repository
 @Transactional
 public class CountryDao extends EntityDao<Country, String> {
+
+    @Override
+    public List<Country> findAll() {
+        Query query = getEntityManager().createQuery("SELECT c FROM Country c");
+        query.setHint("org.hibernate.cacheable", true);
+
+        return query.getResultList();
+    }
+
 }

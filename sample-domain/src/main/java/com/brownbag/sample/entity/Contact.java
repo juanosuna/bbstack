@@ -65,13 +65,13 @@ public class Contact extends WritableEntity {
     @NotNull
     @Index(name = "IDX_CONTACT_PHYSICAL_ADDRESS")
     @ForeignKey(name = "FK_CONTACT_PHYSICAL_ADDRESS")
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address = new Address(AddressType.PHYSICAL);
 
     @Valid
     @Index(name = "IDX_CONTACT_MAILING_ADDRESS")
     @ForeignKey(name = "FK_CONTACT_MAILING_ADDRESS")
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Address mailingAddress;
 
     public Contact() {
