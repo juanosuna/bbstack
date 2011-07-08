@@ -1,15 +1,23 @@
 package com.brownbag.core.util;
 
+import com.brownbag.core.util.assertion.Assert;
 import org.springframework.beans.BeanUtils;
 
 import javax.validation.Valid;
 import java.lang.reflect.Field;
+import java.util.Collection;
 
 public class BeanPropertyType {
     private BeanPropertyType parent;
     private String id;
     private Class type;
     private Class containerType;
+    private Class collectionValueType;
+
+    public BeanPropertyType(BeanPropertyType parent, String id, Class type, Class containerType, Class collectionValueType) {
+        this(parent, id, type, containerType);
+        this.collectionValueType = collectionValueType;
+    }
 
     public BeanPropertyType(BeanPropertyType parent, String id, Class type, Class containerType) {
         this(id, type, containerType);
@@ -26,20 +34,26 @@ public class BeanPropertyType {
         String[] properties = propertyPath.split("\\.");
         Class containingType;
         Class currentPropertyType = clazz;
-        String propertyId;
         BeanPropertyType beanPropertyType = null;
         for (String property : properties) {
             Class propertyType = BeanUtils.findPropertyType(property, new Class[]{currentPropertyType});
-            if (propertyType == null || propertyType.equals(Object.class)) {
-                throw new RuntimeException("Invalid property path given for class " + clazz
-                        + ": " + property);
-            } else {
-                containingType = currentPropertyType;
-                currentPropertyType = propertyType;
-                propertyId = property;
+            Assert.PROGRAMMING.assertTrue(propertyType != null && !propertyType.equals(Object.class),
+                    "Invalid property path:" + clazz + "." + property);
 
-                beanPropertyType = new BeanPropertyType(beanPropertyType, propertyId, currentPropertyType, containingType);
+            Class propertyPathType;
+            Class collectionValueType = null;
+            if (Collection.class.isAssignableFrom(propertyType)) {
+                collectionValueType = ReflectionUtil.getCollectionValueType(currentPropertyType, property);
+                propertyPathType = collectionValueType;
+            } else {
+                propertyPathType = propertyType;
             }
+
+            containingType = currentPropertyType;
+            currentPropertyType = propertyPathType;
+
+            beanPropertyType = new BeanPropertyType(beanPropertyType, property, propertyType, containingType,
+                    collectionValueType);
         }
 
         return beanPropertyType;
@@ -63,6 +77,14 @@ public class BeanPropertyType {
 
     public Class getContainerType() {
         return containerType;
+    }
+
+    public Class getCollectionValueType() {
+        return collectionValueType;
+    }
+
+    public boolean isCollectionType() {
+        return Collection.class.isAssignableFrom(type);
     }
 
     public boolean isValidatable() {

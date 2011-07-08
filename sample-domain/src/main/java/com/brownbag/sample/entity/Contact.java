@@ -61,6 +61,8 @@ public class Contact extends WritableEntity {
     @Size(min = 9, max = 9)
     private String socialSecurityNumber;
 
+    private boolean doNotCall;
+
     @Valid
     @NotNull
     @Index(name = "IDX_CONTACT_PHYSICAL_ADDRESS")
@@ -133,6 +135,14 @@ public class Contact extends WritableEntity {
 
     public void setSocialSecurityNumber(String socialSecurityNumber) {
         this.socialSecurityNumber = socialSecurityNumber;
+    }
+
+    public boolean isDoNotCall() {
+        return doNotCall;
+    }
+
+    public void setDoNotCall(boolean doNotCall) {
+        this.doNotCall = doNotCall;
     }
 
     public Address getAddress() {

@@ -58,18 +58,19 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setPosition("Overview", "birthDate", 0, 1);
         formFields.setPosition("Overview", "socialSecurityNumber", 1, 1);
         formFields.setPosition("Overview", "account.name", 0, 2);
+        formFields.setPosition("Overview", "doNotCall", 1, 2);
 
         formFields.setPosition("Physical Address", "address.street", 0, 0);
         formFields.setPosition("Physical Address", "address.city", 1, 0);
-        formFields.setPosition("Physical Address", "address.state", 0, 1);
+        formFields.setPosition("Physical Address", "address.country", 0, 1);
         formFields.setPosition("Physical Address", "address.zipCode", 1, 1);
-        formFields.setPosition("Physical Address", "address.country", 0, 2);
+        formFields.setPosition("Physical Address", "address.state", 0, 2);
 
         formFields.setPosition("Mailing Address", "mailingAddress.street", 0, 0);
         formFields.setPosition("Mailing Address", "mailingAddress.city", 1, 0);
-        formFields.setPosition("Mailing Address", "mailingAddress.state", 0, 1);
+        formFields.setPosition("Mailing Address", "mailingAddress.country", 0, 1);
         formFields.setPosition("Mailing Address", "mailingAddress.zipCode", 1, 1);
-        formFields.setPosition("Mailing Address", "mailingAddress.country", 0, 2);
+        formFields.setPosition("Mailing Address", "mailingAddress.state", 0, 2);
         formFields.setTabOptional("Mailing Address", this, "addMailingAddress", this, "removeMailingAddress");
 
         formFields.setLabel("account.name", "Account");

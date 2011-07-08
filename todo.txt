@@ -1,8 +1,9 @@
-multi-select box for searching things like multiple states/countries
-enums
-boolean checkboxes, radio buttons
-custom formatting dates, currency, numbers
-default values
+popup help/guide
+are-you-sure delete prompts
+
+add notes and attachments
+previous/next through edit screen
+remember last search
 
 excel export
 
@@ -11,6 +12,8 @@ admin, create users, roles, reference entities
 active/deactivate users
 pw reset
 registration
+
+check db schema for artifacts
 
 audit trail
 
@@ -26,9 +29,6 @@ Change tabs when selected, e.g. make a bit bigger
 Small icon for collapsing, expanding widgets
 Sorting icon that switches direction
 Result set navigation icons
-clear icon for many-to-ones
-breadcrumbs
-
 
 mvn deploy:deploy-file -Durl=scp://www.brownbagconsulting.com -DrepositoryId=brownbag -Dfile=sample-web.war
 

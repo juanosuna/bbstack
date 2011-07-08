@@ -38,8 +38,13 @@ public class AccountResults extends Results<Account> {
                 "name",
                 "address.state",
                 "address.country",
+                "numberOfEmployees",
+                "annualRevenueFormattedInCurrency",
                 "lastModified",
                 "modifiedBy"
         });
+
+        displayFields.getField("numberOfEmployees").setLabel("# of Employees");
+        displayFields.getField("annualRevenueFormattedInCurrency").setLabel("Annual Revenue");
     }
 }

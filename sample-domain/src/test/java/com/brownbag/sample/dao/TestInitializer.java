@@ -24,6 +24,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Date;
 
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
@@ -37,6 +38,9 @@ public class TestInitializer extends AbstractDomainTest {
     private CountryDao countryDao;
 
     @Autowired
+    private AccountTypeDao accountTypeDao;
+
+    @Autowired
     private ContactDao contactDao;
 
     @Autowired
@@ -46,6 +50,7 @@ public class TestInitializer extends AbstractDomainTest {
     @Test
     public void initialize() throws Exception {
 
+        initializeAccountTypes();
         initializeCountriesStates();
         initializeContacts();
     }
@@ -94,14 +99,21 @@ public class TestInitializer extends AbstractDomainTest {
             address.setCountry(country);
             address.setState(new State("NC"));
             address.setZipCode("28202");
+            account.setAnnualRevenueCurrency(Currency.getInstance("USD"));
         } else {
             address.setCity("Toronto");
             Country country = new Country("CA");
             address.setCountry(country);
             address.setState(new State("ON"));
             address.setZipCode("M4B 1B4");
+            account.setAnnualRevenueCurrency(Currency.getInstance("CAD"));
         }
         account.setAddress(address);
+
+        account.addType(new AccountType("Investor"));
+        account.addType(new AccountType("Customer"));
+        account.setNumberOfEmployees(1000);
+        account.setAnnualRevenue(1000000);
 
         accountDao.persist(account);
     }
@@ -136,6 +148,35 @@ public class TestInitializer extends AbstractDomainTest {
 
         state = new State("WV", "West Virginia", us);
         stateDao.persist(state);
+    }
+
+    private void initializeAccountTypes() {
+        AccountType accountType = new AccountType("Analyst");
+        accountTypeDao.persist(accountType);
+
+        accountType = new AccountType("Competitor");
+        accountTypeDao.persist(accountType);
+
+        accountType = new AccountType("Customer");
+        accountTypeDao.persist(accountType);
+
+        accountType = new AccountType("Integrator");
+        accountTypeDao.persist(accountType);
+
+        accountType = new AccountType("Investor");
+        accountTypeDao.persist(accountType);
+
+        accountType = new AccountType("Partner");
+        accountTypeDao.persist(accountType);
+
+        accountType = new AccountType("Prospect");
+        accountTypeDao.persist(accountType);
+
+        accountType = new AccountType("Reseller");
+        accountTypeDao.persist(accountType);
+
+        accountType = new AccountType("Press");
+        accountTypeDao.persist(accountType);
     }
 
     public static Date createBirthDate() {

@@ -17,12 +17,16 @@
 
 package com.brownbag.core.view.entity;
 
+import com.brownbag.core.view.entity.field.DisplayField;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.NullCapableBeanItemContainer;
 import com.vaadin.ui.Table;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -137,12 +141,29 @@ public class ResultsTable extends Table {
 
     @Override
     protected String formatPropertyValue(Object rowId, Object colId, Property property) {
-        // Format by property type
-        if (property.getType() == Date.class) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm"); // todo make locale specific
-            return dateFormat.format((Date) property.getValue());
+
+        Format format = null;
+
+        if (property.getValue() != null) {
+            DisplayField displayField = results.getDisplayFields().getField(colId.toString());
+            format = displayField.getFormat();
+
+            if (format == null) {
+                if (property.getType() == Date.class) {
+                    format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                } else if (property.getType() == BigDecimal.class) {
+                    format = new DecimalFormat("###,###.##");
+                    return format.format(property.getValue());
+                } else if (Number.class.isAssignableFrom(property.getType())) {
+                    format = new DecimalFormat();
+                }
+            }
         }
 
-        return super.formatPropertyValue(rowId, colId, property);
+        if (format == null) {
+            return super.formatPropertyValue(rowId, colId, property);
+        } else {
+            return format.format(property.getValue());
+        }
     }
 }

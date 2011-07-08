@@ -17,12 +17,14 @@
 
 package com.brownbag.core.util;
 
+import com.brownbag.core.util.assertion.Assert;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.WrapDynaBean;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.PersistenceUnitUtil;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -58,6 +60,30 @@ public class ReflectionUtil {
                 return getGenericArgumentType((Class) type);
             }
         }
+    }
+
+    public static Class getCollectionValueType(Class beanType, String beanProperty) {
+        PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(beanType, beanProperty);
+        Class propertyType =  descriptor.getPropertyType();
+        Assert.PROGRAMMING.assertTrue(Collection.class.isAssignableFrom(propertyType),
+                "Bean property not a collection type: " + beanType + "." + beanProperty);
+
+        Type genericPropertyType = descriptor.getReadMethod().getGenericReturnType();
+        Class collectionValueType = null;
+        if (genericPropertyType != null && genericPropertyType instanceof ParameterizedType) {
+            Type[] typeArgs = ((ParameterizedType) genericPropertyType).getActualTypeArguments();
+            if (typeArgs != null && typeArgs.length > 0) {
+                if (typeArgs.length == 1) {
+                    collectionValueType = (Class) typeArgs[0];
+                } else if (typeArgs.length == 2) {
+                    collectionValueType = (Class) typeArgs[1];
+                } else {
+                    Assert.PROGRAMMING.fail("Collection type has more than two generic arguments");
+                }
+            }
+        }
+
+        return collectionValueType;
     }
 
     public static <T> T newInstance(Class<T> type, Class[] parameterTypes, Object[] args) {

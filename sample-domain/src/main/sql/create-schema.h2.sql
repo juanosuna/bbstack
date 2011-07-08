@@ -13,7 +13,6 @@
         NUMBER_OF_EMPLOYEES integer check (NUMBER_OF_EMPLOYEES>=0),
         ADDRESS bigint,
         INDUSTRY varchar(255),
-        TYPE varchar(255),
         primary key (ID),
         unique (UUID)
     );
@@ -22,6 +21,12 @@
         ID varchar(255) not null,
         NAME varchar(255),
         primary key (ID)
+    );
+
+    create table SAMPLE.ACCOUNT_TYPES (
+        ACCOUNT bigint not null,
+        TYPES varchar(255) not null,
+        primary key (ACCOUNT, TYPES)
     );
 
     create table SAMPLE.ADDRESS (
@@ -51,6 +56,7 @@
         UUID varchar(255) not null unique,
         VERSION integer,
         BIRTH_DATE date,
+        DO_NOT_CALL boolean not null,
         FIRST_NAME varchar(16) not null,
         LAST_NAME varchar(16) not null,
         SOCIAL_SECURITY_NUMBER varchar(9),
@@ -81,8 +87,6 @@
         primary key (ID)
     );
 
-    create index IDX_ACCOUNT_TYPE on SAMPLE.ACCOUNT (TYPE);
-
     create index IDX_ACCOUNT_ADDRESS on SAMPLE.ACCOUNT (ADDRESS);
 
     create index IDX_ACCOUNT_INDUSTRY on SAMPLE.ACCOUNT (INDUSTRY);
@@ -93,14 +97,19 @@
         references SAMPLE.ADDRESS;
 
     alter table SAMPLE.ACCOUNT 
-        add constraint FK_ACCOUNT_TYPE 
-        foreign key (TYPE) 
-        references SAMPLE.ACCOUNT_TYPE;
-
-    alter table SAMPLE.ACCOUNT 
         add constraint FK_ACCOUNT_INDUSTRY 
         foreign key (INDUSTRY) 
         references SAMPLE.INDUSTRY;
+
+    alter table SAMPLE.ACCOUNT_TYPES 
+        add constraint FKD10D5BA76A1FE44A 
+        foreign key (TYPES) 
+        references SAMPLE.ACCOUNT_TYPE;
+
+    alter table SAMPLE.ACCOUNT_TYPES 
+        add constraint FK_ACCOUNT_TYPE 
+        foreign key (ACCOUNT) 
+        references SAMPLE.ACCOUNT;
 
     create index IDX_ADDRESS_COUNTRY on SAMPLE.ADDRESS (COUNTRY);
 

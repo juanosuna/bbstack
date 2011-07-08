@@ -27,6 +27,8 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.*;
 
+import java.text.Format;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -111,7 +113,8 @@ public class FormField extends DisplayField {
     }
 
     public void setSelectItems(List items) {
-        Object selectedItem = getSelectedItem();
+        // could be either collection or single item
+        Object selectedItems = getSelectedItems();
 
         Field field = getField();
         Assert.PROGRAMMING.assertTrue(field instanceof AbstractSelect,
@@ -119,27 +122,42 @@ public class FormField extends DisplayField {
         AbstractSelect selectField = (AbstractSelect) field;
         if (selectField.getContainerDataSource() == null
                 || !(selectField.getContainerDataSource() instanceof BeanItemContainer)) {
-            BeanItemContainer container = new BeanItemContainer(getPropertyType(), items);
+            BeanItemContainer container;
+            if (isCollectionType()) {
+                container = new BeanItemContainer(getCollectionValueType(), items);
+            } else {
+                container = new BeanItemContainer(getPropertyType(), items);
+            }
+
             selectField.setContainerDataSource(container);
         } else {
             BeanItemContainer container = (BeanItemContainer) selectField.getContainerDataSource();
             container.removeAllItems();
             container.addAll(items);
 
-            if (!container.containsId(selectedItem)) {
+            if (!isCollectionType() && !container.containsId(selectedItems)) {
                 selectField.select(selectField.getNullSelectionItemId());
             }
         }
     }
 
-    public void setDisplayPropertyId(String displayPropertyId) {
-        Assert.PROGRAMMING.assertTrue(field instanceof Select,
-                "property " + getPropertyId() + " is not a Select field");
-
-        ((Select) field).setItemCaptionPropertyId(displayPropertyId);
+    public void setMultiSelectDimensions(int rows, int columns) {
+        Field field = getField();
+        Assert.PROGRAMMING.assertTrue(field instanceof ListSelect,
+                "property " + getPropertyId() + " is not a AbstractSelect field");
+        ListSelect selectField = (ListSelect) field;
+        selectField.setRows(rows);
+        selectField.setColumns(columns);
     }
 
-    public Object getSelectedItem() {
+    public void setDisplayPropertyId(String displayPropertyId) {
+        Assert.PROGRAMMING.assertTrue(field instanceof AbstractSelect,
+                "property " + getPropertyId() + " is not a Select field");
+
+        ((AbstractSelect) field).setItemCaptionPropertyId(displayPropertyId);
+    }
+
+    public Object getSelectedItems() {
         Field field = getField();
         Assert.PROGRAMMING.assertTrue(field instanceof AbstractSelect,
                 "property " + getPropertyId() + " is not a AbstractSelect field");
@@ -179,12 +197,16 @@ public class FormField extends DisplayField {
             return new DateField();
         }
 
-        if (Boolean.class.isAssignableFrom(propertyType)) {
+        if (boolean.class.isAssignableFrom(propertyType) || Boolean.class.isAssignableFrom(propertyType)) {
             return new CheckBox();
         }
 
         if (ReferenceEntity.class.isAssignableFrom(propertyType)) {
             return new Select();
+        }
+
+        if (Collection.class.isAssignableFrom(propertyType)) {
+            return new ListSelect();
         }
 
         return new TextField();
@@ -226,8 +248,17 @@ public class FormField extends DisplayField {
                 initSelectDefaults((Select) field);
             }
 
+            if (field instanceof ListSelect) {
+                initListSelectDefaults((ListSelect) field);
+            }
+
+            Class valueType = getPropertyType();
+            if (isCollectionType()) {
+                valueType = getCollectionValueType();
+            }
+
             EntityDao propertyDao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class,
-                    getPropertyType());
+                    valueType);
             List referenceEntities = propertyDao.findAll();
             setSelectItems(referenceEntities);
         }
@@ -257,5 +288,9 @@ public class FormField extends DisplayField {
 
     public static void initSelectDefaults(Select field) {
         field.setFilteringMode(Select.FILTERINGMODE_CONTAINS);
+    }
+
+    public static void initListSelectDefaults(ListSelect field) {
+        field.setMultiSelect(true);
     }
 }

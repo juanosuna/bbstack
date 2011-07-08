@@ -23,6 +23,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.text.Format;
 
 /**
  * User: Juan
@@ -33,15 +34,13 @@ public class DisplayField {
     private DisplayFields displayFields;
     private String propertyId;
     private String label;
-    private Class propertyType;
+    private BeanPropertyType beanPropertyType;
+    private Format format;
 
     public DisplayField(DisplayFields displayFields, String propertyId) {
         this.displayFields = displayFields;
         this.propertyId = propertyId;
-
-        BeanPropertyType beanPropertyType = com.brownbag.core.util.BeanPropertyType.getBeanProperty(getDisplayFields().getEntityType(),
-                getPropertyId());
-        propertyType = beanPropertyType.getType();
+        beanPropertyType = BeanPropertyType.getBeanProperty(getDisplayFields().getEntityType(), getPropertyId());
     }
 
     public DisplayFields getDisplayFields() {
@@ -53,7 +52,23 @@ public class DisplayField {
     }
 
     public Class getPropertyType() {
-        return propertyType;
+        return beanPropertyType.getType();
+    }
+
+    public Class getCollectionValueType() {
+        return beanPropertyType.getCollectionValueType();
+    }
+
+    public boolean isCollectionType() {
+        return beanPropertyType.isCollectionType();
+    }
+
+    public Format getFormat() {
+        return format;
+    }
+
+    public void setFormat(Format format) {
+        this.format = format;
     }
 
     public String getLabel() {

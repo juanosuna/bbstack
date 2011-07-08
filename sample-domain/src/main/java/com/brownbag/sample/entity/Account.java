@@ -29,6 +29,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.util.Currency;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,8 +54,8 @@ public class Account extends WritableEntity {
 
     @Index(name = "IDX_ACCOUNT_TYPE")
     @ForeignKey(name = "FK_ACCOUNT_TYPE")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private AccountType type;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<AccountType> types = new HashSet<AccountType>();
 
     @Index(name = "IDX_ACCOUNT_INDUSTRY")
     @ForeignKey(name = "FK_ACCOUNT_INDUSTRY")
@@ -96,6 +98,10 @@ public class Account extends WritableEntity {
         this.annualRevenue = annualRevenue;
     }
 
+    public void setAnnualRevenue(double annualRevenue) {
+        setAnnualRevenue(new BigDecimal(annualRevenue));
+    }
+
     public Currency getAnnualRevenueCurrency() {
         return annualRevenueCurrency;
     }
@@ -104,12 +110,29 @@ public class Account extends WritableEntity {
         this.annualRevenueCurrency = annualRevenueCurrency;
     }
 
-    public AccountType getType() {
-        return type;
+    public String getAnnualRevenueFormattedInCurrency() {
+        if (getAnnualRevenueCurrency() == null) {
+            return null;
+        } else {
+            Format format = new DecimalFormat("###,###");
+            if (getAnnualRevenueCurrency() == null) {
+                return format.format(getAnnualRevenue());
+            } else {
+                return format.format(getAnnualRevenue()) + " " + getAnnualRevenueCurrency().getCurrencyCode();
+            }
+        }
     }
 
-    public void setType(AccountType type) {
-        this.type = type;
+    public Set<AccountType> getTypes() {
+        return types;
+    }
+
+    public void setTypes(Set<AccountType> type) {
+        this.types = type;
+    }
+
+    public void addType(AccountType type) {
+        getTypes().add(type);
     }
 
     public Industry getIndustry() {

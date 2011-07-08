@@ -26,7 +26,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * User: Juan
@@ -41,7 +44,7 @@ public class ContactQuery extends EntityQuery<Contact> {
     private ContactDao contactDao;
 
     private String lastName;
-    private State state;
+    private Set<State> states = new HashSet<State>();
     private Country country;
 
     public String getLastName() {
@@ -52,12 +55,12 @@ public class ContactQuery extends EntityQuery<Contact> {
         this.lastName = lastName;
     }
 
-    public State getState() {
-        return state;
+    public Set<State> getStates() {
+        return states;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setStates(Set<State> states) {
+        this.states = states;
     }
 
     public Country getCountry() {
@@ -70,6 +73,10 @@ public class ContactQuery extends EntityQuery<Contact> {
 
     @Override
     public List<Contact> execute() {
+        if (getOrderByPropertyId() == null) {
+            setOrderByPropertyId("lastModified");
+            setOrderDirection(OrderDirection.DESC);
+        }
         return contactDao.find(this);
     }
 
@@ -77,7 +84,7 @@ public class ContactQuery extends EntityQuery<Contact> {
     public String toString() {
         return "ContactQuery{" +
                 "lastName='" + lastName + '\'' +
-                ", state=" + state +
+                ", state=" + states +
                 '}';
     }
 }

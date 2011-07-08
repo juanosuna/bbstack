@@ -32,6 +32,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @Transactional
@@ -133,9 +134,9 @@ public class ContactDao extends EntityDao<Contact, Long> {
             ParameterExpression<String> p = b.parameter(String.class, "lastName");
             criteria.add(b.like(b.upper(contact.<String>get("lastName")), p));
         }
-        if (query.getState() != null) {
-            ParameterExpression<State> p = b.parameter(State.class, "state");
-            criteria.add(b.equal(contact.get("address").get("state"), p));
+        if (query.getStates() != null && !query.getStates().isEmpty()) {
+            ParameterExpression<Set> p = b.parameter(Set.class, "states");
+            criteria.add(b.in(contact.get("address").get("state")).value(p));
         }
         if (query.getCountry() != null) {
             ParameterExpression<Country> p = b.parameter(Country.class, "country");
@@ -167,8 +168,8 @@ public class ContactDao extends EntityDao<Contact, Long> {
         if (query.getLastName() != null) {
             q.setParameter("lastName", "%" + query.getLastName().toUpperCase() + "%");
         }
-        if (query.getState() != null) {
-            q.setParameter("state", query.getState());
+        if (query.getStates() != null && !query.getStates().isEmpty()) {
+            q.setParameter("states", query.getStates());
         }
         if (query.getCountry() != null) {
             q.setParameter("country", query.getCountry());

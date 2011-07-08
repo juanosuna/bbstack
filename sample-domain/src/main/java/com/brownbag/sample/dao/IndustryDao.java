@@ -19,10 +19,11 @@ package com.brownbag.sample.dao;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.sample.entity.AccountType;
+import com.brownbag.sample.entity.Industry;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class IndustryDao extends EntityDao<AccountType, String> {
+public class IndustryDao extends EntityDao<Industry, String> {
 }

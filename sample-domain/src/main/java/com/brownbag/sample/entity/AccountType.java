@@ -36,10 +36,6 @@ public class AccountType extends ReferenceEntity {
     }
 
     public AccountType(String id) {
-        super(id);
-    }
-
-    public AccountType(String id, String name) {
-        super(id, name);
+        super(id, id);
     }
 }
