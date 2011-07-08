@@ -47,7 +47,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
     private EntityQuery entityQuery;
     private DisplayFields displayFields;
 
-    private ComponentContainer resultsButtons;
+    private HorizontalLayout resultsButtons;
 
     protected ResultsComponent() {
     }
@@ -90,7 +90,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         this.entityQuery = entityQuery;
     }
 
-    public ComponentContainer getResultsButtons() {
+    public HorizontalLayout getResultsButtons() {
         return resultsButtons;
     }
 
@@ -105,6 +105,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
 
         resultsButtons = createResultsButtons();
         addComponent(resultsButtons);
+
         addComponent(resultsTable);
 
         setCustomSizeUndefined();
@@ -120,31 +121,31 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         getCompositionRoot().setSizeUndefined();
     }
 
-    private ComponentContainer createResultsButtons() {
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setMargin(false);
-        layout.setSpacing(true);
+    private HorizontalLayout createResultsButtons() {
+        HorizontalLayout navigationButtons = new HorizontalLayout();
+        navigationButtons.setMargin(false);
+        navigationButtons.setSpacing(true);
 
         Button firstButton = new Button(uiMessageSource.getMessage("entityResults.first"), getResultsTable(), "firstPage");
         firstButton.addStyleName("small default");
-        layout.addComponent(firstButton);
+        navigationButtons.addComponent(firstButton);
 
         Button previousButton = new Button(uiMessageSource.getMessage("entityResults.previous"), getResultsTable(), "previousPage");
         previousButton.addStyleName("small default");
-        layout.addComponent(previousButton);
+        navigationButtons.addComponent(previousButton);
 
         Button nextButton = new Button(uiMessageSource.getMessage("entityResults.next"), getResultsTable(), "nextPage");
         nextButton.addStyleName("small default");
-        layout.addComponent(nextButton);
+        navigationButtons.addComponent(nextButton);
 
         Button lastButton = new Button(uiMessageSource.getMessage("entityResults.last"), getResultsTable(), "lastPage");
         lastButton.addStyleName("small default");
-        layout.addComponent(lastButton);
+        navigationButtons.addComponent(lastButton);
 
         Label pageSizeLabel = new Label(uiMessageSource.getMessage("entityResults.pageSize") + ": ");
         pageSizeLabel.setSizeUndefined();
         pageSizeLabel.addStyleName("small");
-        layout.addComponent(pageSizeLabel);
+        navigationButtons.addComponent(pageSizeLabel);
         Select pageSizeMenu = new Select();
         pageSizeMenu.addStyleName("small");
         pageSizeMenu.addItem(10);
@@ -158,9 +159,15 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         pageSizeMenu.setImmediate(true);
         pageSizeMenu.setWidth(4, UNITS_EM);
         pageSizeMenu.addListener(Property.ValueChangeEvent.class, this, "search");
-        layout.addComponent(pageSizeMenu);
+        navigationButtons.addComponent(pageSizeMenu);
 
-        return layout;
+
+        HorizontalLayout resultsButtons = new HorizontalLayout();
+        resultsButtons.setWidth("100%");
+        resultsButtons.addComponent(navigationButtons);
+        resultsButtons.setComponentAlignment(navigationButtons, Alignment.MIDDLE_RIGHT);
+
+        return resultsButtons;
     }
 
     public int getPageSize() {

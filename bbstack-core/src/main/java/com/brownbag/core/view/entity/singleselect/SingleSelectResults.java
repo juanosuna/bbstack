@@ -20,7 +20,9 @@ package com.brownbag.core.view.entity.singleselect;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.ResultsComponent;
 import com.brownbag.core.view.entity.util.ActionContextMenu;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
@@ -49,10 +51,17 @@ public abstract class SingleSelectResults<T> extends ResultsComponent<T> {
         super.postConstruct();
         addSelectionChangedListener(this, "selectionChanged");
 
+        HorizontalLayout crudButtons = new HorizontalLayout();
+        crudButtons.setMargin(false);
+        crudButtons.setSpacing(true);
+
         selectButton = new Button(uiMessageSource.getMessage("entityResults.select"));
         selectButton.setEnabled(false);
         selectButton.addStyleName("small default");
-        getResultsButtons().addComponent(selectButton);
+        crudButtons.addComponent(selectButton);
+
+        getResultsButtons().addComponent(crudButtons, 0);
+        getResultsButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
     }
 
     public void selectionChanged() {

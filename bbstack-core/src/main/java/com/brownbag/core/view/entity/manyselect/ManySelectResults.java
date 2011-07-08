@@ -22,9 +22,7 @@ import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.ResultsComponent;
 import com.brownbag.core.view.entity.singleselect.SingleSelect;
 import com.brownbag.core.view.entity.util.ActionContextMenu;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -66,14 +64,21 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
+        HorizontalLayout crudButtons = new HorizontalLayout();
+        crudButtons.setMargin(false);
+        crudButtons.setSpacing(true);
+
         addButton = new Button(uiMessageSource.getMessage("entityResults.add"), this, "add");
         addButton.addStyleName("small default");
-        getResultsButtons().addComponent(addButton);
+        crudButtons.addComponent(addButton);
 
         removeButton = new Button(uiMessageSource.getMessage("entityResults.remove"), this, "remove");
         removeButton.setEnabled(false);
         removeButton.addStyleName("small default");
-        getResultsButtons().addComponent(removeButton);
+        crudButtons.addComponent(removeButton);
+
+        getResultsButtons().addComponent(crudButtons, 0);
+        getResultsButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
 
         getResultsTable().setMultiSelect(true);
         getSingleSelect().getResultsComponent().getResultsTable().setMultiSelect(true);

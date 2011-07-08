@@ -23,7 +23,9 @@ import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.util.ActionContextMenu;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
@@ -54,23 +56,30 @@ public abstract class Results<T> extends ResultsComponent<T> {
 
         getResultsTable().setMultiSelect(true);
 
+        HorizontalLayout crudButtons = new HorizontalLayout();
+        crudButtons.setMargin(false);
+        crudButtons.setSpacing(true);
+
         Button newButton = new Button(uiMessageSource.getMessage("entityResults.new"), this, "create");
         newButton.addStyleName("small default");
-        getResultsButtons().addComponent(newButton);
+        crudButtons.addComponent(newButton);
 
         editButton = new Button(uiMessageSource.getMessage("entityResults.edit"), this, "edit");
         editButton.setEnabled(false);
         editButton.addStyleName("small default");
-        getResultsButtons().addComponent(editButton);
+        crudButtons.addComponent(editButton);
 
         deleteButton = new Button(uiMessageSource.getMessage("entityResults.delete"), this, "delete");
         deleteButton.setEnabled(false);
         deleteButton.addStyleName("small default");
-        getResultsButtons().addComponent(deleteButton);
+        crudButtons.addComponent(deleteButton);
 
         addSelectionChangedListener(this, "selectionChanged");
         contextMenu.addAction("entityResults.edit", this, "edit");
         contextMenu.addAction("entityResults.delete", this, "delete");
+
+        getResultsButtons().addComponent(crudButtons, 0);
+        getResultsButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
 
         getResultsTable().addListener(new DoubleClickListener());
     }
