@@ -22,6 +22,7 @@ import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.ResultsComponent;
 import com.brownbag.core.view.entity.singleselect.SingleSelect;
 import com.brownbag.core.view.entity.util.ActionContextMenu;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,10 +70,12 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
         crudButtons.setSpacing(true);
 
         addButton = new Button(uiMessageSource.getMessage("entityResults.add"), this, "add");
+        addButton.setIcon(new ThemeResource("icons/16/add.png"));
         addButton.addStyleName("small default");
         crudButtons.addComponent(addButton);
 
         removeButton = new Button(uiMessageSource.getMessage("entityResults.remove"), this, "remove");
+        removeButton.setIcon(new ThemeResource("icons/16/delete.png"));
         removeButton.setEnabled(false);
         removeButton.addStyleName("small default");
         crudButtons.addComponent(removeButton);

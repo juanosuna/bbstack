@@ -23,6 +23,7 @@ import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 
 import javax.annotation.Resource;
@@ -126,26 +127,6 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         navigationButtons.setMargin(false);
         navigationButtons.setSpacing(true);
 
-        Button firstButton = new Button(uiMessageSource.getMessage("entityResults.first"), getResultsTable(), "firstPage");
-        firstButton.addStyleName("small default");
-        navigationButtons.addComponent(firstButton);
-
-        Button previousButton = new Button(uiMessageSource.getMessage("entityResults.previous"), getResultsTable(), "previousPage");
-        previousButton.addStyleName("small default");
-        navigationButtons.addComponent(previousButton);
-
-        Button nextButton = new Button(uiMessageSource.getMessage("entityResults.next"), getResultsTable(), "nextPage");
-        nextButton.addStyleName("small default");
-        navigationButtons.addComponent(nextButton);
-
-        Button lastButton = new Button(uiMessageSource.getMessage("entityResults.last"), getResultsTable(), "lastPage");
-        lastButton.addStyleName("small default");
-        navigationButtons.addComponent(lastButton);
-
-        Label pageSizeLabel = new Label(uiMessageSource.getMessage("entityResults.pageSize") + ": ");
-        pageSizeLabel.setSizeUndefined();
-        pageSizeLabel.addStyleName("small");
-        navigationButtons.addComponent(pageSizeLabel);
         Select pageSizeMenu = new Select();
         pageSizeMenu.addStyleName("small");
         pageSizeMenu.addItem(10);
@@ -160,10 +141,39 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         pageSizeMenu.setWidth(4, UNITS_EM);
         pageSizeMenu.addListener(Property.ValueChangeEvent.class, this, "search");
         navigationButtons.addComponent(pageSizeMenu);
+        Label pageSizeLabel = new Label(uiMessageSource.getMessage("entityResults.pageSize"));
+        pageSizeLabel.setSizeUndefined();
+        pageSizeLabel.addStyleName("small");
+        navigationButtons.addComponent(pageSizeLabel);
 
+        Button firstButton = new Button(null, getResultsTable(), "firstPage");
+        firstButton.setSizeUndefined();
+        firstButton.addStyleName("borderless");
+        firstButton.setIcon(new ThemeResource("icons/16/first.png"));
+        navigationButtons.addComponent(firstButton);
+
+        Button previousButton = new Button(null, getResultsTable(), "previousPage");
+        previousButton.setSizeUndefined();
+        previousButton.addStyleName("borderless");
+        previousButton.setIcon(new ThemeResource("icons/16/previous.png"));
+        navigationButtons.addComponent(previousButton);
+
+        Button nextButton = new Button(null, getResultsTable(), "nextPage");
+        nextButton.setSizeUndefined();
+        nextButton.addStyleName("borderless");
+        nextButton.setIcon(new ThemeResource("icons/16/next.png"));
+        navigationButtons.addComponent(nextButton);
+
+        Button lastButton = new Button(null, getResultsTable(), "lastPage");
+        lastButton.setSizeUndefined();
+        lastButton.addStyleName("borderless");
+        lastButton.setIcon(new ThemeResource("icons/16/last.png"));
+        navigationButtons.addComponent(lastButton);
 
         HorizontalLayout resultsButtons = new HorizontalLayout();
         resultsButtons.setWidth("100%");
+        resultsButtons.setMargin(true, false, false, false);
+        resultsButtons.addStyleName("resultsButtons");
         resultsButtons.addComponent(navigationButtons);
         resultsButtons.setComponentAlignment(navigationButtons, Alignment.MIDDLE_RIGHT);
 

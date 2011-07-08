@@ -91,6 +91,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         form.setInvalidCommitted(true);
         form.setImmediate(true);
         form.setValidationVisibleOnCommit(true);
+        form.addStyleName("borderless");
         form.setStyleName("entityForm");
 
         formFields = createFormFields();

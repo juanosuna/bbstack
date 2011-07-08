@@ -34,7 +34,6 @@ mvn deploy:deploy-file -Durl=scp://www.brownbagconsulting.com -DrepositoryId=bro
 
 
 remove search form border
-shrink search buttons
 move search buttons to right
 play with section background colors
 example of mouseover text

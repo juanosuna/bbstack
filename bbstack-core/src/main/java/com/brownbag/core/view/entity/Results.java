@@ -23,6 +23,7 @@ import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.util.ActionContextMenu;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -61,15 +62,18 @@ public abstract class Results<T> extends ResultsComponent<T> {
         crudButtons.setSpacing(true);
 
         Button newButton = new Button(uiMessageSource.getMessage("entityResults.new"), this, "create");
+        newButton.setIcon(new ThemeResource("icons/16/add.png"));
         newButton.addStyleName("small default");
         crudButtons.addComponent(newButton);
 
         editButton = new Button(uiMessageSource.getMessage("entityResults.edit"), this, "edit");
+        editButton.setIcon(new ThemeResource("icons/16/edit.png"));
         editButton.setEnabled(false);
         editButton.addStyleName("small default");
         crudButtons.addComponent(editButton);
 
         deleteButton = new Button(uiMessageSource.getMessage("entityResults.delete"), this, "delete");
+        deleteButton.setIcon(new ThemeResource("icons/16/delete.png"));
         deleteButton.setEnabled(false);
         deleteButton.addStyleName("small default");
         crudButtons.addComponent(deleteButton);

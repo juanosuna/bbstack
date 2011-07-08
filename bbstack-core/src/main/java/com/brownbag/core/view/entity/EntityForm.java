@@ -26,6 +26,7 @@ import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.manyselect.ManySelect;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,15 +79,18 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         footerLayout.setSpacing(true);
 
         Button cancelButton = new Button(uiMessageSource.getMessage("entityForm.cancel"), this, "cancel");
-        cancelButton.addStyleName("default");
+        cancelButton.setIcon(new ThemeResource("icons/16/cancel.png"));
+        cancelButton.addStyleName("small default");
         footerLayout.addComponent(cancelButton);
 
         Button resetButton = new Button(uiMessageSource.getMessage("entityForm.reset"), this, "reset");
-        resetButton.addStyleName("default");
+        resetButton.setIcon(new ThemeResource("icons/16/refresh.png"));
+        resetButton.addStyleName("small default");
         footerLayout.addComponent(resetButton);
 
         Button saveButton = new Button(uiMessageSource.getMessage("entityForm.save"), this, "save");
-        saveButton.addStyleName("default");
+        saveButton.setIcon(new ThemeResource("icons/16/save.png"));
+        saveButton.addStyleName("small default");
         footerLayout.addComponent(saveButton);
 
         return footerLayout;

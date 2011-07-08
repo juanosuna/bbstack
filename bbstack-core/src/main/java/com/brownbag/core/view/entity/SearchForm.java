@@ -19,6 +19,7 @@ package com.brownbag.core.view.entity;
 
 import com.brownbag.core.view.entity.field.FormFields;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 
@@ -52,13 +53,15 @@ public abstract class SearchForm<T> extends FormComponent<T> {
         HorizontalLayout footerLayout = new HorizontalLayout();
         footerLayout.setSpacing(true);
 
-        Button clear = new Button(uiMessageSource.getMessage("entitySearchForm.clear"), this, "clear");
-        clear.addStyleName("default");
-        footerLayout.addComponent(clear);
+        Button clearButton = new Button(uiMessageSource.getMessage("entitySearchForm.clear"), this, "clear");
+        clearButton.setIcon(new ThemeResource("icons/16/clear.png"));
+        clearButton.addStyleName("small default");
+        footerLayout.addComponent(clearButton);
 
-        Button search = new Button(uiMessageSource.getMessage("entitySearchForm.search"), this, "search");
-        search.addStyleName("default");
-        footerLayout.addComponent(search);
+        Button searchButton = new Button(uiMessageSource.getMessage("entitySearchForm.search"), this, "search");
+        searchButton.setIcon(new ThemeResource("icons/16/search.png"));
+        searchButton.addStyleName("small default");
+        footerLayout.addComponent(searchButton);
 
         return footerLayout;
     }
