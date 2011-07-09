@@ -74,9 +74,10 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         }
     }
 
-    protected HorizontalLayout createFooterButtons() {
-        HorizontalLayout footerLayout = new HorizontalLayout();
+    @Override
+    protected void createFooterButtons(HorizontalLayout footerLayout) {
         footerLayout.setSpacing(true);
+        footerLayout.setMargin(true);
 
         Button cancelButton = new Button(uiMessageSource.getMessage("entityForm.cancel"), this, "cancel");
         cancelButton.setIcon(new ThemeResource("icons/16/cancel.png"));
@@ -92,8 +93,6 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         saveButton.setIcon(new ThemeResource("icons/16/save.png"));
         saveButton.addStyleName("small default");
         footerLayout.addComponent(saveButton);
-
-        return footerLayout;
     }
 
     public void load(WritableEntity entity) {

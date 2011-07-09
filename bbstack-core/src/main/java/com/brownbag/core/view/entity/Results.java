@@ -82,8 +82,8 @@ public abstract class Results<T> extends ResultsComponent<T> {
         contextMenu.addAction("entityResults.edit", this, "edit");
         contextMenu.addAction("entityResults.delete", this, "delete");
 
-        getResultsButtons().addComponent(crudButtons, 0);
-        getResultsButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
+        getCrudButtons().addComponent(crudButtons, 0);
+        getCrudButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
 
         getResultsTable().addListener(new DoubleClickListener());
     }
@@ -114,9 +114,12 @@ public abstract class Results<T> extends ResultsComponent<T> {
             Object entity = beanItem.getBean();
             getEntityDao().remove(entity);
         }
+
         // solves tricky ConcurrentModification bug where ContextMenu handler calls delete
         // but then search removes handler
         searchImpl(false);
+        deleteButton.setEnabled(false);
+        editButton.setEnabled(false);
     }
 
     public void selectionChanged() {

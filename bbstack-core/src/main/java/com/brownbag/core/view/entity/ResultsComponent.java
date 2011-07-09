@@ -47,8 +47,9 @@ public abstract class ResultsComponent<T> extends CustomComponent {
     private EntityForm entityForm;
     private EntityQuery entityQuery;
     private DisplayFields displayFields;
+    private Label resultCountLabel;
 
-    private HorizontalLayout resultsButtons;
+    private HorizontalLayout crudButtons;
 
     protected ResultsComponent() {
     }
@@ -91,8 +92,8 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         this.entityQuery = entityQuery;
     }
 
-    public HorizontalLayout getResultsButtons() {
-        return resultsButtons;
+    public HorizontalLayout getCrudButtons() {
+        return crudButtons;
     }
 
     public void postConstruct() {
@@ -104,8 +105,10 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         VerticalLayout verticalLayout = new VerticalLayout();
         setCompositionRoot(verticalLayout);
 
-        resultsButtons = createResultsButtons();
-        addComponent(resultsButtons);
+        crudButtons = new HorizontalLayout();
+        HorizontalLayout navigationLine = createNavigationLine();
+        addComponent(crudButtons);
+        addComponent(navigationLine);
 
         addComponent(resultsTable);
 
@@ -122,29 +125,35 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         getCompositionRoot().setSizeUndefined();
     }
 
-    private HorizontalLayout createResultsButtons() {
+    private HorizontalLayout createNavigationLine() {
+
+        HorizontalLayout resultCountDisplay = new HorizontalLayout();
+        resultCountLabel = new Label();
+        resultCountDisplay.addComponent(resultCountLabel);
+
         HorizontalLayout navigationButtons = new HorizontalLayout();
-        navigationButtons.setMargin(false);
+        navigationButtons.setMargin(false, true, false, false);
         navigationButtons.setSpacing(true);
 
         Select pageSizeMenu = new Select();
         pageSizeMenu.addStyleName("small");
         pageSizeMenu.addItem(10);
+        pageSizeMenu.setItemCaption(10, "10 per page");
         pageSizeMenu.addItem(25);
+        pageSizeMenu.setItemCaption(25, "25 per page");
         pageSizeMenu.addItem(50);
+        pageSizeMenu.setItemCaption(50, "50 per page");
         pageSizeMenu.addItem(100);
+        pageSizeMenu.setItemCaption(100, "100 per page");
         MethodProperty pageProperty = new MethodProperty(this, "pageSize");
         pageSizeMenu.setPropertyDataSource(pageProperty);
         pageSizeMenu.setFilteringMode(Select.FILTERINGMODE_OFF);
+        pageSizeMenu.setNewItemsAllowed(false);
         pageSizeMenu.setNullSelectionAllowed(false);
         pageSizeMenu.setImmediate(true);
-        pageSizeMenu.setWidth(4, UNITS_EM);
+        pageSizeMenu.setWidth(7, UNITS_EM);
         pageSizeMenu.addListener(Property.ValueChangeEvent.class, this, "search");
         navigationButtons.addComponent(pageSizeMenu);
-        Label pageSizeLabel = new Label(uiMessageSource.getMessage("entityResults.pageSize"));
-        pageSizeLabel.setSizeUndefined();
-        pageSizeLabel.addStyleName("small");
-        navigationButtons.addComponent(pageSizeLabel);
 
         Button firstButton = new Button(null, getResultsTable(), "firstPage");
         firstButton.setSizeUndefined();
@@ -170,14 +179,17 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         lastButton.setIcon(new ThemeResource("icons/16/last.png"));
         navigationButtons.addComponent(lastButton);
 
-        HorizontalLayout resultsButtons = new HorizontalLayout();
-        resultsButtons.setWidth("100%");
-        resultsButtons.setMargin(true, false, false, false);
-        resultsButtons.addStyleName("resultsButtons");
-        resultsButtons.addComponent(navigationButtons);
-        resultsButtons.setComponentAlignment(navigationButtons, Alignment.MIDDLE_RIGHT);
+        HorizontalLayout navigationLine = new HorizontalLayout();
+        navigationLine.setWidth("100%");
+        navigationLine.setMargin(true, true, true, false);
 
-        return resultsButtons;
+        navigationLine.addComponent(resultCountDisplay);
+        navigationLine.setComponentAlignment(resultCountDisplay, Alignment.BOTTOM_LEFT);
+
+        navigationLine.addComponent(navigationButtons);
+        navigationLine.setComponentAlignment(navigationButtons, Alignment.BOTTOM_RIGHT);
+
+        return navigationLine;
     }
 
     public int getPageSize() {
@@ -209,11 +221,18 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         getEntityQuery().firstPage();
         getResultsTable().executeCurrentQuery();
 
-        String caption = uiMessageSource.getMessage("entityResults.caption",
-                new Object[]{getEntityQuery().getResultCount()});
-        getResultsTable().setCaption(caption);
         if (clearSelection) {
             getResultsTable().clearSelection();
         }
+    }
+
+    protected void refreshResultCountLabel() {
+        EntityQuery query = getEntityQuery();
+        String caption = uiMessageSource.getMessage("entityResults.caption",
+                new Object[]{
+                        query.getResultCount() == 0 ? 0 : query.getFirstResult() + 1,
+                        query.getResultCount() == 0 ? 0 : query.getLastResult(),
+                        query.getResultCount()});
+        resultCountLabel.setValue(caption);
     }
 }

@@ -54,6 +54,10 @@ public abstract class EntityQuery<T> {
         return firstResult;
     }
 
+    public Integer getLastResult() {
+        return Math.min(firstResult + pageSize, resultCount.intValue());
+    }
+
     public Long getResultCount() {
         return resultCount;
     }

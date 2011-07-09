@@ -19,6 +19,7 @@ package com.brownbag.core.view.entity;
 
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
 import org.vaadin.jouni.animator.Animator;
 
 import javax.annotation.PostConstruct;
@@ -47,15 +48,18 @@ public abstract class SearchFormResults<T> extends EntityComponent<T> {
         wireRelationships();
         postConstructRelatedBeans();
 
+        HorizontalLayout searchFormLayout = new HorizontalLayout();
+        searchFormLayout.setMargin(false, false, true, false);
         toggleSearchFormButton = new Button(null, this, "toggleSearchForm");
         toggleSearchFormButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
         toggleSearchFormButton.addStyleName("borderless");
-        addComponent(toggleSearchFormButton);
+        searchFormLayout.addComponent(toggleSearchFormButton);
 
         searchFormAnimator = new Animator(getSearchForm());
         searchFormAnimator.setSizeUndefined();
-        addComponent(searchFormAnimator);
+        searchFormLayout.addComponent(searchFormAnimator);
 
+        addComponent(searchFormLayout);
         addComponent(getResultsComponent());
     }
 

@@ -37,6 +37,10 @@
     border: thin #add8e6 solid;
 }
 
+.searchForm fieldset {
+    border: thin #add8e6 solid;
+}
+
 .v-filterselect-error {
     border: medium red solid !important;
 }

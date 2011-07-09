@@ -20,6 +20,7 @@ package com.brownbag.core.view.entity;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 
@@ -44,26 +45,29 @@ public abstract class SearchForm<T> extends FormComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
+        getForm().addStyleName("searchForm");
+
         BeanItem beanItem = createBeanItem(getEntityQuery());
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
     }
 
     @Override
-    protected HorizontalLayout createFooterButtons() {
-        HorizontalLayout footerLayout = new HorizontalLayout();
+    protected void createFooterButtons(HorizontalLayout footerLayout) {
         footerLayout.setSpacing(true);
+        footerLayout.setMargin(true);
 
         Button clearButton = new Button(uiMessageSource.getMessage("entitySearchForm.clear"), this, "clear");
         clearButton.setIcon(new ThemeResource("icons/16/clear.png"));
         clearButton.addStyleName("small default");
         footerLayout.addComponent(clearButton);
+        // alignment doesn't work
+//        footerLayout.setComponentAlignment(clearButton, Alignment.MIDDLE_RIGHT);
 
         Button searchButton = new Button(uiMessageSource.getMessage("entitySearchForm.search"), this, "search");
         searchButton.setIcon(new ThemeResource("icons/16/search.png"));
         searchButton.addStyleName("small default");
         footerLayout.addComponent(searchButton);
-
-        return footerLayout;
+//        footerLayout.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
     }
 
     @Override

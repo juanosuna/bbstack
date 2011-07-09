@@ -60,8 +60,8 @@ public abstract class SingleSelectResults<T> extends ResultsComponent<T> {
         selectButton.addStyleName("small default");
         crudButtons.addComponent(selectButton);
 
-        getResultsButtons().addComponent(crudButtons, 0);
-        getResultsButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
+        getCrudButtons().addComponent(crudButtons, 0);
+        getCrudButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
     }
 
     public void selectionChanged() {

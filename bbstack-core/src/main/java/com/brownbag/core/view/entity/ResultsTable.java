@@ -129,6 +129,8 @@ public class ResultsTable extends Table {
         for (Object entity : entities) {
             getContainerDataSource().addBean(entity);
         }
+
+        results.refreshResultCountLabel();
     }
 
     public void clearSelection() {

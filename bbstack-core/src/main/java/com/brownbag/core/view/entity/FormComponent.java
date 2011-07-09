@@ -60,7 +60,7 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     public abstract void configureFields(FormFields formFields);
 
-    abstract HorizontalLayout createFooterButtons();
+    abstract void createFooterButtons(HorizontalLayout footerButtons);
 
     abstract FormFields createFormFields();
 
@@ -85,14 +85,14 @@ public abstract class FormComponent<T> extends CustomComponent {
     }
 
     public void postConstruct() {
+        setSizeUndefined();
         form = new ConfigurableForm();
         form.setSizeUndefined();
         form.setWriteThrough(true);
         form.setInvalidCommitted(true);
         form.setImmediate(true);
         form.setValidationVisibleOnCommit(true);
-        form.addStyleName("borderless");
-        form.setStyleName("entityForm");
+        form.addStyleName("entityForm");
 
         formFields = createFormFields();
         configureFields(formFields);
@@ -101,13 +101,10 @@ public abstract class FormComponent<T> extends CustomComponent {
         final GridLayout gridLayout = formFields.createGridLayout();
         form.setLayout(gridLayout);
 
-        HorizontalLayout footerLayout = createFooterButtons();
-        form.getFooter().setMargin(true);
-        form.getFooter().addComponent(footerLayout);
+        createFooterButtons((HorizontalLayout) form.getFooter());
         form.setCaption(getEntityCaption());
 
         VerticalLayout layout = new VerticalLayout();
-
         if (formFields.getTabNames().size() > 1) {
             initializeTabs(layout);
         }

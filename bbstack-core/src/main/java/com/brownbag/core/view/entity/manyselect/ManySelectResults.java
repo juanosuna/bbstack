@@ -80,8 +80,8 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
         removeButton.addStyleName("small default");
         crudButtons.addComponent(removeButton);
 
-        getResultsButtons().addComponent(crudButtons, 0);
-        getResultsButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
+        getCrudButtons().addComponent(crudButtons, 0);
+        getCrudButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
 
         getResultsTable().setMultiSelect(true);
         getSingleSelect().getResultsComponent().getResultsTable().setMultiSelect(true);
@@ -149,6 +149,7 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
             getEntityDao().persist(value);
         }
         searchImpl(false);
+        removeButton.setEnabled(false);
     }
 
     public void setAddButtonEnabled(boolean isEnabled) {
