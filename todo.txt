@@ -1,41 +1,35 @@
-popup help/guide
-are-you-sure delete prompts
+check db schema for poorly named artifacts
 
+are-you-sure delete prompts
 add notes and attachments
 previous/next through edit screen
-remember last search
+add tabs to Account form or improve layout
 
-excel export
+popup help/guide
 
+Security:
 roles/permissions
 admin, create users, roles, reference entities
 active/deactivate users
 pw reset
 registration
 
-check db schema for artifacts
+Audit trail
 
-audit trail
+Excel export
 
 I18N, localization
 user-specific locale
 
+Dashboard
 Last Viewed
 Favorites
+Remember last search
 
-UI Design Improvements
-Fonts
+UI Design Improvements:
+Check fonts, color scheme and layout with Elena
 Change tabs when selected, e.g. make a bit bigger
-Small icon for collapsing, expanding widgets
-Sorting icon that switches direction
-Result set navigation icons
+Improve icons, e.g. expand/collapse one
 
+Maven:
 mvn deploy:deploy-file -Durl=scp://www.brownbagconsulting.com -DrepositoryId=brownbag -Dfile=sample-web.war
-
-
-remove search form border
-move search buttons to right
-play with section background colors
-example of mouseover text
-margin between tabs and form
-hide/show next to caption

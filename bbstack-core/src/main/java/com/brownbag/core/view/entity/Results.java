@@ -19,8 +19,10 @@ package com.brownbag.core.view.entity;
 
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.assertion.Assert;
+import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.util.ActionContextMenu;
+import com.vaadin.addon.chameleon.ChameleonTheme;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ThemeResource;
@@ -28,6 +30,8 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.dialogs.ConfirmDialog;
+import org.vaadin.dialogs.DefaultConfirmDialogFactory;
 
 import javax.annotation.Resource;
 import java.util.Collection;
@@ -107,7 +111,7 @@ public abstract class Results<T> extends ResultsComponent<T> {
         getEntityForm().open();
     }
 
-    public void delete() {
+    public void deleteImpl() {
         Collection itemIds = (Collection) getResultsTable().getValue();
         for (Object itemId : itemIds) {
             BeanItem beanItem = getResultsTable().getContainerDataSource().getItem(itemId);
@@ -120,6 +124,21 @@ public abstract class Results<T> extends ResultsComponent<T> {
         searchImpl(false);
         deleteButton.setEnabled(false);
         editButton.setEnabled(false);
+    }
+
+    public void delete() {
+        ConfirmDialog dialog = ConfirmDialog.show(MainApplication.getInstance().getMainWindow(),
+                uiMessageSource.getMessage("entityResults.confirmationCaption"),
+                uiMessageSource.getMessage("entityResults.confirmationPrompt"),
+                uiMessageSource.getMessage("entityResults.confirmationYes"),
+                uiMessageSource.getMessage("entityResults.confirmationNo"),
+                new ConfirmDialog.Listener() {
+                    public void onClose(ConfirmDialog dialog) {
+                        if (dialog.isConfirmed()) {
+                            deleteImpl();
+                        }
+                    }
+                });
     }
 
     public void selectionChanged() {

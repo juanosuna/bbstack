@@ -18,6 +18,7 @@
 package com.brownbag.core.view;
 
 import com.vaadin.Application;
+import com.vaadin.addon.chameleon.ChameleonTheme;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -25,6 +26,8 @@ import com.vaadin.ui.Window;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.vaadin.dialogs.ConfirmDialog;
+import org.vaadin.dialogs.DefaultConfirmDialogFactory;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -65,6 +68,7 @@ public class MainApplication extends Application implements HttpServletRequestLi
         setInstance(this);
 
         setTheme("customTheme");
+        customizeConfirmDialogStyle();
 
         Window mainWindow = new Window(messageSource.getMessage("mainApplication.caption"));
         mainWindow.getContent().setSizeUndefined();
@@ -72,6 +76,23 @@ public class MainApplication extends Application implements HttpServletRequestLi
 
         mainEntryPoints.postConstruct();
         mainWindow.addComponent(mainEntryPoints);
+    }
+
+    private void customizeConfirmDialogStyle() {
+        ConfirmDialog.Factory confirmDialogFactory = new DefaultConfirmDialogFactory() {
+            @Override
+            public ConfirmDialog create(String caption, String message,
+                    String okCaption, String cancelCaption) {
+                ConfirmDialog confirmDialog;
+                confirmDialog = super.create(caption, message, okCaption, cancelCaption);
+                confirmDialog.setStyleName(ChameleonTheme.WINDOW_OPAQUE);
+                confirmDialog.getCancelButton().addStyleName("small default");
+                confirmDialog.getOkButton().addStyleName("small default");
+
+                return confirmDialog;
+            }
+        };
+        ConfirmDialog.setFactory(confirmDialogFactory);
     }
 
     @Override

@@ -26,6 +26,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.dialogs.ConfirmDialog;
 
 import javax.annotation.Resource;
 import java.lang.reflect.InvocationTargetException;
@@ -160,9 +161,24 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
         MainApplication.getInstance().getMainWindow().removeWindow(popupWindow);
     }
 
-    public void remove() {
+    public void removeImpl() {
         Collection selectedValues = getSelectedValues();
         valuesRemoved(selectedValues.toArray());
+    }
+
+    public void remove() {
+        ConfirmDialog dialog = ConfirmDialog.show(MainApplication.getInstance().getMainWindow(),
+                uiMessageSource.getMessage("entityResults.confirmationCaption"),
+                uiMessageSource.getMessage("entityResults.confirmationPrompt"),
+                uiMessageSource.getMessage("entityResults.confirmationYes"),
+                uiMessageSource.getMessage("entityResults.confirmationNo"),
+                new ConfirmDialog.Listener() {
+                    public void onClose(ConfirmDialog dialog) {
+                        if (dialog.isConfirmed()) {
+                            removeImpl();
+                        }
+                    }
+                });
     }
 
     public void selectionChanged() {
