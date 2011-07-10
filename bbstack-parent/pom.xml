@@ -243,6 +243,12 @@
                 <version>1.0.2</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.vaadin.addons</groupId>
+                <artifactId>chameleon-blue</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+
             <!-- Misc -->
             <dependency>
                 <groupId>com.h2database</groupId>
