@@ -56,6 +56,7 @@ public abstract class SingleSelectResults<T> extends ResultsComponent<T> {
         crudButtons.setSpacing(true);
 
         selectButton = new Button(uiMessageSource.getMessage("entityResults.select"));
+        selectButton.setDescription(uiMessageSource.getMessage("entityResults.select.description"));
         selectButton.setEnabled(false);
         selectButton.addStyleName("small default");
         crudButtons.addComponent(selectButton);

@@ -71,11 +71,13 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
         crudButtons.setSpacing(true);
 
         addButton = new Button(uiMessageSource.getMessage("entityResults.add"), this, "add");
+        addButton.setDescription(uiMessageSource.getMessage("entityResults.add.description"));
         addButton.setIcon(new ThemeResource("icons/16/add.png"));
         addButton.addStyleName("small default");
         crudButtons.addComponent(addButton);
 
         removeButton = new Button(uiMessageSource.getMessage("entityResults.remove"), this, "remove");
+        removeButton.setDescription(uiMessageSource.getMessage("entityResults.remove.description"));
         removeButton.setIcon(new ThemeResource("icons/16/delete.png"));
         removeButton.setEnabled(false);
         removeButton.addStyleName("small default");

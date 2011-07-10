@@ -34,8 +34,11 @@ import javax.annotation.Resource;
  */
 public abstract class EntityComponent<T> extends CustomComponent {
 
-    @Resource(name = "entityMessageSource")
-    private MessageSource entityMessageSource;
+    @Resource
+    protected MessageSource entityMessageSource;
+
+    @Resource
+    protected MessageSource uiMessageSource;
 
     protected EntityComponent() {
     }

@@ -162,24 +162,28 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         navigationButtons.addComponent(pageSizeMenu);
 
         firstButton = new Button(null, getResultsTable(), "firstPage");
+        firstButton.setDescription(uiMessageSource.getMessage("entityResults.first.description"));
         firstButton.setSizeUndefined();
         firstButton.addStyleName("borderless");
         firstButton.setIcon(new ThemeResource("icons/16/first.png"));
         navigationButtons.addComponent(firstButton);
 
         previousButton = new Button(null, getResultsTable(), "previousPage");
+        previousButton.setDescription(uiMessageSource.getMessage("entityResults.previous.description"));
         previousButton.setSizeUndefined();
         previousButton.addStyleName("borderless");
         previousButton.setIcon(new ThemeResource("icons/16/previous.png"));
         navigationButtons.addComponent(previousButton);
 
         nextButton = new Button(null, getResultsTable(), "nextPage");
+        nextButton.setDescription(uiMessageSource.getMessage("entityResults.next.description"));
         nextButton.setSizeUndefined();
         nextButton.addStyleName("borderless");
         nextButton.setIcon(new ThemeResource("icons/16/next.png"));
         navigationButtons.addComponent(nextButton);
 
         lastButton = new Button(null, getResultsTable(), "lastPage");
+        lastButton.setDescription(uiMessageSource.getMessage("entityResults.last.description"));
         lastButton.setSizeUndefined();
         lastButton.addStyleName("borderless");
         lastButton.setIcon(new ThemeResource("icons/16/last.png"));

@@ -20,7 +20,6 @@ package com.brownbag.core.view.entity;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 
@@ -57,6 +56,7 @@ public abstract class SearchForm<T> extends FormComponent<T> {
         footerLayout.setMargin(true);
 
         Button clearButton = new Button(uiMessageSource.getMessage("entitySearchForm.clear"), this, "clear");
+        clearButton.setDescription(uiMessageSource.getMessage("entitySearchForm.clear.description"));
         clearButton.setIcon(new ThemeResource("icons/16/clear.png"));
         clearButton.addStyleName("small default");
         footerLayout.addComponent(clearButton);
@@ -64,6 +64,7 @@ public abstract class SearchForm<T> extends FormComponent<T> {
 //        footerLayout.setComponentAlignment(clearButton, Alignment.MIDDLE_RIGHT);
 
         Button searchButton = new Button(uiMessageSource.getMessage("entitySearchForm.search"), this, "search");
+        searchButton.setDescription(uiMessageSource.getMessage("entitySearchForm.search.description"));
         searchButton.setIcon(new ThemeResource("icons/16/search.png"));
         searchButton.addStyleName("small default");
         footerLayout.addComponent(searchButton);

@@ -51,6 +51,7 @@ public abstract class SearchFormResults<T> extends EntityComponent<T> {
         HorizontalLayout searchFormLayout = new HorizontalLayout();
         searchFormLayout.setMargin(false, false, true, false);
         toggleSearchFormButton = new Button(null, this, "toggleSearchForm");
+        toggleSearchFormButton.setDescription(uiMessageSource.getMessage("searchFormResults.toggleSearchForm.description"));
         toggleSearchFormButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
         toggleSearchFormButton.addStyleName("borderless");
         searchFormLayout.addComponent(toggleSearchFormButton);

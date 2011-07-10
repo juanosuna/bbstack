@@ -66,17 +66,20 @@ public abstract class Results<T> extends ResultsComponent<T> {
         crudButtons.setSpacing(true);
 
         Button newButton = new Button(uiMessageSource.getMessage("entityResults.new"), this, "create");
+        newButton.setDescription(uiMessageSource.getMessage("entityResults.new.description"));
         newButton.setIcon(new ThemeResource("icons/16/add.png"));
         newButton.addStyleName("small default");
         crudButtons.addComponent(newButton);
 
         editButton = new Button(uiMessageSource.getMessage("entityResults.edit"), this, "edit");
+        editButton.setDescription(uiMessageSource.getMessage("entityResults.edit.description"));
         editButton.setIcon(new ThemeResource("icons/16/edit.png"));
         editButton.setEnabled(false);
         editButton.addStyleName("small default");
         crudButtons.addComponent(editButton);
 
         deleteButton = new Button(uiMessageSource.getMessage("entityResults.delete"), this, "delete");
+        deleteButton.setDescription(uiMessageSource.getMessage("entityResults.delete.description"));
         deleteButton.setIcon(new ThemeResource("icons/16/delete.png"));
         deleteButton.setEnabled(false);
         deleteButton.addStyleName("small default");

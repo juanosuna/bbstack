@@ -83,16 +83,19 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         footerLayout.setMargin(true);
 
         Button cancelButton = new Button(uiMessageSource.getMessage("entityForm.cancel"), this, "cancel");
+        cancelButton.setDescription(uiMessageSource.getMessage("entityForm.cancel.description"));
         cancelButton.setIcon(new ThemeResource("icons/16/cancel.png"));
         cancelButton.addStyleName("small default");
         footerLayout.addComponent(cancelButton);
 
         Button resetButton = new Button(uiMessageSource.getMessage("entityForm.reset"), this, "reset");
+        resetButton.setDescription(uiMessageSource.getMessage("entityForm.reset.description"));
         resetButton.setIcon(new ThemeResource("icons/16/refresh.png"));
         resetButton.addStyleName("small default");
         footerLayout.addComponent(resetButton);
 
         Button saveButton = new Button(uiMessageSource.getMessage("entityForm.save"), this, "save");
+        saveButton.setDescription(uiMessageSource.getMessage("entityForm.save.description"));
         saveButton.setIcon(new ThemeResource("icons/16/save.png"));
         saveButton.addStyleName("small default");
         footerLayout.addComponent(saveButton);
@@ -183,18 +186,20 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         navigationFormLayout.setSizeUndefined();
 
         previousButton = new Button(null, this, "previousItem");
+        previousButton.setDescription(uiMessageSource.getMessage("entityForm.previous.description"));
         previousButton.setSizeUndefined();
         previousButton.addStyleName("borderless");
-        previousButton.setIcon(new ThemeResource("icons/16/previous.png"));
+        previousButton.setIcon(new ThemeResource("icons/24/previous.png"));
         navigationFormLayout.addComponent(previousButton);
         navigationFormLayout.setComponentAlignment(previousButton, Alignment.MIDDLE_LEFT);
 
         navigationFormLayout.addComponent(this);
 
         nextButton = new Button(null, this, "nextItem");
+        nextButton.setDescription(uiMessageSource.getMessage("entityForm.next.description"));
         nextButton.setSizeUndefined();
         nextButton.addStyleName("borderless");
-        nextButton.setIcon(new ThemeResource("icons/16/next.png"));
+        nextButton.setIcon(new ThemeResource("icons/24/next.png"));
         navigationFormLayout.addComponent(nextButton);
         navigationFormLayout.setComponentAlignment(nextButton, Alignment.MIDDLE_RIGHT);
         navigationFormLayout.setSpacing(false);

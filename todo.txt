@@ -1,7 +1,5 @@
 check db schema for poorly named artifacts
 
-popup help/guide
-
 Security:
 roles/permissions
 admin, create users, roles, reference entities

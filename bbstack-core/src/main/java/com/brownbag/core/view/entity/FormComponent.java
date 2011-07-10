@@ -132,6 +132,7 @@ public abstract class FormComponent<T> extends CustomComponent {
                 setIsRequiredEnable(tabName, false);
                 tab.setVisible(false);
             }
+            tab.setDescription(uiMessageSource.getMessage("formComponent.tab.description"));
         }
 
         layout.addComponent(tabSheet);
