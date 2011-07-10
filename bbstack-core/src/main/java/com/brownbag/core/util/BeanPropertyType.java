@@ -4,8 +4,14 @@ import com.brownbag.core.util.assertion.Assert;
 import org.springframework.beans.BeanUtils;
 
 import javax.validation.Valid;
+import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BeanPropertyType {
     private BeanPropertyType parent;
@@ -13,24 +19,55 @@ public class BeanPropertyType {
     private Class type;
     private Class containerType;
     private Class collectionValueType;
+    private Set<Annotation> annotations = new HashSet<Annotation>();
 
     public BeanPropertyType(BeanPropertyType parent, String id, Class type, Class containerType, Class collectionValueType) {
-        this(parent, id, type, containerType);
-        this.collectionValueType = collectionValueType;
-    }
-
-    public BeanPropertyType(BeanPropertyType parent, String id, Class type, Class containerType) {
-        this(id, type, containerType);
         this.parent = parent;
-    }
-
-    private BeanPropertyType(String id, Class type, Class containerType) {
         this.id = id;
         this.type = type;
         this.containerType = containerType;
+        this.collectionValueType = collectionValueType;
+
+        initAnnotations();
     }
 
-    public static BeanPropertyType getBeanProperty(Class clazz, String propertyPath) {
+    private void initAnnotations() {
+        PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(containerType, id);
+        Method method = descriptor.getReadMethod();
+        Annotation[] readMethodAnnotations = method.getAnnotations();
+        Collections.addAll(annotations, readMethodAnnotations);
+
+        Field field;
+        try {
+            field = containerType.getDeclaredField(id);
+            Annotation[] fieldAnnotations = field.getAnnotations();
+            Collections.addAll(annotations, fieldAnnotations);
+        } catch (NoSuchFieldException e) {
+            // no need to get annotations if field doesn't exist
+        }
+    }
+
+    public boolean hasAnnotation(Class annotationClass) {
+        for (Annotation annotation : annotations) {
+            if (annotationClass.isAssignableFrom(annotation.getClass())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Annotation getAnnotation(Class annotationClass) {
+        for (Annotation annotation : annotations) {
+            if (annotationClass.isAssignableFrom(annotation.getClass())) {
+                return annotation;
+            }
+        }
+
+        return null;
+    }
+
+    public static BeanPropertyType getBeanPropertyType(Class clazz, String propertyPath) {
         String[] properties = propertyPath.split("\\.");
         Class containingType;
         Class currentPropertyType = clazz;

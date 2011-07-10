@@ -84,7 +84,7 @@ public class ContactQuery extends EntityQuery<Contact> {
     public String toString() {
         return "ContactQuery{" +
                 "lastName='" + lastName + '\'' +
-                ", state=" + states +
+                ", states=" + states +
                 '}';
     }
 }

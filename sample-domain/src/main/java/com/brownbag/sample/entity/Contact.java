@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.sql.Clob;
 import java.util.Date;
 
 @Entity
@@ -75,6 +76,9 @@ public class Contact extends WritableEntity {
     @ForeignKey(name = "FK_CONTACT_MAILING_ADDRESS")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Address mailingAddress;
+
+    @Lob
+    private String note;
 
     public Contact() {
     }
@@ -167,16 +171,17 @@ public class Contact extends WritableEntity {
         this.mailingAddress = mailingAddress;
     }
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     @PreRemove
     public void preRemove() {
         setAccount(null);
     }
 
-//    @PreUpdate
-//    @PrePersist
-//    public void preUpdateOrPersist() {
-//        if (ReflectionUtil.isBeanEmpty(getMailingAddress())) {
-//            setMailingAddress(null);
-//        }
-//    }
 }

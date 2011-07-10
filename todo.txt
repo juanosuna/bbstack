@@ -1,10 +1,5 @@
 check db schema for poorly named artifacts
 
-are-you-sure delete prompts
-add notes and attachments
-previous/next through edit screen
-add tabs to Account form or improve layout
-
 popup help/guide
 
 Security:
@@ -17,6 +12,8 @@ registration
 Audit trail
 
 Excel export
+
+Add attachments
 
 I18N, localization
 user-specific locale

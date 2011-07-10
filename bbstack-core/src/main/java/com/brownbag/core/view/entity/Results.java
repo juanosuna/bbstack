@@ -104,11 +104,50 @@ public abstract class Results<T> extends ResultsComponent<T> {
     }
 
     public void editImpl(Object itemId) {
-//        getEntityTable().setValue(itemId);
+        loadItem(itemId);
+        getEntityForm().open();
+    }
+
+    private Object currentItemId;
+
+    public void loadItem(Object itemId) {
+        currentItemId = itemId;
         BeanItem beanItem = getResultsTable().getContainerDataSource().getItem(itemId);
         getEntityForm().setResults(this);
         getEntityForm().load((WritableEntity) beanItem.getBean());
-        getEntityForm().open();
+    }
+
+    void editPreviousItem() {
+        Object previousItemId = getResultsTable().getContainerDataSource().prevItemId(currentItemId);
+        if (previousItemId == null && getEntityQuery().hasPreviousPage()) {
+            getResultsTable().previousPage();
+            previousItemId = getResultsTable().getContainerDataSource().lastItemId();
+        }
+        if (previousItemId != null) {
+            loadItem(previousItemId);
+        }
+    }
+
+    boolean hasPreviousItem() {
+        Object previousItemId = getResultsTable().getContainerDataSource().prevItemId(currentItemId);
+        return previousItemId != null || getEntityQuery().hasPreviousPage();
+    }
+
+    void editNextItem() {
+        Object nextItemId = getResultsTable().getContainerDataSource().nextItemId(currentItemId);
+        if (nextItemId == null && getEntityQuery().hasNextPage()) {
+            getResultsTable().nextPage();
+            nextItemId = getResultsTable().getContainerDataSource().firstItemId();
+        }
+
+        if (nextItemId != null) {
+            loadItem(nextItemId);
+        }
+    }
+
+    boolean hasNextItem() {
+        Object nextItemId = getResultsTable().getContainerDataSource().nextItemId(currentItemId);
+        return nextItemId != null || getEntityQuery().hasNextPage();
     }
 
     public void deleteImpl() {

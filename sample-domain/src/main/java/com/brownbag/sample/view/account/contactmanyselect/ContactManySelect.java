@@ -40,7 +40,7 @@ public class ContactManySelect extends ManySelect<Contact> {
 
     @Override
     public String getEntityCaption() {
-        return "Contacts";
+        return "Company Contacts";
     }
 
     @Override

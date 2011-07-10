@@ -24,6 +24,7 @@ import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.contact.accountsingleselect.AccountSingleSelect;
 import com.vaadin.data.Property;
+import com.vaadin.ui.RichTextArea;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -72,6 +73,8 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setPosition("Mailing Address", "mailingAddress.zipCode", 1, 1);
         formFields.setPosition("Mailing Address", "mailingAddress.state", 0, 2);
         formFields.setTabOptional("Mailing Address", this, "addMailingAddress", this, "removeMailingAddress");
+
+        formFields.setPosition("Note", "note", 0, 0);
 
         formFields.setLabel("account.name", "Account");
 

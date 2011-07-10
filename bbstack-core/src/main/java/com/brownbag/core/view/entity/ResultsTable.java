@@ -131,6 +131,7 @@ public class ResultsTable extends Table {
         }
 
         results.refreshResultCountLabel();
+        results.refreshNavigationButtonStates();
     }
 
     public void clearSelection() {

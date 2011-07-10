@@ -27,7 +27,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.*;
 
-import java.text.Format;
+import javax.persistence.Lob;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -209,6 +209,10 @@ public class FormField extends DisplayField {
             return new ListSelect();
         }
 
+        if (hasAnnotation(Lob.class)) {
+            return new RichTextArea();
+        }
+
         return new TextField();
     }
 
@@ -221,7 +225,7 @@ public class FormField extends DisplayField {
         field.setInvalidAllowed(true);
 
         if (getFormFields().attachValidators()) {
-            BeanPropertyType beanProperty = com.brownbag.core.util.BeanPropertyType.getBeanProperty(getDisplayFields().getEntityType(),
+            BeanPropertyType beanProperty = com.brownbag.core.util.BeanPropertyType.getBeanPropertyType(getDisplayFields().getEntityType(),
                     getPropertyId());
             if (beanProperty.isValidatable()) {
                 BeanValidationValidator.addValidator(field, beanProperty.getId(), beanProperty.getContainerType());
@@ -235,6 +239,10 @@ public class FormField extends DisplayField {
 
         if (field instanceof TextField) {
             initTextFieldDefaults((TextField) field);
+        }
+
+        if (field instanceof RichTextArea) {
+            initRichTextFieldDefaults((RichTextArea) field);
         }
 
         if (field instanceof DateField) {
@@ -271,6 +279,11 @@ public class FormField extends DisplayField {
     }
 
     public static void initTextFieldDefaults(TextField field) {
+        field.setNullRepresentation("");
+        field.setNullSettingAllowed(false);
+    }
+
+    public static void initRichTextFieldDefaults(RichTextArea field) {
         field.setNullRepresentation("");
         field.setNullSettingAllowed(false);
     }

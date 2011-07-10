@@ -27,7 +27,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * User: Juan
@@ -42,7 +44,7 @@ public class AccountQuery extends EntityQuery<Account> {
     private AccountDao accountDao;
 
     private String name;
-    private State state;
+    private Set<State> states = new HashSet<State>();
     private Country country;
 
     public String getName() {
@@ -53,12 +55,12 @@ public class AccountQuery extends EntityQuery<Account> {
         this.name = name;
     }
 
-    public State getState() {
-        return state;
+    public Set<State> getStates() {
+        return states;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setStates(Set<State> states) {
+        this.states = states;
     }
 
     public Country getCountry() {
@@ -87,7 +89,7 @@ public class AccountQuery extends EntityQuery<Account> {
     public String toString() {
         return "AccountQuery{" +
                 "lastName='" + name + '\'' +
-                ", state=" + state +
+                ", states=" + states +
                 '}';
     }
 }

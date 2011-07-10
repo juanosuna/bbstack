@@ -43,7 +43,7 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     @Resource
     private StateDao stateDao;
 
-    private FormField stateField;
+    private FormField statesField;
 
     @Override
     public String getEntityCaption() {
@@ -57,10 +57,10 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
         formFields.setPosition("country", 1, 0);
         formFields.setPosition("states", 2, 0);
 
-        stateField = formFields.getFormField("states");
-        stateField.setSelectItems(new ArrayList());
-        stateField.setVisible(false);
-        stateField.setMultiSelectDimensions(3, 10);
+        statesField = formFields.getFormField("states");
+        statesField.setSelectItems(new ArrayList());
+        statesField.setVisible(false);
+        statesField.setMultiSelectDimensions(3, 10);
 
         formFields.addValueChangeListener("country", this, "countryChanged");
     }
@@ -68,7 +68,7 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     public void countryChanged(Property.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
-        stateField.setSelectItems(states);
-        stateField.setVisible(states.size() > 0);
+        statesField.setSelectItems(states);
+        statesField.setVisible(states.size() > 0);
     }
 }

@@ -51,6 +51,9 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     private Window formWindow;
     private TabSheet manySelectTabs;
 
+    private Button nextButton;
+    private Button previousButton;
+
     public List<ManySelect> getManySelects() {
         return new ArrayList<ManySelect>();
     }
@@ -167,10 +170,58 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         layout.setSizeUndefined();
         formWindow.setSizeUndefined();
         formWindow.setModal(true);
-        formWindow.addComponent(this);
         formWindow.setClosable(true);
         formWindow.setScrollable(true);
+
+        formWindow.addComponent(createNavigationFormLayout());
+
         MainApplication.getInstance().getMainWindow().addWindow(formWindow);
+    }
+
+    private HorizontalLayout createNavigationFormLayout() {
+        HorizontalLayout navigationFormLayout = new HorizontalLayout();
+        navigationFormLayout.setSizeUndefined();
+
+        previousButton = new Button(null, this, "previousItem");
+        previousButton.setSizeUndefined();
+        previousButton.addStyleName("borderless");
+        previousButton.setIcon(new ThemeResource("icons/16/previous.png"));
+        navigationFormLayout.addComponent(previousButton);
+        navigationFormLayout.setComponentAlignment(previousButton, Alignment.MIDDLE_LEFT);
+
+        navigationFormLayout.addComponent(this);
+
+        nextButton = new Button(null, this, "nextItem");
+        nextButton.setSizeUndefined();
+        nextButton.addStyleName("borderless");
+        nextButton.setIcon(new ThemeResource("icons/16/next.png"));
+        navigationFormLayout.addComponent(nextButton);
+        navigationFormLayout.setComponentAlignment(nextButton, Alignment.MIDDLE_RIGHT);
+        navigationFormLayout.setSpacing(false);
+        navigationFormLayout.setMargin(false);
+
+        refreshNavigationButtonStates();
+        return navigationFormLayout;
+    }
+
+    void refreshNavigationButtonStates() {
+        if (getEntityDao().isPersistent(getEntity())) {
+            previousButton.setEnabled(((Results) getResults()).hasPreviousItem());
+            nextButton.setEnabled(((Results) getResults()).hasNextItem());
+        } else {
+            previousButton.setEnabled(false);
+            nextButton.setEnabled(false);
+        }
+    }
+
+    public void previousItem() {
+        ((Results) getResults()).editPreviousItem();
+        refreshNavigationButtonStates();
+    }
+
+    public void nextItem() {
+        ((Results) getResults()).editNextItem();
+        refreshNavigationButtonStates();
     }
 
     public void close() {

@@ -59,6 +59,7 @@
         DO_NOT_CALL boolean not null,
         FIRST_NAME varchar(16) not null,
         LAST_NAME varchar(16) not null,
+        NOTE clob,
         SOCIAL_SECURITY_NUMBER varchar(9),
         TITLE varchar(16),
         ACCOUNT bigint,

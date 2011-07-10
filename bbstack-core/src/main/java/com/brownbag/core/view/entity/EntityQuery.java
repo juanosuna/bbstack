@@ -74,8 +74,16 @@ public abstract class EntityQuery<T> {
         firstResult = Math.min(firstResult + pageSize, Math.max(resultCount.intValue() - pageSize, 0));
     }
 
+    public boolean hasNextPage() {
+        return Math.min(firstResult + pageSize, Math.max(resultCount.intValue() - pageSize, 0)) > firstResult;
+    }
+
     public void previousPage() {
         firstResult = Math.max(firstResult - pageSize, 0);
+    }
+
+    public boolean hasPreviousPage() {
+        return Math.max(firstResult - pageSize, 0) < firstResult;
     }
 
     public void lastPage() {

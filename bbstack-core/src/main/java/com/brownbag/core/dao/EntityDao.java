@@ -158,4 +158,8 @@ public class EntityDao<T, ID extends Serializable> {
     public void refresh(T entity) {
         getEntityManager().refresh(entity);
     }
+
+    public boolean isPersistent(T entity) {
+        return getEntityManager().getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(entity) != null;
+    }
 }

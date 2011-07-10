@@ -56,19 +56,19 @@ public class AccountForm extends EntityForm<Account> {
 
     @Override
     public void configureFields(FormFields formFields) {
-        formFields.setPosition("name", 0, 0);
 
-        formFields.setPosition("types", 1, 0);
-        FormField typesField = formFields.getFormField("types");
-        typesField.setMultiSelectDimensions(3, 10);
+        formFields.setPosition("Overview", "name", 0, 0);
+        formFields.setPosition("Overview", "types", 1, 0);
+        formFields.setPosition("Overview", "numberOfEmployees", 0, 1);
+        formFields.setPosition("Overview", "annualRevenue", 1, 1);
 
-        formFields.setPosition("address.street", 0, 2);
-        formFields.setPosition("address.city", 1, 2);
-        formFields.setPosition("address.country", 0, 3);
-        formFields.setPosition("address.zipCode", 1, 3);
-        formFields.setPosition("address.state", 0, 4);
-        formFields.setPosition("numberOfEmployees", 0, 5);
-        formFields.setPosition("annualRevenue", 1, 5);
+        formFields.setPosition("Address", "address.street", 0, 0);
+        formFields.setPosition("Address", "address.city", 1, 0);
+        formFields.setPosition("Address", "address.country", 0, 1);
+        formFields.setPosition("Address", "address.zipCode", 1, 1);
+        formFields.setPosition("Address", "address.state", 0, 2);
+
+        formFields.getFormField("types").setMultiSelectDimensions(3, 10);
 
         formFields.setSelectItems("address.state", new ArrayList());
         formFields.addValueChangeListener("address.country", this, "countryChanged");

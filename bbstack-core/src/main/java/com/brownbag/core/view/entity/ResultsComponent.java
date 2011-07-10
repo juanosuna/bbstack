@@ -49,6 +49,12 @@ public abstract class ResultsComponent<T> extends CustomComponent {
     private DisplayFields displayFields;
     private Label resultCountLabel;
 
+    private Select pageSizeMenu;
+    private Button firstButton;
+    private Button previousButton;
+    private Button nextButton;
+    private Button lastButton;
+
     private HorizontalLayout crudButtons;
 
     protected ResultsComponent() {
@@ -135,7 +141,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         navigationButtons.setMargin(false, true, false, false);
         navigationButtons.setSpacing(true);
 
-        Select pageSizeMenu = new Select();
+        pageSizeMenu = new Select();
         pageSizeMenu.addStyleName("small");
         pageSizeMenu.addItem(10);
         pageSizeMenu.setItemCaption(10, "10 per page");
@@ -155,25 +161,25 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         pageSizeMenu.addListener(Property.ValueChangeEvent.class, this, "search");
         navigationButtons.addComponent(pageSizeMenu);
 
-        Button firstButton = new Button(null, getResultsTable(), "firstPage");
+        firstButton = new Button(null, getResultsTable(), "firstPage");
         firstButton.setSizeUndefined();
         firstButton.addStyleName("borderless");
         firstButton.setIcon(new ThemeResource("icons/16/first.png"));
         navigationButtons.addComponent(firstButton);
 
-        Button previousButton = new Button(null, getResultsTable(), "previousPage");
+        previousButton = new Button(null, getResultsTable(), "previousPage");
         previousButton.setSizeUndefined();
         previousButton.addStyleName("borderless");
         previousButton.setIcon(new ThemeResource("icons/16/previous.png"));
         navigationButtons.addComponent(previousButton);
 
-        Button nextButton = new Button(null, getResultsTable(), "nextPage");
+        nextButton = new Button(null, getResultsTable(), "nextPage");
         nextButton.setSizeUndefined();
         nextButton.addStyleName("borderless");
         nextButton.setIcon(new ThemeResource("icons/16/next.png"));
         navigationButtons.addComponent(nextButton);
 
-        Button lastButton = new Button(null, getResultsTable(), "lastPage");
+        lastButton = new Button(null, getResultsTable(), "lastPage");
         lastButton.setSizeUndefined();
         lastButton.addStyleName("borderless");
         lastButton.setIcon(new ThemeResource("icons/16/last.png"));
@@ -190,6 +196,15 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         navigationLine.setComponentAlignment(navigationButtons, Alignment.BOTTOM_RIGHT);
 
         return navigationLine;
+    }
+
+    void refreshNavigationButtonStates() {
+        firstButton.setEnabled(getEntityQuery().hasPreviousPage());
+        previousButton.setEnabled(getEntityQuery().hasPreviousPage());
+        lastButton.setEnabled(getEntityQuery().hasNextPage());
+        nextButton.setEnabled(getEntityQuery().hasNextPage());
+
+        pageSizeMenu.setEnabled(getEntityQuery().getResultCount() > 10);
     }
 
     public int getPageSize() {
