@@ -121,6 +121,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         tabSheet.setSizeUndefined();
         menu = new LayoutContextMenu(layout);
         int tabPosition = 0;
+        boolean hasOptionalTabs = false;
         for (String tabName : tabNames) {
             TabSheet.Tab tab = tabSheet.addTab(new Label(), tabName, null);
             tabPositions.put(tabName, tabPosition++);
@@ -131,8 +132,15 @@ public abstract class FormComponent<T> extends CustomComponent {
                         this, "executeContextAction").setVisible(false);
                 setIsRequiredEnable(tabName, false);
                 tab.setVisible(false);
+                hasOptionalTabs = true;
             }
-            tab.setDescription(uiMessageSource.getMessage("formComponent.tab.description"));
+        }
+
+        if (hasOptionalTabs) {
+            for (String tabName : tabNames) {
+                TabSheet.Tab tab = getTabByName(tabName);
+                tab.setDescription(uiMessageSource.getMessage("formComponent.tab.description"));
+            }
         }
 
         layout.addComponent(tabSheet);

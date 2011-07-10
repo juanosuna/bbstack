@@ -84,7 +84,7 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setSelectItems("mailingAddress.state", new ArrayList());
         formFields.addValueChangeListener("mailingAddress.country", this, "mailingCountryChanged");
 
-        SelectField selectField = new SelectField(this, "account", accountSelect);
+        SelectField selectField = new SelectField(this, "account", accountSelect, uiMessageSource);
         formFields.setField("account.name", selectField);
 
     }

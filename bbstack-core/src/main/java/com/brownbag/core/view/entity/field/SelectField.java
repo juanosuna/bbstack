@@ -1,6 +1,7 @@
 package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.view.MainApplication;
+import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.EntityForm;
 import com.brownbag.core.view.entity.singleselect.SingleSelect;
 import com.vaadin.data.Property;
@@ -20,6 +21,8 @@ import java.util.Collection;
  */
 public class SelectField extends CustomField {
 
+    private MessageSource uiMessageSource;
+
     private TextField field;
 
     private SingleSelect singleSelect;
@@ -32,10 +35,11 @@ public class SelectField extends CustomField {
     private String propertyId;
 
 
-    public SelectField(EntityForm entityForm, String propertyId, SingleSelect singleSelect) {
+    public SelectField(EntityForm entityForm, String propertyId, SingleSelect singleSelect, MessageSource uiMessageSource) {
         this.entityForm = entityForm;
         this.propertyId = propertyId;
         this.singleSelect = singleSelect;
+        this.uiMessageSource = uiMessageSource;
         postConstruct();
     }
 
@@ -50,6 +54,7 @@ public class SelectField extends CustomField {
         layout.addComponent(field);
 
         final Button searchButton = new Button();
+        searchButton.setDescription(uiMessageSource.getMessage("selectField.search.description"));
         searchButton.setSizeUndefined();
         searchButton.addStyleName("borderless");
         searchButton.setIcon(new ThemeResource("../chameleon/img/magnifier.png"));
@@ -61,6 +66,7 @@ public class SelectField extends CustomField {
         layout.addComponent(searchButton);
 
         clearButton = new Button();
+        clearButton.setDescription(uiMessageSource.getMessage("selectField.clear.description"));
         clearButton.setSizeUndefined();
         clearButton.addStyleName("borderless");
         clearButton.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
