@@ -19,6 +19,7 @@ import java.util.List;
 @Component
 @Scope("session")
 public class SampleEntryPoints extends MainEntryPoints {
+
     @Resource
     private ContactEntryPoint contactEntryPoint;
 

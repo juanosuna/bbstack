@@ -46,5 +46,6 @@ public class AccountResults extends Results<Account> {
 
         displayFields.getField("numberOfEmployees").setLabel("# of Employees");
         displayFields.getField("annualRevenueFormattedInCurrency").setLabel("Annual Revenue");
+        displayFields.getField("annualRevenueFormattedInCurrency").setSortable(false);
     }
 }

@@ -24,7 +24,6 @@ import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.contact.accountsingleselect.AccountSingleSelect;
 import com.vaadin.data.Property;
-import com.vaadin.ui.RichTextArea;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +44,7 @@ public class ContactForm extends EntityForm<Contact> {
     private StateDao stateDao;
 
     @Resource
-    private AccountSingleSelect accountSelect;
+    private AccountSingleSelect accountSingleSelect;
 
     @Override
     public String getEntityCaption() {
@@ -55,23 +54,23 @@ public class ContactForm extends EntityForm<Contact> {
     @Override
     public void configureFields(FormFields formFields) {
         formFields.setPosition("Overview", "firstName", 0, 0);
-        formFields.setPosition("Overview", "lastName", 1, 0);
-        formFields.setPosition("Overview", "birthDate", 0, 1);
+        formFields.setPosition("Overview", "lastName", 0, 1);
+        formFields.setPosition("Overview", "birthDate", 1, 0);
         formFields.setPosition("Overview", "socialSecurityNumber", 1, 1);
-        formFields.setPosition("Overview", "account.name", 0, 2);
-        formFields.setPosition("Overview", "doNotCall", 1, 2);
+        formFields.setPosition("Overview", "account.name", 2, 0);
+        formFields.setPosition("Overview", "doNotCall", 2, 1);
 
         formFields.setPosition("Physical Address", "address.street", 0, 0);
-        formFields.setPosition("Physical Address", "address.city", 1, 0);
-        formFields.setPosition("Physical Address", "address.country", 0, 1);
+        formFields.setPosition("Physical Address", "address.city", 0, 1);
+        formFields.setPosition("Physical Address", "address.country", 1, 0);
         formFields.setPosition("Physical Address", "address.zipCode", 1, 1);
-        formFields.setPosition("Physical Address", "address.state", 0, 2);
+        formFields.setPosition("Physical Address", "address.state", 2, 0);
 
         formFields.setPosition("Mailing Address", "mailingAddress.street", 0, 0);
-        formFields.setPosition("Mailing Address", "mailingAddress.city", 1, 0);
-        formFields.setPosition("Mailing Address", "mailingAddress.country", 0, 1);
+        formFields.setPosition("Mailing Address", "mailingAddress.city", 0, 1);
+        formFields.setPosition("Mailing Address", "mailingAddress.country", 1, 0);
         formFields.setPosition("Mailing Address", "mailingAddress.zipCode", 1, 1);
-        formFields.setPosition("Mailing Address", "mailingAddress.state", 0, 2);
+        formFields.setPosition("Mailing Address", "mailingAddress.state", 2, 0);
         formFields.setTabOptional("Mailing Address", this, "addMailingAddress", this, "removeMailingAddress");
 
         formFields.setPosition("Note", "note", 0, 0);
@@ -84,7 +83,7 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setSelectItems("mailingAddress.state", new ArrayList());
         formFields.addValueChangeListener("mailingAddress.country", this, "mailingCountryChanged");
 
-        SelectField selectField = new SelectField(this, "account", accountSelect, uiMessageSource);
+        SelectField selectField = new SelectField(this, "account", accountSingleSelect);
         formFields.setField("account.name", selectField);
 
     }

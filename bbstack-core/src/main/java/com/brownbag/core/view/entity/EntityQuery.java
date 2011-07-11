@@ -22,9 +22,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * User: Juan
@@ -38,7 +36,6 @@ public abstract class EntityQuery<T> {
     private Long resultCount = 0L;
     private String orderByPropertyId;
     private OrderDirection orderDirection = OrderDirection.ASC;
-    private Set<String> nonSortablePropertyIds = new HashSet<String>();
 
     public abstract List<T> execute();
 
@@ -108,22 +105,6 @@ public abstract class EntityQuery<T> {
 
     public void setOrderDirection(OrderDirection orderDirection) {
         this.orderDirection = orderDirection;
-    }
-
-    public boolean isSortable(String propertyId) {
-        return !nonSortablePropertyIds.contains(propertyId);
-    }
-
-    public void setSortable(String propertyId, boolean isSortable) {
-        if (nonSortablePropertyIds.contains(propertyId) && isSortable) {
-            nonSortablePropertyIds.remove(propertyId);
-        } else if (!isSortable) {
-            nonSortablePropertyIds.add(propertyId);
-        }
-    }
-
-    public Set<String> getNonSortablePropertyIds() {
-        return nonSortablePropertyIds;
     }
 
     public void clear() {

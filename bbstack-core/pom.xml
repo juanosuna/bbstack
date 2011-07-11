@@ -196,6 +196,21 @@
         </dependency>
 
         <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>chameleon-dark</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>chameleon-green</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>chameleon-vaadin</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-servlet_2.5_spec</artifactId>
             <scope>provided</scope>

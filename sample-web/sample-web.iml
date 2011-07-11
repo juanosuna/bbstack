@@ -83,6 +83,9 @@
     <orderEntry type="library" name="Maven: org.vaadin.addons:confirmdialog:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:chameleon:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:chameleon-blue:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.vaadin.addons:chameleon-dark:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.vaadin.addons:chameleon-green:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.vaadin.addons:chameleon-vaadin:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:jstl:1.2" level="project" />
     <orderEntry type="library" name="Maven: taglibs:standard:1.1.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.geronimo.specs:geronimo-servlet_2.5_spec:1.2" level="project" />

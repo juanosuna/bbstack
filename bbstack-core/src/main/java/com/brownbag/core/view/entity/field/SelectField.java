@@ -35,11 +35,11 @@ public class SelectField extends CustomField {
     private String propertyId;
 
 
-    public SelectField(EntityForm entityForm, String propertyId, SingleSelect singleSelect, MessageSource uiMessageSource) {
+    public SelectField(EntityForm entityForm, String propertyId, SingleSelect singleSelect) {
         this.entityForm = entityForm;
         this.propertyId = propertyId;
         this.singleSelect = singleSelect;
-        this.uiMessageSource = uiMessageSource;
+        this.uiMessageSource = entityForm.getUiMessageSource();
         postConstruct();
     }
 

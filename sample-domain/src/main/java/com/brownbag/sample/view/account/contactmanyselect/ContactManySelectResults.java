@@ -47,6 +47,8 @@ public class ContactManySelectResults extends ManySelectResults<Contact> {
                 "lastModified",
                 "modifiedBy"
         });
+
+        displayFields.getField("name").setSortable(false);
     }
 
     @Override

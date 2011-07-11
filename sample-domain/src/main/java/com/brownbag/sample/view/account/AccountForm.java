@@ -18,7 +18,6 @@
 package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.manyselect.ManySelect;
 import com.brownbag.sample.dao.StateDao;
@@ -58,15 +57,15 @@ public class AccountForm extends EntityForm<Account> {
     public void configureFields(FormFields formFields) {
 
         formFields.setPosition("Overview", "name", 0, 0);
-        formFields.setPosition("Overview", "types", 1, 0);
-        formFields.setPosition("Overview", "numberOfEmployees", 0, 1);
+        formFields.setPosition("Overview", "types", 0, 1);
+        formFields.setPosition("Overview", "numberOfEmployees", 1, 0);
         formFields.setPosition("Overview", "annualRevenue", 1, 1);
 
         formFields.setPosition("Address", "address.street", 0, 0);
-        formFields.setPosition("Address", "address.city", 1, 0);
-        formFields.setPosition("Address", "address.country", 0, 1);
+        formFields.setPosition("Address", "address.city", 0, 1);
+        formFields.setPosition("Address", "address.country", 1, 0);
         formFields.setPosition("Address", "address.zipCode", 1, 1);
-        formFields.setPosition("Address", "address.state", 0, 2);
+        formFields.setPosition("Address", "address.state", 2, 0);
 
         formFields.getFormField("types").setMultiSelectDimensions(3, 10);
 

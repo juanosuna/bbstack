@@ -80,11 +80,6 @@ public class AccountQuery extends EntityQuery<Account> {
         return accountDao.find(this);
     }
 
-    @PostConstruct
-    public void postConstruct() {
-        setSortable("annualRevenueFormattedInCurrency", false);
-    }
-
     @Override
     public String toString() {
         return "AccountQuery{" +

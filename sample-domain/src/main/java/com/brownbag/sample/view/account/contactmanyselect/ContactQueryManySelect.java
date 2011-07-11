@@ -44,9 +44,4 @@ public class ContactQueryManySelect extends ManySelectQuery<Contact, Account> {
     public List<Contact> execute() {
         return contactDao.find(this);
     }
-
-    @PostConstruct
-    public void postConstruct() {
-        setSortable("name", false);
-    }
 }

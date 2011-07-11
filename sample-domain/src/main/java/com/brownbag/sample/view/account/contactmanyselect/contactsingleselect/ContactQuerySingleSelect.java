@@ -31,8 +31,4 @@ import javax.annotation.PostConstruct;
 @Component
 @Scope("session")
 public class ContactQuerySingleSelect extends ContactQuery {
-    @PostConstruct
-    public void postConstruct() {
-        setSortable("name", false);
-    }
 }

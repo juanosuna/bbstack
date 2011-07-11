@@ -95,4 +95,15 @@ public class DisplayFields {
     public Collection<DisplayField> getFields() {
         return fields.values();
     }
+
+    public Set<String> getNonSortablePropertyIds() {
+        Set<String> nonSortablePropertyIds = new HashSet<String>();
+        for (DisplayField displayField : fields.values()) {
+            if (!displayField.isSortable()) {
+                nonSortablePropertyIds.add(displayField.getPropertyId());
+            }
+        }
+
+        return nonSortablePropertyIds;
+    }
 }

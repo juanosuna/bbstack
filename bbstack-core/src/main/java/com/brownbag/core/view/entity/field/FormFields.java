@@ -102,21 +102,19 @@ public class FormFields extends DisplayFields {
         return new FormField(this, propertyId);
     }
 
-    public void setPosition(String tabName, String propertyId, int columnStart, int rowStart) {
-        setPosition(tabName, propertyId, columnStart, rowStart, null, null);
+    public void setPosition(String tabName, String propertyId, int rowStart, int columnStart) {
+        setPosition(tabName, propertyId, rowStart, columnStart, null, null);
     }
 
-    public void setPosition(String propertyId, int columnStart, int rowStart) {
-        setPosition(propertyId, columnStart, rowStart, null, null);
+    public void setPosition(String propertyId, int rowStart, int columnStart) {
+        setPosition(propertyId, rowStart, columnStart, null, null);
     }
 
-    public void setPosition(String propertyId, int columnStart, int rowStart, Integer columnEnd,
-                            Integer rowEnd) {
-        setPosition("", propertyId, columnStart, rowStart, columnEnd, rowEnd);
+    public void setPosition(String propertyId, int rowStart, int columnStart, Integer rowEnd, Integer columnEnd) {
+        setPosition("", propertyId, rowStart, columnStart, rowEnd, columnEnd);
     }
 
-    public void setPosition(String tabName, String propertyId, int columnStart, int rowStart, Integer columnEnd,
-                            Integer rowEnd) {
+    public void setPosition(String tabName, String propertyId, int rowStart, int columnStart, Integer rowEnd, Integer columnEnd) {
         FormField formField = (FormField) getField(propertyId);
         formField.setTabName(tabName);
         formField.setColumnStart(columnStart);

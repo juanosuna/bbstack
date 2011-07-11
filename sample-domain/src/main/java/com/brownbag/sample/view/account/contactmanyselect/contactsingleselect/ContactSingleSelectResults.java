@@ -41,5 +41,7 @@ public class ContactSingleSelectResults extends SingleSelectResults<Contact> {
                 "lastModified",
                 "modifiedBy"
         });
+
+        displayFields.getField("name").setSortable(false);
     }
 }

@@ -57,7 +57,7 @@ public class ResultsTable extends Table {
 
     public void postConstruct() {
         NullCapableBeanItemContainer dataSource = new NullCapableBeanItemContainer(getEntityType());
-        dataSource.setNonSortablePropertyIds(results.getEntityQuery().getNonSortablePropertyIds());
+        dataSource.setNonSortablePropertyIds(results.getDisplayFields().getNonSortablePropertyIds());
         String[] propertyIds = getEntityFields().getPropertyIdsAsArray();
         for (String propertyId : propertyIds) {
             dataSource.addNestedContainerProperty(propertyId);
@@ -85,7 +85,7 @@ public class ResultsTable extends Table {
         if (propertyId.length > 1) {
             throw new RuntimeException("Cannot sort on more than one column");
         } else if (propertyId.length == 1) {
-            if (results.getEntityQuery().isSortable(propertyId.toString())) {
+            if (results.getDisplayFields().getField(propertyId[0].toString()).isSortable()) {
                 results.getEntityQuery().setOrderByPropertyId(propertyId[0].toString());
                 if (ascending[0]) {
                     results.getEntityQuery().setOrderDirection(EntityQuery.OrderDirection.ASC);

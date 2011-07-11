@@ -64,6 +64,10 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     abstract FormFields createFormFields();
 
+    public MessageSource getUiMessageSource() {
+        return uiMessageSource;
+    }
+
     public Class getEntityType() {
         return ReflectionUtil.getGenericArgumentType(getClass());
     }

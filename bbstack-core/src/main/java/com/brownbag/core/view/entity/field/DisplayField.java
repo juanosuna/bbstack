@@ -37,6 +37,7 @@ public class DisplayField {
     private String label;
     private BeanPropertyType beanPropertyType;
     private Format format;
+    private boolean isSortable = true;
 
     public DisplayField(DisplayFields displayFields, String propertyId) {
         this.displayFields = displayFields;
@@ -78,6 +79,14 @@ public class DisplayField {
 
     public void setFormat(Format format) {
         this.format = format;
+    }
+
+    public boolean isSortable() {
+        return isSortable;
+    }
+
+    public void setSortable(boolean sortable) {
+        isSortable = sortable;
     }
 
     public String getLabel() {

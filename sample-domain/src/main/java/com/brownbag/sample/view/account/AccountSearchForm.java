@@ -54,8 +54,8 @@ public class AccountSearchForm extends SearchForm<AccountQuery> {
     public void configureFields(FormFields formFields) {
 
         formFields.setPosition("name", 0, 0);
-        formFields.setPosition("country", 1, 0);
-        formFields.setPosition("states", 2, 0);
+        formFields.setPosition("country", 0, 1);
+        formFields.setPosition("states", 0, 2);
 
         statesField = formFields.getFormField("states");
         statesField.setSelectItems(new ArrayList());

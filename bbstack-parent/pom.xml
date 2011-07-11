@@ -249,6 +249,24 @@
                 <version>1.0.2</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.vaadin.addons</groupId>
+                <artifactId>chameleon-dark</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.vaadin.addons</groupId>
+                <artifactId>chameleon-green</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.vaadin.addons</groupId>
+                <artifactId>chameleon-vaadin</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+
             <!-- Misc -->
             <dependency>
                 <groupId>com.h2database</groupId>

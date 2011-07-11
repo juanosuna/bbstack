@@ -54,8 +54,8 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     public void configureFields(FormFields formFields) {
 
         formFields.setPosition("lastName", 0, 0);
-        formFields.setPosition("country", 1, 0);
-        formFields.setPosition("states", 2, 0);
+        formFields.setPosition("country", 0, 1);
+        formFields.setPosition("states", 0, 2);
 
         statesField = formFields.getFormField("states");
         statesField.setSelectItems(new ArrayList());
