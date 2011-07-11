@@ -35,7 +35,7 @@ import java.util.List;
  */
 @Component
 @Scope("session")
-public class ContactQueryManySelect extends ManySelectQuery<Contact, Account> {
+public class ContactManySelectQuery extends ManySelectQuery<Contact, Account> {
 
     @Resource
     private ContactDao contactDao;

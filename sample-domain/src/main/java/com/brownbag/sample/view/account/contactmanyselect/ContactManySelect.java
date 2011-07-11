@@ -33,10 +33,10 @@ public class ContactManySelect extends ManySelect<Contact> {
     private ContactDao contactDao;
 
     @Resource
-    private ContactManySelectResults contactResultsManySelect;
+    private ContactManySelectResults contactManySelectResults;
 
     @Resource
-    private ContactQueryManySelect contactQueryManySelect;
+    private ContactManySelectQuery contactManySelectQuery;
 
     @Override
     public String getEntityCaption() {
@@ -49,13 +49,13 @@ public class ContactManySelect extends ManySelect<Contact> {
     }
 
     @Override
-    public ContactQueryManySelect getEntityQuery() {
-        return contactQueryManySelect;
+    public ContactManySelectQuery getEntityQuery() {
+        return contactManySelectQuery;
     }
 
     @Override
     public ContactManySelectResults getResultsComponent() {
-        return contactResultsManySelect;
+        return contactManySelectResults;
     }
 }
 

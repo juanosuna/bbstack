@@ -22,8 +22,7 @@ import com.brownbag.core.view.entity.EntityQuery;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.entity.Country;
-import com.brownbag.sample.entity.State;
-import com.brownbag.sample.view.account.contactmanyselect.ContactQueryManySelect;
+import com.brownbag.sample.view.account.contactmanyselect.ContactManySelectQuery;
 import com.brownbag.sample.view.contact.ContactQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,7 @@ import java.util.Set;
 @Transactional
 public class ContactDao extends EntityDao<Contact, Long> {
 
-    public List<Contact> find(ContactQueryManySelect query) {
+    public List<Contact> find(ContactManySelectQuery query) {
         List<Long> count = findImpl(query, true);
         query.setResultCount(count.get(0));
 
@@ -50,7 +49,7 @@ public class ContactDao extends EntityDao<Contact, Long> {
         }
     }
 
-    private List<Long> findImpl(ContactQueryManySelect contactQuery, boolean isCount) {
+    private List<Long> findImpl(ContactManySelectQuery contactQuery, boolean isCount) {
         CriteriaBuilder b = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> c = b.createQuery(Long.class);
         Root<Contact> contact = c.from(Contact.class);

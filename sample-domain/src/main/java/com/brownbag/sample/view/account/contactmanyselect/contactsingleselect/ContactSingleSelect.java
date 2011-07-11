@@ -33,13 +33,13 @@ public class ContactSingleSelect extends SingleSelect<Contact> {
     private ContactDao contactDao;
 
     @Resource
-    private ContactQuerySingleSelect contactQuerySelect;
+    private ContactSingleSelectQuery contactSingleSelectQuery;
 
     @Resource
-    private ContactSearchFormSelect contactSearchFormSelect;
+    private ContactSingleSelectSearchForm contactSingleSelectSearchForm;
 
     @Resource
-    private ContactSingleSelectResults contactResultsSelect;
+    private ContactSingleSelectResults contactSingleSelectResults;
 
     @Override
     public ContactDao getEntityDao() {
@@ -47,18 +47,18 @@ public class ContactSingleSelect extends SingleSelect<Contact> {
     }
 
     @Override
-    public ContactQuerySingleSelect getEntityQuery() {
-        return contactQuerySelect;
+    public ContactSingleSelectQuery getEntityQuery() {
+        return contactSingleSelectQuery;
     }
 
     @Override
-    public ContactSearchFormSelect getSearchForm() {
-        return contactSearchFormSelect;
+    public ContactSingleSelectSearchForm getSearchForm() {
+        return contactSingleSelectSearchForm;
     }
 
     @Override
     public ContactSingleSelectResults getResultsComponent() {
-        return contactResultsSelect;
+        return contactSingleSelectResults;
     }
 }
 

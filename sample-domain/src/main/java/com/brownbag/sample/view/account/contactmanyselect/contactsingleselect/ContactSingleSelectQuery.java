@@ -17,16 +17,18 @@
 
 package com.brownbag.sample.view.account.contactmanyselect.contactsingleselect;
 
-import com.brownbag.sample.view.contact.ContactSearchForm;
+import com.brownbag.sample.view.contact.ContactQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 /**
  * User: Juan
  * Date: 2/8/11
- * Time: 7:52 PM
+ * Time: 12:01 AM
  */
 @Component
 @Scope("session")
-public class ContactSearchFormSelect extends ContactSearchForm {
+public class ContactSingleSelectQuery extends ContactQuery {
 }

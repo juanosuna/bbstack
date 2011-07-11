@@ -36,7 +36,7 @@ import javax.annotation.Resource;
 public class ContactManySelectResults extends ManySelectResults<Contact> {
 
     @Resource
-    private ContactSingleSelect contactSelect;
+    private ContactSingleSelect contactSingleSelect;
 
     @Override
     public void configureFields(DisplayFields displayFields) {
@@ -53,7 +53,7 @@ public class ContactManySelectResults extends ManySelectResults<Contact> {
 
     @Override
     public ContactSingleSelect getSingleSelect() {
-        return contactSelect;
+        return contactSingleSelect;
     }
 
     @Override

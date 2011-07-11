@@ -17,16 +17,16 @@
 
 package com.brownbag.sample.view.contact.accountsingleselect;
 
-import com.brownbag.sample.view.account.AccountSearchForm;
+import com.brownbag.sample.view.account.AccountQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
  * User: Juan
  * Date: 2/8/11
- * Time: 7:52 PM
+ * Time: 12:01 AM
  */
 @Component
 @Scope("session")
-public class AccountSearchFormSelect extends AccountSearchForm {
+public class AccountSingleSelectQuery extends AccountQuery {
 }

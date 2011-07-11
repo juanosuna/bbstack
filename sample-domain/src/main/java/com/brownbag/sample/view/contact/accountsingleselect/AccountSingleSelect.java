@@ -33,13 +33,13 @@ public class AccountSingleSelect extends SingleSelect<Account> {
     private AccountDao accountDao;
 
     @Resource
-    private AccountQuerySingleSelect accountQuerySelect;
+    private AccountSingleSelectQuery accountSingleSelectQuery;
 
     @Resource
-    private AccountSearchFormSelect accountSearchFormSelect;
+    private AccountSingleSelectSearchForm accountSingleSelectSearchForm;
 
     @Resource
-    private AccountSingleSelectResults accountResultsSelect;
+    private AccountSingleSelectResults accountSingleSelectResults;
 
     @Override
     public AccountDao getEntityDao() {
@@ -47,18 +47,18 @@ public class AccountSingleSelect extends SingleSelect<Account> {
     }
 
     @Override
-    public AccountQuerySingleSelect getEntityQuery() {
-        return accountQuerySelect;
+    public AccountSingleSelectQuery getEntityQuery() {
+        return accountSingleSelectQuery;
     }
 
     @Override
-    public AccountSearchFormSelect getSearchForm() {
-        return accountSearchFormSelect;
+    public AccountSingleSelectSearchForm getSearchForm() {
+        return accountSingleSelectSearchForm;
     }
 
     @Override
     public AccountSingleSelectResults getResultsComponent() {
-        return accountResultsSelect;
+        return accountSingleSelectResults;
     }
 }
 

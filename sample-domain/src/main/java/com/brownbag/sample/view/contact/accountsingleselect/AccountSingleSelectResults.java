@@ -41,5 +41,7 @@ public class AccountSingleSelectResults extends SingleSelectResults<Account> {
                 "lastModified",
                 "modifiedBy"
         });
+
+        displayFields.getField("name").setSortable(false);
     }
 }
