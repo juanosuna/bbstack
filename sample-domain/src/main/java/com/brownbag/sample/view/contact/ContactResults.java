@@ -19,9 +19,13 @@ package com.brownbag.sample.view.contact;
 
 import com.brownbag.core.view.entity.Results;
 import com.brownbag.core.view.entity.field.DisplayFields;
+import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Contact;
+import com.brownbag.sample.view.account.AccountForm;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * User: Juan
@@ -31,6 +35,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("session")
 public class ContactResults extends Results<Contact> {
+
+    @Resource
+    private AccountForm accountForm;
 
     @Override
     public void configureFields(DisplayFields displayFields) {
@@ -45,5 +52,12 @@ public class ContactResults extends Results<Contact> {
         });
 
         displayFields.getField("account.name").setLabel("Account");
+        displayFields.getField("account.name").setFormLink("account", accountForm);
+    }
+
+    public void showAccountForm(Contact contact) {
+        Account account = contact.getAccount();
+        accountForm.load(account);
+        accountForm.open();
     }
 }

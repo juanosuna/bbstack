@@ -17,13 +17,19 @@
 
 package com.brownbag.core.view.entity;
 
+import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.view.entity.field.DisplayField;
 import com.brownbag.core.view.entity.field.DisplayFields;
+import com.vaadin.data.Container;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.NullCapableBeanItemContainer;
-import com.vaadin.ui.Table;
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.BaseTheme;
+import org.apache.commons.beanutils.PropertyUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.Format;
@@ -56,6 +62,9 @@ public class ResultsTable extends Table {
     }
 
     public void postConstruct() {
+        setEditable(true);
+        setTableFieldFactory(new TableButtonLinkFactory());
+
         NullCapableBeanItemContainer dataSource = new NullCapableBeanItemContainer(getEntityType());
         dataSource.setNonSortablePropertyIds(results.getDisplayFields().getNonSortablePropertyIds());
         String[] propertyIds = getEntityFields().getPropertyIdsAsArray();
@@ -167,6 +176,90 @@ public class ResultsTable extends Table {
             return super.formatPropertyValue(rowId, colId, property);
         } else {
             return format.format(property.getValue());
+        }
+    }
+
+    public class TableButtonLinkFactory implements TableFieldFactory {
+        public Field createField(Container container, Object itemId,
+                                 Object propertyId, Component uiContext) {
+
+            DisplayField.FormLink formLink = results.getDisplayFields().getField(propertyId.toString()).getFormLink();
+
+            if (formLink != null) {
+                BeanItem item = getContainerDataSource().getItem(itemId);
+                Button button = new ButtonLink(item.getItemProperty(propertyId));
+                button.addListener(new ButtonLinkClickListener(formLink, item));
+                return button;
+            }
+
+            return null;
+        }
+    }
+
+    public class ButtonLinkClickListener implements Button.ClickListener {
+        private DisplayField.FormLink formLink;
+        private BeanItem item;
+
+        public ButtonLinkClickListener(DisplayField.FormLink formLink, BeanItem item) {
+            this.formLink = formLink;
+            this.item = item;
+        }
+
+        @Override
+        public void buttonClick(Button.ClickEvent event) {
+            Object parentBean = item.getBean();
+            try {
+                WritableEntity propertyBean = (WritableEntity) PropertyUtils.getProperty(parentBean,
+                        formLink.getPropertyId());
+                EntityForm entityForm = formLink.getEntityForm();
+                entityForm.setCloseListener(results, "search");
+                entityForm.load(propertyBean);
+                entityForm.open();
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static class ButtonLink extends Button {
+        private Property itemProperty;
+
+        public ButtonLink(Property itemProperty) {
+            this.itemProperty = itemProperty;
+            setStyleName(BaseTheme.BUTTON_LINK);
+        }
+
+        @Override
+        public String getCaption() {
+            if (itemProperty.getValue() == null) {
+                return null;
+            } else {
+                return itemProperty.getValue().toString();
+            }
+        }
+
+        @Override
+        protected void setInternalValue(Object newValue) {
+            super.setInternalValue(false);
+        }
+
+        @Override
+        protected void setValue(Object newValue, boolean repaintIsNotNeeded) throws ReadOnlyException, ConversionException {
+            super.setValue(false, repaintIsNotNeeded);
+        }
+
+        @Override
+        public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+            super.setValue(false);
+        }
+
+        @Override
+        public void setPropertyDataSource(Property newDataSource) {
+            itemProperty = newDataSource;
         }
     }
 }

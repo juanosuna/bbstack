@@ -19,6 +19,8 @@ package com.brownbag.core.view.entity;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.WritableEntity;
+import com.brownbag.core.util.MethodDelegate;
+import com.brownbag.core.util.SpringApplicationContext;
 import com.brownbag.core.validation.PatternIfThen;
 import com.brownbag.core.validation.Validation;
 import com.brownbag.core.view.MainApplication;
@@ -53,6 +55,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     private Button nextButton;
     private Button previousButton;
+
+    private MethodDelegate closeListener;
 
     public List<ManySelect> getManySelects() {
         return new ArrayList<ManySelect>();
@@ -113,7 +117,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     private EntityDao getEntityDao() {
-        return getResults().getEntityDao();
+        return SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class, getEntityType());
     }
 
     public void loadManySelects() {
@@ -185,27 +189,32 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         HorizontalLayout navigationFormLayout = new HorizontalLayout();
         navigationFormLayout.setSizeUndefined();
 
-        previousButton = new Button(null, this, "previousItem");
-        previousButton.setDescription(uiMessageSource.getMessage("entityForm.previous.description"));
-        previousButton.setSizeUndefined();
-        previousButton.addStyleName("borderless");
-        previousButton.setIcon(new ThemeResource("icons/24/previous.png"));
-        navigationFormLayout.addComponent(previousButton);
-        navigationFormLayout.setComponentAlignment(previousButton, Alignment.MIDDLE_LEFT);
+        if (getResults() != null) {
+            previousButton = new Button(null, this, "previousItem");
+            previousButton.setDescription(uiMessageSource.getMessage("entityForm.previous.description"));
+            previousButton.setSizeUndefined();
+            previousButton.addStyleName("borderless");
+            previousButton.setIcon(new ThemeResource("icons/24/previous.png"));
+            navigationFormLayout.addComponent(previousButton);
+            navigationFormLayout.setComponentAlignment(previousButton, Alignment.MIDDLE_LEFT);
+        }
 
         navigationFormLayout.addComponent(this);
 
-        nextButton = new Button(null, this, "nextItem");
-        nextButton.setDescription(uiMessageSource.getMessage("entityForm.next.description"));
-        nextButton.setSizeUndefined();
-        nextButton.addStyleName("borderless");
-        nextButton.setIcon(new ThemeResource("icons/24/next.png"));
-        navigationFormLayout.addComponent(nextButton);
-        navigationFormLayout.setComponentAlignment(nextButton, Alignment.MIDDLE_RIGHT);
-        navigationFormLayout.setSpacing(false);
-        navigationFormLayout.setMargin(false);
+        if (getResults() != null) {
+            nextButton = new Button(null, this, "nextItem");
+            nextButton.setDescription(uiMessageSource.getMessage("entityForm.next.description"));
+            nextButton.setSizeUndefined();
+            nextButton.addStyleName("borderless");
+            nextButton.setIcon(new ThemeResource("icons/24/next.png"));
+            navigationFormLayout.addComponent(nextButton);
+            navigationFormLayout.setComponentAlignment(nextButton, Alignment.MIDDLE_RIGHT);
+            navigationFormLayout.setSpacing(false);
+            navigationFormLayout.setMargin(false);
 
-        refreshNavigationButtonStates();
+            refreshNavigationButtonStates();
+        }
+
         return navigationFormLayout;
     }
 
@@ -230,9 +239,20 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void close() {
-        getResults().search();
+        if (getResults() != null) {
+            getResults().search();
+        }
+
         MainApplication.getInstance().getMainWindow().removeWindow(formWindow);
         formWindow = null;
+
+        if (closeListener != null) {
+            closeListener.execute();
+        }
+    }
+
+    public void setCloseListener(Object target, String methodName) {
+        closeListener = new MethodDelegate(target, methodName);
     }
 
     public void cancel() {

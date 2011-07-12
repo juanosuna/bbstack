@@ -80,11 +80,11 @@ public abstract class FormComponent<T> extends CustomComponent {
         return formFields;
     }
 
-    ResultsComponent getResults() {
+    public ResultsComponent getResults() {
         return results;
     }
 
-    void setResults(ResultsComponent results) {
+    public void setResults(ResultsComponent results) {
         this.results = results;
     }
 
@@ -92,7 +92,8 @@ public abstract class FormComponent<T> extends CustomComponent {
         setSizeUndefined();
         form = new ConfigurableForm();
         form.setSizeUndefined();
-        form.setWriteThrough(true);
+
+        form.setWriteThrough(false);
         form.setInvalidCommitted(true);
         form.setImmediate(true);
         form.setValidationVisibleOnCommit(true);

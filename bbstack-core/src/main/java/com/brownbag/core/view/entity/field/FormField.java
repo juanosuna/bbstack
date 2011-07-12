@@ -25,6 +25,7 @@ import com.brownbag.core.util.assertion.Assert;
 import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.validator.IntegerValidator;
 import com.vaadin.ui.*;
 
 import javax.persistence.Lob;

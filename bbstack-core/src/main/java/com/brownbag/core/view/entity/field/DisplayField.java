@@ -18,7 +18,9 @@
 package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.util.BeanPropertyType;
+import com.brownbag.core.util.MethodDelegate;
 import com.brownbag.core.util.StringUtil;
+import com.brownbag.core.view.entity.EntityForm;
 import org.springframework.beans.BeanUtils;
 
 import java.beans.PropertyDescriptor;
@@ -34,10 +36,12 @@ import java.text.Format;
 public class DisplayField {
     private DisplayFields displayFields;
     private String propertyId;
+    private FormLink formLink;
     private String label;
     private BeanPropertyType beanPropertyType;
     private Format format;
     private boolean isSortable = true;
+    private MethodDelegate link;
 
     public DisplayField(DisplayFields displayFields, String propertyId) {
         this.displayFields = displayFields;
@@ -136,6 +140,32 @@ public class DisplayField {
     private String getLabelFromCode() {
         String afterPeriod = StringUtil.extractAfterPeriod(propertyId);
         return StringUtil.humanizeCamelCase(afterPeriod);
+    }
+
+    public void setFormLink(String propertyId, EntityForm entityForm) {
+        formLink = new FormLink(propertyId, entityForm);
+    }
+
+    public FormLink getFormLink() {
+        return formLink;
+    }
+
+    public static class FormLink {
+        private String propertyId;
+        private EntityForm entityForm;
+
+        private FormLink(String propertyId, EntityForm entityForm) {
+            this.propertyId = propertyId;
+            this.entityForm = entityForm;
+        }
+
+        public String getPropertyId() {
+            return propertyId;
+        }
+
+        public EntityForm getEntityForm() {
+            return entityForm;
+        }
     }
 
     @Override
