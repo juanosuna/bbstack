@@ -29,7 +29,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.sql.Clob;
 import java.util.Date;
 
 @Entity
@@ -66,16 +65,16 @@ public class Contact extends WritableEntity {
 
     @Valid
     @NotNull
-    @Index(name = "IDX_CONTACT_PHYSICAL_ADDRESS")
-    @ForeignKey(name = "FK_CONTACT_PHYSICAL_ADDRESS")
+    @Index(name = "IDX_CONTACT_PRIMARY_ADDRESS")
+    @ForeignKey(name = "FK_CONTACT_PRIMARY_ADDRESS")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Address address = new Address(AddressType.PHYSICAL);
+    private Address address = new Address(AddressType.PRIMARY);
 
     @Valid
-    @Index(name = "IDX_CONTACT_MAILING_ADDRESS")
-    @ForeignKey(name = "FK_CONTACT_MAILING_ADDRESS")
+    @Index(name = "IDX_CONTACT_OTHER_ADDRESS")
+    @ForeignKey(name = "FK_CONTACT_OTHER_ADDRESS")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Address mailingAddress;
+    private Address otherAddress;
 
     @Lob
     private String note;
@@ -155,20 +154,20 @@ public class Contact extends WritableEntity {
 
     public void setAddress(Address address) {
         if (address != null) {
-            address.setType(AddressType.PHYSICAL);
+            address.setType(AddressType.PRIMARY);
         }
         this.address = address;
     }
 
-    public Address getMailingAddress() {
-        return mailingAddress;
+    public Address getOtherAddress() {
+        return otherAddress;
     }
 
-    public void setMailingAddress(Address mailingAddress) {
-        if (mailingAddress != null) {
-            mailingAddress.setType(AddressType.MAILING);
+    public void setOtherAddress(Address otherAddress) {
+        if (otherAddress != null) {
+            otherAddress.setType(AddressType.OTHER);
         }
-        this.mailingAddress = mailingAddress;
+        this.otherAddress = otherAddress;
     }
 
     public String getNote() {

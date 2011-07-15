@@ -15,33 +15,32 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.account.contactmanyselect;
+package com.brownbag.core.view.entity.tomanyrelationship;
 
-import com.brownbag.core.view.entity.manyselect.ManySelectQuery;
-import com.brownbag.sample.dao.ContactDao;
-import com.brownbag.sample.entity.Account;
-import com.brownbag.sample.entity.Contact;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import com.brownbag.core.dao.ToManyRelationshipQuery;
+import com.brownbag.core.view.entity.EntityComponent;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * User: Juan
- * Date: 2/8/11
- * Time: 12:01 AM
+ * Date: 5/7/11
+ * Time: 5:27 PM
  */
-@Component
-@Scope("session")
-public class ContactManySelectQuery extends ManySelectQuery<Contact, Account> {
+public abstract class ToManyRelationship<T> extends EntityComponent<T> {
 
-    @Resource
-    private ContactDao contactDao;
+    protected ToManyRelationship() {
+        super();
+    }
 
-    @Override
-    public List<Contact> execute() {
-        return contactDao.find(this);
+    public abstract ToManyRelationshipQuery getEntityQuery();
+
+    public abstract ToManyRelationshipResults getResultsComponent();
+
+    @PostConstruct
+    public void postConstruct() {
+        super.postConstruct();
+
+        addComponent(getResultsComponent());
     }
 }

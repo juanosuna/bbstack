@@ -1,7 +1,6 @@
 package com.brownbag.core.view.entity.util;
 
 import com.brownbag.core.util.MethodDelegate;
-import com.brownbag.core.util.assertion.Assert;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.AbstractOrderedLayout;
 import org.vaadin.peter.contextmenu.ContextMenu;

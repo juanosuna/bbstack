@@ -31,7 +31,6 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.Format;
-import java.util.Currency;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,7 +49,10 @@ public class Account extends WritableEntity {
     @Min(0)
     private BigDecimal annualRevenue;
 
-    private Currency annualRevenueCurrency;
+    @Index(name = "IDX_ACCOUNT_CURRENCY")
+    @ForeignKey(name = "FK_ACCOUNT_CURRENCY")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Currency currency;
 
     @Index(name = "IDX_ACCOUNT_TYPE")
     @ForeignKey(name = "FK_ACCOUNT_TYPE")
@@ -70,6 +72,9 @@ public class Account extends WritableEntity {
 
     @OneToMany(mappedBy = "account")
     private Set<Contact> contacts = new HashSet<Contact>();
+
+    @OneToMany(mappedBy = "account")
+    private Set<Opportunity> opportunities = new HashSet<Opportunity>();
 
     public Account() {
     }
@@ -102,23 +107,23 @@ public class Account extends WritableEntity {
         setAnnualRevenue(new BigDecimal(annualRevenue));
     }
 
-    public Currency getAnnualRevenueCurrency() {
-        return annualRevenueCurrency;
+    public Currency getCurrency() {
+        return currency;
     }
 
-    public void setAnnualRevenueCurrency(Currency annualRevenueCurrency) {
-        this.annualRevenueCurrency = annualRevenueCurrency;
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public String getAnnualRevenueFormattedInCurrency() {
-        if (getAnnualRevenueCurrency() == null) {
+        if (getCurrency() == null) {
             return null;
         } else {
             Format format = new DecimalFormat("###,###");
-            if (getAnnualRevenueCurrency() == null) {
+            if (getCurrency() == null) {
                 return format.format(getAnnualRevenue());
             } else {
-                return format.format(getAnnualRevenue()) + " " + getAnnualRevenueCurrency().getCurrencyCode();
+                return format.format(getAnnualRevenue()) + " " + getCurrency().getId();
             }
         }
     }
@@ -157,6 +162,14 @@ public class Account extends WritableEntity {
 
     public void setContacts(Set<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public Set<Opportunity> getOpportunities() {
+        return opportunities;
+    }
+
+    public void setOpportunities(Set<Opportunity> opportunities) {
+        this.opportunities = opportunities;
     }
 
     @PreRemove

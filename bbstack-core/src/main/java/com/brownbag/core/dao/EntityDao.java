@@ -29,21 +29,26 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Repository
 @Transactional
-public class EntityDao<T, ID extends Serializable> {
+public abstract class EntityDao<T, ID extends Serializable> {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     private Class<T> persistentClass;
+    private Class<ID> idClass;
 
     public EntityDao() {
         persistentClass = ReflectionUtil.getGenericArgumentType(getClass());
+        idClass = ReflectionUtil.getGenericArgumentType(getClass(), 1);
     }
 
     public EntityManager getEntityManager() {
@@ -56,6 +61,14 @@ public class EntityDao<T, ID extends Serializable> {
         }
 
         return persistentClass;
+    }
+
+    protected Class<ID> getIDClass() {
+        if (idClass == null) {
+            throw new UnsupportedOperationException();
+        }
+
+        return idClass;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -161,5 +174,127 @@ public class EntityDao<T, ID extends Serializable> {
 
     public boolean isPersistent(T entity) {
         return getEntityManager().getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(entity) != null;
+    }
+
+    public List<T> execute(StructuredEntityQuery structuredEntityQuery) {
+        return new StructuredQueryExecutor(structuredEntityQuery).execute();
+    }
+
+    public List<T> execute(ToManyRelationshipQuery toManyRelationshipQuery) {
+        return new ToManyRelationshipQueryExecutor(toManyRelationshipQuery).execute();
+    }
+
+    public class StructuredQueryExecutor {
+
+        private StructuredEntityQuery structuredQuery;
+
+        public StructuredQueryExecutor(StructuredEntityQuery structuredQuery) {
+            this.structuredQuery = structuredQuery;
+        }
+
+        public StructuredEntityQuery getStructuredQuery() {
+            return structuredQuery;
+        }
+
+        public List<T> execute() {
+            List<ID> count = executeImpl(true);
+            structuredQuery.setResultCount((Long) count.get(0));
+
+            if (structuredQuery.getResultCount() > 0) {
+                List<ID> ids = executeImpl(false);
+                return findByIds(ids);
+            } else {
+                return new ArrayList<T>();
+            }
+        }
+
+        private List<ID> executeImpl(boolean isCount) {
+            CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery c = builder.createQuery();
+            Root<T> rootEntity = c.from(getPersistentClass());
+
+            if (isCount) {
+                c.select(builder.count(rootEntity));
+            } else {
+                c.select(rootEntity.get("id"));
+            }
+
+            List<Predicate> criteria = structuredQuery.buildCriteria(builder, rootEntity);
+            c.where(builder.and(criteria.toArray(new Predicate[0])));
+
+            if (!isCount && structuredQuery.getOrderByPropertyId() != null) {
+                Path path = structuredQuery.buildOrderByPath(rootEntity);
+                if (path == null) {
+                    path = rootEntity.get(structuredQuery.getOrderByPropertyId());
+                }
+                if (structuredQuery.getOrderDirection().equals(EntityQuery.OrderDirection.ASC)) {
+                    c.orderBy(builder.asc(path));
+                } else {
+                    c.orderBy(builder.desc(path));
+                }
+            }
+
+            TypedQuery<ID> typedQuery = getEntityManager().createQuery(c);
+            structuredQuery.setParameters(typedQuery);
+
+            if (!isCount) {
+                typedQuery.setFirstResult(structuredQuery.getFirstResult());
+                typedQuery.setMaxResults(structuredQuery.getPageSize());
+            }
+
+            return typedQuery.getResultList();
+        }
+
+        private List<T> findByIds(List<ID> ids) {
+            CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<T> c = builder.createQuery(getPersistentClass());
+            Root<T> rootEntity = c.from(getPersistentClass());
+            c.select(rootEntity);
+
+            structuredQuery.addFetchJoins(rootEntity);
+
+            List<Predicate> criteria = new ArrayList<Predicate>();
+            ParameterExpression<List> p = builder.parameter(List.class, "ids");
+            criteria.add(builder.in(rootEntity.get("id")).value(p));
+
+            c.where(builder.and(criteria.toArray(new Predicate[0])));
+
+            if (structuredQuery.getOrderByPropertyId() != null) {
+                Path path = structuredQuery.buildOrderByPath(rootEntity);
+                if (path == null) {
+                    path = rootEntity.get(structuredQuery.getOrderByPropertyId());
+                }
+                if (structuredQuery.getOrderDirection().equals(EntityQuery.OrderDirection.ASC)) {
+                    c.orderBy(builder.asc(path));
+                } else {
+                    c.orderBy(builder.desc(path));
+                }
+            }
+
+            TypedQuery<T> q = getEntityManager().createQuery(c);
+            q.setParameter("ids", ids);
+
+            return q.getResultList();
+        }
+    }
+
+    public class ToManyRelationshipQueryExecutor extends StructuredQueryExecutor {
+        public ToManyRelationshipQueryExecutor(ToManyRelationshipQuery toManyRelationshipQuery) {
+            super(toManyRelationshipQuery);
+        }
+
+        @Override
+        public ToManyRelationshipQuery getStructuredQuery() {
+            return (ToManyRelationshipQuery) super.getStructuredQuery();
+        }
+
+        @Override
+        public List<T> execute() {
+            if (getStructuredQuery().getParent() == null) {
+                return new ArrayList();
+            } else {
+                return super.execute();
+            }
+        }
     }
 }

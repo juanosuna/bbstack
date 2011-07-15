@@ -82,12 +82,12 @@ public class MainApplication extends Application implements HttpServletRequestLi
         ConfirmDialog.Factory confirmDialogFactory = new DefaultConfirmDialogFactory() {
             @Override
             public ConfirmDialog create(String caption, String message,
-                    String okCaption, String cancelCaption) {
+                                        String okCaption, String cancelCaption) {
                 ConfirmDialog confirmDialog;
                 confirmDialog = super.create(caption, message, okCaption, cancelCaption);
                 confirmDialog.setStyleName(ChameleonTheme.WINDOW_OPAQUE);
-                confirmDialog.getCancelButton().addStyleName("small default");
                 confirmDialog.getOkButton().addStyleName("small default");
+                confirmDialog.getCancelButton().addStyleName("small default");
 
                 return confirmDialog;
             }

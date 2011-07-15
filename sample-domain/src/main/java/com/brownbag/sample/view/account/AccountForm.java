@@ -19,12 +19,13 @@ package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.EntityForm;
 import com.brownbag.core.view.entity.field.FormFields;
-import com.brownbag.core.view.entity.manyselect.ManySelect;
+import com.brownbag.core.view.entity.tomanyrelationship.ToManyRelationship;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
-import com.brownbag.sample.view.account.contactmanyselect.ContactManySelect;
+import com.brownbag.sample.view.account.related.RelatedContacts;
+import com.brownbag.sample.view.account.related.RelatedOpportunities;
 import com.vaadin.data.Property;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -39,14 +40,17 @@ import java.util.List;
  * Time: 7:52 PM
  */
 @Component
-@Scope("session")
+@Scope("prototype")
 public class AccountForm extends EntityForm<Account> {
 
     @Resource
     private StateDao stateDao;
 
     @Resource
-    private ContactManySelect contactManySelect;
+    private RelatedContacts relatedContacts;
+
+    @Resource
+    private RelatedOpportunities relatedOpportunities;
 
     @Override
     public String getEntityCaption() {
@@ -80,10 +84,11 @@ public class AccountForm extends EntityForm<Account> {
     }
 
     @Override
-    public List<ManySelect> getManySelects() {
-        List<ManySelect> manySelects = new ArrayList<ManySelect>();
-        manySelects.add(contactManySelect);
+    public List<ToManyRelationship> getToManyRelationships() {
+        List<ToManyRelationship> toManyRelationships = new ArrayList<ToManyRelationship>();
+        toManyRelationships.add(relatedContacts);
+        toManyRelationships.add(relatedOpportunities);
 
-        return manySelects;
+        return toManyRelationships;
     }
 }

@@ -26,7 +26,7 @@ import com.brownbag.core.validation.Validation;
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
-import com.brownbag.core.view.entity.manyselect.ManySelect;
+import com.brownbag.core.view.entity.tomanyrelationship.ToManyRelationship;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
@@ -51,15 +51,15 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     private Validation validation;
 
     private Window formWindow;
-    private TabSheet manySelectTabs;
+    private TabSheet toManyRelationshipTabs;
 
     private Button nextButton;
     private Button previousButton;
 
     private MethodDelegate closeListener;
 
-    public List<ManySelect> getManySelects() {
-        return new ArrayList<ManySelect>();
+    public List<ToManyRelationship> getToManyRelationships() {
+        return new ArrayList<ToManyRelationship>();
     }
 
     FormFields createFormFields() {
@@ -70,14 +70,14 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
-        List<ManySelect> manySelects = getManySelects();
-        if (manySelects.size() > 0) {
-            manySelectTabs = new TabSheet();
-            manySelectTabs.setSizeUndefined();
-            for (ManySelect manySelect : manySelects) {
-                manySelectTabs.addTab(manySelect);
+        List<ToManyRelationship> toManyRelationships = getToManyRelationships();
+        if (toManyRelationships.size() > 0) {
+            toManyRelationshipTabs = new TabSheet();
+            toManyRelationshipTabs.setSizeUndefined();
+            for (ToManyRelationship toManyRelationship : toManyRelationships) {
+                toManyRelationshipTabs.addTab(toManyRelationship);
             }
-            addComponent(manySelectTabs);
+            addComponent(toManyRelationshipTabs);
         }
     }
 
@@ -112,7 +112,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         BeanItem beanItem = createBeanItem(loadedEntity);
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
-        loadManySelects();
+        loadToManyRelationships();
         resetTabs();
     }
 
@@ -120,17 +120,17 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         return SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class, getEntityType());
     }
 
-    public void loadManySelects() {
-        List<ManySelect> manySelects = getManySelects();
-        if (manySelects.size() > 0) {
-            for (ManySelect manySelect : manySelects) {
+    public void loadToManyRelationships() {
+        List<ToManyRelationship> toManyRelationships = getToManyRelationships();
+        if (toManyRelationships.size() > 0) {
+            for (ToManyRelationship toManyRelationship : toManyRelationships) {
                 Object parent = getEntity();
-                manySelect.getEntityQuery().clear();
-                manySelect.getEntityQuery().setParent(parent);
-                manySelect.getResultsComponent().search();
+                toManyRelationship.getEntityQuery().clear();
+                toManyRelationship.getEntityQuery().setParent(parent);
+                toManyRelationship.getResultsComponent().search();
 
             }
-            manySelectTabs.setVisible(true);
+            toManyRelationshipTabs.setVisible(true);
         }
     }
 
@@ -141,10 +141,10 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     public void create() {
         createImpl();
-        open();
+        open(false);
 
-        if (getManySelects().size() > 0) {
-            manySelectTabs.setVisible(false);
+        if (getToManyRelationships().size() > 0) {
+            toManyRelationshipTabs.setVisible(false);
         }
     }
 
@@ -168,7 +168,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         }
     }
 
-    public void open() {
+    public void open(boolean createNavigationButtons) {
         formWindow = new Window(getEntityCaption());
         formWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) formWindow.getContent();
@@ -180,16 +180,16 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         formWindow.setClosable(true);
         formWindow.setScrollable(true);
 
-        formWindow.addComponent(createNavigationFormLayout());
+        formWindow.addComponent(createNavigationFormLayout(createNavigationButtons));
 
         MainApplication.getInstance().getMainWindow().addWindow(formWindow);
     }
 
-    private HorizontalLayout createNavigationFormLayout() {
+    private HorizontalLayout createNavigationFormLayout(boolean createNavigationButtons) {
         HorizontalLayout navigationFormLayout = new HorizontalLayout();
         navigationFormLayout.setSizeUndefined();
 
-        if (getResults() != null) {
+        if (createNavigationButtons) {
             previousButton = new Button(null, this, "previousItem");
             previousButton.setDescription(uiMessageSource.getMessage("entityForm.previous.description"));
             previousButton.setSizeUndefined();
@@ -201,7 +201,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
         navigationFormLayout.addComponent(this);
 
-        if (getResults() != null) {
+        if (createNavigationButtons) {
             nextButton = new Button(null, this, "nextItem");
             nextButton.setDescription(uiMessageSource.getMessage("entityForm.next.description"));
             nextButton.setSizeUndefined();

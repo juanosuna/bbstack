@@ -15,13 +15,16 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity;
+package com.brownbag.core.dao;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -37,14 +40,16 @@ public abstract class EntityQuery<T> {
     private String orderByPropertyId;
     private OrderDirection orderDirection = OrderDirection.ASC;
 
-    public abstract List<T> execute();
-
     public Integer getPageSize() {
         return pageSize;
     }
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public void setFirstResult(Integer firstResult) {
+        this.firstResult = firstResult;
     }
 
     public Integer getFirstResult() {
@@ -72,7 +77,11 @@ public abstract class EntityQuery<T> {
     }
 
     public boolean hasNextPage() {
-        return Math.min(firstResult + pageSize, Math.max(resultCount.intValue() - pageSize, 0)) > firstResult;
+        if (resultCount > 0) {
+            return Math.min(firstResult + pageSize, Math.max(resultCount.intValue() - pageSize, 0)) > firstResult;
+        } else {
+            return false;
+        }
     }
 
     public void previousPage() {
@@ -89,10 +98,11 @@ public abstract class EntityQuery<T> {
 
     public String getOrderByPropertyId() {
         if (orderByPropertyId == null) {
-            return null;
-        } else {
-            return orderByPropertyId.toString();
+            orderByPropertyId = "lastModified";
+            setOrderDirection(OrderDirection.DESC);
         }
+
+        return orderByPropertyId;
     }
 
     public void setOrderByPropertyId(String orderByPropertyId) {
@@ -115,7 +125,9 @@ public abstract class EntityQuery<T> {
             PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(this);
             for (PropertyDescriptor descriptor : descriptors) {
                 Method writeMethod = descriptor.getWriteMethod();
-                if (writeMethod != null && !writeMethod.getDeclaringClass().equals(EntityQuery.class)
+                Method readMethod = descriptor.getReadMethod();
+                if (readMethod != null && writeMethod != null
+                        && !writeMethod.getDeclaringClass().equals(EntityQuery.class)
                         && !writeMethod.getDeclaringClass().equals(Object.class)) {
                     Class type = descriptor.getPropertyType();
                     if (type.isPrimitive() && !type.isArray()) {
@@ -148,4 +160,18 @@ public abstract class EntityQuery<T> {
         ASC,
         DESC
     }
+
+    public boolean isEmpty(String s) {
+        return s == null || s.isEmpty();
+    }
+
+    public boolean isEmpty(Object o) {
+        return o == null;
+    }
+
+    public boolean isEmpty(Collection c) {
+        return c == null || c.isEmpty();
+    }
+
+    public abstract List<T> execute();
 }

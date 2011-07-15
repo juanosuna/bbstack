@@ -15,7 +15,7 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity.singleselect;
+package com.brownbag.core.view.entity.entityselect;
 
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.ResultsComponent;
@@ -33,7 +33,7 @@ import java.util.Collection;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class SingleSelectResults<T> extends ResultsComponent<T> {
+public abstract class EntitySelectResults<T> extends ResultsComponent<T> {
 
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
@@ -43,7 +43,7 @@ public abstract class SingleSelectResults<T> extends ResultsComponent<T> {
 
     private Button selectButton;
 
-    protected SingleSelectResults() {
+    protected EntitySelectResults() {
         super();
     }
 
@@ -86,7 +86,8 @@ public abstract class SingleSelectResults<T> extends ResultsComponent<T> {
         }
     }
 
-    public void addSelectButtonListener(Object target, String methodName) {
+    public void setSelectButtonListener(Object target, String methodName) {
+        selectButton.removeListener(Button.ClickEvent.class, target, methodName);
         selectButton.addListener(Button.ClickEvent.class, target, methodName);
         contextMenu.addAction("entityResults.select", target, methodName);
         contextMenu.setActionEnabled("entityResults.select", true);

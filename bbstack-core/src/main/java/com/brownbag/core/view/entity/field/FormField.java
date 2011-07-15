@@ -20,16 +20,17 @@ package com.brownbag.core.view.entity.field;
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.ReferenceEntity;
 import com.brownbag.core.util.BeanPropertyType;
+import com.brownbag.core.util.CurrencyUtil;
 import com.brownbag.core.util.SpringApplicationContext;
 import com.brownbag.core.util.assertion.Assert;
 import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.validator.IntegerValidator;
 import com.vaadin.ui.*;
 
 import javax.persistence.Lob;
 import java.util.Collection;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
@@ -206,6 +207,10 @@ public class FormField extends DisplayField {
             return new Select();
         }
 
+        if (Currency.class.isAssignableFrom(propertyType)) {
+            return new Select();
+        }
+
         if (Collection.class.isAssignableFrom(propertyType)) {
             return new ListSelect();
         }
@@ -266,9 +271,16 @@ public class FormField extends DisplayField {
                 valueType = getCollectionValueType();
             }
 
-            EntityDao propertyDao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class,
-                    valueType);
-            List referenceEntities = propertyDao.findAll();
+            List referenceEntities;
+            if (Currency.class.isAssignableFrom(valueType)) {
+                referenceEntities = CurrencyUtil.getAvailableCurrencies();
+                ((AbstractSelect) field).setItemCaptionPropertyId("currencyCode");
+
+            } else {
+                EntityDao propertyDao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class,
+                        valueType);
+                referenceEntities = propertyDao.findAll();
+            }
             setSelectItems(referenceEntities);
         }
     }

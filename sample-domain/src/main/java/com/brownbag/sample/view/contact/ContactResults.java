@@ -33,11 +33,17 @@ import javax.annotation.Resource;
  * Time: 4:04 PM
  */
 @Component
-@Scope("session")
+@Scope("prototype")
 public class ContactResults extends Results<Contact> {
 
     @Resource
     private AccountForm accountForm;
+
+    @Override
+    public void postConstruct() {
+        super.postConstruct();
+        accountForm.postConstruct();
+    }
 
     @Override
     public void configureFields(DisplayFields displayFields) {
@@ -53,11 +59,5 @@ public class ContactResults extends Results<Contact> {
 
         displayFields.getField("account.name").setLabel("Account");
         displayFields.getField("account.name").setFormLink("account", accountForm);
-    }
-
-    public void showAccountForm(Contact contact) {
-        Account account = contact.getAccount();
-        accountForm.load(account);
-        accountForm.open();
     }
 }

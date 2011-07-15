@@ -18,6 +18,7 @@
 package com.brownbag.core.view.entity;
 
 import com.brownbag.core.dao.EntityDao;
+import com.brownbag.core.dao.EntityQuery;
 import com.brownbag.core.view.MessageSource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;

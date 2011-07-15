@@ -17,6 +17,7 @@
 
 package com.brownbag.core.view.entity;
 
+import com.brownbag.core.dao.EntityQuery;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.ThemeResource;
@@ -78,6 +79,7 @@ public abstract class SearchForm<T> extends FormComponent<T> {
 
     public void clear() {
         getEntityQuery().clear();
+        getResults().getResultsTable().setSortContainerPropertyId(null);
         BeanItem beanItem = createBeanItem(getEntityQuery());
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 

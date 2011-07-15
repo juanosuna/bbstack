@@ -15,11 +15,15 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.account;
+package com.brownbag.sample.view.select;
 
-import com.brownbag.core.view.entity.EntryPoint;
+import com.brownbag.core.view.entity.field.DisplayFields;
+import com.brownbag.core.view.entity.entityselect.EntitySelect;
+import com.brownbag.core.view.entity.entityselect.EntitySelectResults;
 import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
+import com.brownbag.sample.view.account.AccountQuery;
+import com.brownbag.sample.view.account.AccountSearchForm;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +31,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
-public class AccountEntryPoint extends EntryPoint<Account> {
+public class AccountSelect extends EntitySelect<Account> {
 
     @Resource
     private AccountDao accountDao;
@@ -39,15 +43,7 @@ public class AccountEntryPoint extends EntryPoint<Account> {
     private AccountSearchForm accountSearchForm;
 
     @Resource
-    private AccountResults accountResults;
-
-    @Resource
-    private AccountForm accountForm;
-
-    @Override
-    public String getEntityCaption() {
-        return "Accounts";
-    }
+    private AccountSelectResults accountSelectResults;
 
     @Override
     public AccountDao getEntityDao() {
@@ -65,13 +61,26 @@ public class AccountEntryPoint extends EntryPoint<Account> {
     }
 
     @Override
-    public AccountResults getResultsComponent() {
-        return accountResults;
+    public AccountSelectResults getResultsComponent() {
+        return accountSelectResults;
     }
 
-    @Override
-    public AccountForm getEntityForm() {
-        return accountForm;
+    @Component
+    @Scope("prototype")
+    public static class AccountSelectResults extends EntitySelectResults<Account> {
+
+        @Override
+        public void configureFields(DisplayFields displayFields) {
+            displayFields.setPropertyIds(new String[]{
+                    "name",
+                    "address.state",
+                    "address.country",
+                    "lastModified",
+                    "modifiedBy"
+            });
+
+            displayFields.getField("name").setSortable(false);
+        }
     }
 }
 

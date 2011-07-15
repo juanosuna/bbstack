@@ -17,16 +17,18 @@
 
 package com.brownbag.sample.view.account;
 
-import com.brownbag.core.view.entity.EntityQuery;
+import com.brownbag.core.dao.StructuredEntityQuery;
 import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,10 +39,10 @@ import java.util.Set;
  * Time: 12:01 AM
  */
 @Component
-@Scope("session")
-public class AccountQuery extends EntityQuery<Account> {
+@Scope("prototype")
+public class AccountQuery extends StructuredEntityQuery<Account> {
 
-    @Resource
+    @Autowired
     private AccountDao accountDao;
 
     private String name;
@@ -73,18 +75,64 @@ public class AccountQuery extends EntityQuery<Account> {
 
     @Override
     public List<Account> execute() {
-        if (getOrderByPropertyId() == null) {
-            setOrderByPropertyId("lastModified");
-            setOrderDirection(OrderDirection.DESC);
+        return accountDao.execute(this);
+    }
+
+    @Override
+    public List<Predicate> buildCriteria(CriteriaBuilder builder, Root<Account> rootEntity) {
+        List<Predicate> criteria = new ArrayList<Predicate>();
+
+        if (!isEmpty(name)) {
+            ParameterExpression<String> p = builder.parameter(String.class, "name");
+            criteria.add(builder.like(builder.upper(rootEntity.<String>get("name")), p));
         }
-        return accountDao.find(this);
+        if (!isEmpty(states)) {
+            ParameterExpression<Set> p = builder.parameter(Set.class, "states");
+            criteria.add(builder.in(rootEntity.get("address").get("state")).value(p));
+        }
+        if (!isEmpty(country)) {
+            ParameterExpression<Country> p = builder.parameter(Country.class, "country");
+            criteria.add(builder.equal(rootEntity.get("address").get("country"), p));
+        }
+
+        return criteria;
+    }
+
+    @Override
+    public void setParameters(TypedQuery typedQuery) {
+        if (!isEmpty(name)) {
+            typedQuery.setParameter("name", "%" + name.toUpperCase() + "%");
+        }
+        if (!isEmpty(states)) {
+            typedQuery.setParameter("states", states);
+        }
+        if (!isEmpty(country)) {
+            typedQuery.setParameter("country", country);
+        }
+    }
+
+    @Override
+    public Path buildOrderByPath(Root<Account> rootEntity) {
+        if (getOrderByPropertyId().equals("address.country")) {
+            return rootEntity.get("address").get("country");
+        } else if (getOrderByPropertyId().equals("address.state")) {
+            return rootEntity.get("address").get("state");
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void addFetchJoins(Root<Account> rootEntity) {
+        rootEntity.fetch("address", JoinType.LEFT);
     }
 
     @Override
     public String toString() {
         return "AccountQuery{" +
-                "lastName='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", states=" + states +
                 '}';
     }
+
 }

@@ -22,7 +22,7 @@ import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.*;
-import com.brownbag.sample.view.contact.accountsingleselect.AccountSingleSelect;
+import com.brownbag.sample.view.select.AccountSelect;
 import com.vaadin.data.Property;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -37,14 +37,14 @@ import java.util.List;
  * Time: 7:52 PM
  */
 @Component
-@Scope("session")
+@Scope("prototype")
 public class ContactForm extends EntityForm<Contact> {
 
     @Resource
     private StateDao stateDao;
 
     @Resource
-    private AccountSingleSelect accountSingleSelect;
+    private AccountSelect accountSelect;
 
     @Override
     public String getEntityCaption() {
@@ -60,18 +60,18 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setPosition("Overview", "account.name", 2, 0);
         formFields.setPosition("Overview", "doNotCall", 2, 1);
 
-        formFields.setPosition("Physical Address", "address.street", 0, 0);
-        formFields.setPosition("Physical Address", "address.city", 0, 1);
-        formFields.setPosition("Physical Address", "address.country", 1, 0);
-        formFields.setPosition("Physical Address", "address.zipCode", 1, 1);
-        formFields.setPosition("Physical Address", "address.state", 2, 0);
+        formFields.setPosition("Primary Address", "address.street", 0, 0);
+        formFields.setPosition("Primary Address", "address.city", 0, 1);
+        formFields.setPosition("Primary Address", "address.country", 1, 0);
+        formFields.setPosition("Primary Address", "address.zipCode", 1, 1);
+        formFields.setPosition("Primary Address", "address.state", 2, 0);
 
-        formFields.setPosition("Mailing Address", "mailingAddress.street", 0, 0);
-        formFields.setPosition("Mailing Address", "mailingAddress.city", 0, 1);
-        formFields.setPosition("Mailing Address", "mailingAddress.country", 1, 0);
-        formFields.setPosition("Mailing Address", "mailingAddress.zipCode", 1, 1);
-        formFields.setPosition("Mailing Address", "mailingAddress.state", 2, 0);
-        formFields.setTabOptional("Mailing Address", this, "addMailingAddress", this, "removeMailingAddress");
+        formFields.setPosition("Other Address", "otherAddress.street", 0, 0);
+        formFields.setPosition("Other Address", "otherAddress.city", 0, 1);
+        formFields.setPosition("Other Address", "otherAddress.country", 1, 0);
+        formFields.setPosition("Other Address", "otherAddress.zipCode", 1, 1);
+        formFields.setPosition("Other Address", "otherAddress.state", 2, 0);
+        formFields.setTabOptional("Other Address", this, "addOtherAddress", this, "removeOtherAddress");
 
         formFields.setPosition("Note", "note", 0, 0);
 
@@ -80,20 +80,19 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setSelectItems("address.state", new ArrayList());
         formFields.addValueChangeListener("address.country", this, "countryChanged");
 
-        formFields.setSelectItems("mailingAddress.state", new ArrayList());
-        formFields.addValueChangeListener("mailingAddress.country", this, "mailingCountryChanged");
+        formFields.setSelectItems("otherAddress.state", new ArrayList());
+        formFields.addValueChangeListener("otherAddress.country", this, "otherCountryChanged");
 
-        SelectField selectField = new SelectField(this, "account", accountSingleSelect);
+        SelectField selectField = new SelectField(this, "account", accountSelect);
         formFields.setField("account.name", selectField);
-
     }
 
-    public void addMailingAddress() {
-        getEntity().setMailingAddress(new Address(AddressType.MAILING));
+    public void addOtherAddress() {
+        getEntity().setOtherAddress(new Address(AddressType.OTHER));
     }
 
-    public void removeMailingAddress() {
-        getEntity().setMailingAddress(null);
+    public void removeOtherAddress() {
+        getEntity().setOtherAddress(null);
     }
 
     public void countryChanged(Property.ValueChangeEvent event) {
@@ -102,9 +101,9 @@ public class ContactForm extends EntityForm<Contact> {
         getFormFields().setSelectItems("address.state", states);
     }
 
-    public void mailingCountryChanged(Property.ValueChangeEvent event) {
+    public void otherCountryChanged(Property.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
-        getFormFields().setSelectItems("mailingAddress.state", states);
+        getFormFields().setSelectItems("otherAddress.state", states);
     }
 }

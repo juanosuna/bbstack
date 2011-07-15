@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
  * Time: 4:04 PM
  */
 @Component
-@Scope("session")
+@Scope("prototype")
 public class AccountResults extends Results<Account> {
 
     @Override

@@ -15,18 +15,25 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.account.contactmanyselect.contactsingleselect;
+package com.brownbag.core.view.entity.entityselect;
 
-import com.brownbag.sample.view.contact.ContactSearchForm;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import com.brownbag.core.view.entity.SearchFormResults;
 
 /**
  * User: Juan
- * Date: 2/8/11
- * Time: 7:52 PM
+ * Date: 5/7/11
+ * Time: 5:27 PM
  */
-@Component
-@Scope("session")
-public class ContactSingleSelectSearchForm extends ContactSearchForm {
+public abstract class EntitySelect<T> extends SearchFormResults<T> {
+
+    protected EntitySelect() {
+        super();
+    }
+
+    public abstract EntitySelectResults getResultsComponent();
+
+    public String getEntityCaption() {
+        return null;
+    }
+
 }

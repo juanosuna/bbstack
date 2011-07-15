@@ -6,6 +6,6 @@ package com.brownbag.sample.entity;
  * Time: 11:23 AM
  */
 public enum AddressType {
-    PHYSICAL,
-    MAILING
+    PRIMARY,
+    OTHER
 }

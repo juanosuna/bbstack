@@ -15,31 +15,14 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity.manyselect;
+package com.brownbag.sample.dao;
 
-import com.brownbag.core.view.entity.EntityComponent;
+import com.brownbag.core.dao.EntityDao;
+import com.brownbag.sample.entity.SalesStage;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-
-/**
- * User: Juan
- * Date: 5/7/11
- * Time: 5:27 PM
- */
-public abstract class ManySelect<T> extends EntityComponent<T> {
-
-    protected ManySelect() {
-        super();
-    }
-
-    public abstract ManySelectQuery getEntityQuery();
-
-    public abstract ManySelectResults getResultsComponent();
-
-    @PostConstruct
-    public void postConstruct() {
-        super.postConstruct();
-
-        addComponent(getResultsComponent());
-    }
+@Repository
+@Transactional
+public class SalesStageDao extends EntityDao<SalesStage, String> {
 }

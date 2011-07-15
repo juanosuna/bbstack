@@ -37,7 +37,7 @@ import java.util.List;
  * Time: 7:52 PM
  */
 @Component
-@Scope("session")
+@Scope("prototype")
 public class ContactSearchForm extends SearchForm<ContactQuery> {
 
     @Resource

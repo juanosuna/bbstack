@@ -18,11 +18,15 @@
 package com.brownbag.core.view.entity;
 
 import com.brownbag.core.dao.EntityDao;
+import com.brownbag.core.dao.EntityQuery;
 import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.vaadin.data.Property;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.data.validator.IntegerValidator;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 
@@ -47,8 +51,10 @@ public abstract class ResultsComponent<T> extends CustomComponent {
     private EntityForm entityForm;
     private EntityQuery entityQuery;
     private DisplayFields displayFields;
+    private TextField firstResultTextField;
     private Label resultCountLabel;
 
+    private Button refreshButton;
     private Select pageSizeMenu;
     private Button firstButton;
     private Button previousButton;
@@ -134,23 +140,41 @@ public abstract class ResultsComponent<T> extends CustomComponent {
     private HorizontalLayout createNavigationLine() {
 
         HorizontalLayout resultCountDisplay = new HorizontalLayout();
-        resultCountLabel = new Label();
+        Label showingLabel = new Label(uiMessageSource.getMessage("entityResults.showing")
+                + " &nbsp ", Label.CONTENT_XHTML);
+        showingLabel.addStyleName("small");
+        resultCountDisplay.addComponent(showingLabel);
+        firstResultTextField = createFirstResultTextField();
+        firstResultTextField.addStyleName("small");
+        resultCountDisplay.addComponent(firstResultTextField);
+        resultCountLabel = new Label("", Label.CONTENT_XHTML);
+        resultCountLabel.addStyleName("small");
         resultCountDisplay.addComponent(resultCountLabel);
+
+        resultCountDisplay.addComponent(new Label(" &nbsp; ", Label.CONTENT_XHTML));
+
+        refreshButton = new Button(null, getResultsTable(), "refresh");
+        refreshButton.setDescription(uiMessageSource.getMessage("entityResults.refresh.description"));
+        refreshButton.setSizeUndefined();
+        refreshButton.addStyleName("borderless");
+        refreshButton.setIcon(new ThemeResource("icons/16/refresh-blue.png"));
+        resultCountDisplay.addComponent(refreshButton);
 
         HorizontalLayout navigationButtons = new HorizontalLayout();
         navigationButtons.setMargin(false, true, false, false);
         navigationButtons.setSpacing(true);
 
+        String perPageText = uiMessageSource.getMessage("entityResults.pageSize");
         pageSizeMenu = new Select();
         pageSizeMenu.addStyleName("small");
         pageSizeMenu.addItem(10);
-        pageSizeMenu.setItemCaption(10, "10 per page");
+        pageSizeMenu.setItemCaption(10, "10 " + perPageText);
         pageSizeMenu.addItem(25);
-        pageSizeMenu.setItemCaption(25, "25 per page");
+        pageSizeMenu.setItemCaption(25, "25 " + perPageText);
         pageSizeMenu.addItem(50);
-        pageSizeMenu.setItemCaption(50, "50 per page");
+        pageSizeMenu.setItemCaption(50, "50 " + perPageText);
         pageSizeMenu.addItem(100);
-        pageSizeMenu.setItemCaption(100, "100 per page");
+        pageSizeMenu.setItemCaption(100, "100 " + perPageText);
         MethodProperty pageProperty = new MethodProperty(this, "pageSize");
         pageSizeMenu.setPropertyDataSource(pageProperty);
         pageSizeMenu.setFilteringMode(Select.FILTERINGMODE_OFF);
@@ -202,6 +226,34 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         return navigationLine;
     }
 
+    private TextField createFirstResultTextField() {
+        TextField firstResultTextField = new TextField();
+        firstResultTextField.setImmediate(true);
+        firstResultTextField.setInvalidAllowed(true);
+        firstResultTextField.setInvalidCommitted(false);
+        firstResultTextField.setWriteThrough(true);
+        firstResultTextField.addValidator(new IntegerValidator(uiMessageSource.getMessage("entityResults.firstResult.invalid")) {
+            @Override
+            protected boolean isValidString(String value) {
+                boolean isValid = super.isValidString(value);
+                if (!isValid) {
+                    return false;
+                } else {
+                    Integer intValue = Integer.parseInt(value);
+                    if (getEntityQuery().getResultCount() > 0) {
+                        return intValue >= 1 && intValue <= getEntityQuery().getResultCount();
+                    } else {
+                        return intValue == 0;
+                    }
+                }
+            }
+        });
+        firstResultTextField.setPropertyDataSource(new MethodProperty(getResultsTable(), "firstResult"));
+        firstResultTextField.setWidth(3, Sizeable.UNITS_EM);
+
+        return firstResultTextField;
+    }
+
     void refreshNavigationButtonStates() {
         firstButton.setEnabled(getEntityQuery().hasPreviousPage());
         previousButton.setEnabled(getEntityQuery().hasPreviousPage());
@@ -209,6 +261,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         nextButton.setEnabled(getEntityQuery().hasNextPage());
 
         pageSizeMenu.setEnabled(getEntityQuery().getResultCount() > 10);
+        firstResultTextField.setEnabled(getEntityQuery().getResultCount() > 10);
     }
 
     public int getPageSize() {
@@ -249,9 +302,10 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         EntityQuery query = getEntityQuery();
         String caption = uiMessageSource.getMessage("entityResults.caption",
                 new Object[]{
-                        query.getResultCount() == 0 ? 0 : query.getFirstResult() + 1,
                         query.getResultCount() == 0 ? 0 : query.getLastResult(),
                         query.getResultCount()});
+        firstResultTextField.setValue(query.getResultCount() == 0 ? 0 : query.getFirstResult() + 1);
+        firstResultTextField.setWidth(Math.max(3, query.getResultCount().toString().length() - 1), Sizeable.UNITS_EM);
         resultCountLabel.setValue(caption);
     }
 }

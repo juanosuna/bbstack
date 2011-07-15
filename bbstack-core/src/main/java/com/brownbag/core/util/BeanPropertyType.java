@@ -57,10 +57,10 @@ public class BeanPropertyType {
         return false;
     }
 
-    public Annotation getAnnotation(Class annotationClass) {
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         for (Annotation annotation : annotations) {
             if (annotationClass.isAssignableFrom(annotation.getClass())) {
-                return annotation;
+                return (T) annotation;
             }
         }
 

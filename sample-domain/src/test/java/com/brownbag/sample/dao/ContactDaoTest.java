@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 public class ContactDaoTest extends AbstractDomainTest {
@@ -42,6 +43,9 @@ public class ContactDaoTest extends AbstractDomainTest {
 
     @Autowired
     private CountryDao countryDao;
+
+    @Resource
+    private ContactQuery contactQuery;
 
     @Before
     public void setup() {
@@ -64,15 +68,14 @@ public class ContactDaoTest extends AbstractDomainTest {
         address.setCountry(country);
         addressDao.persist(address);
         contact.setAddress(address);
-        contact.setMailingAddress(null);
+        contact.setOtherAddress(null);
         contactDao.persist(contact);
     }
 
     @Test
     public void findByName() {
-        ContactQuery contactQuery = new ContactQuery();
         contactQuery.setLastName("Osuna");
-        List<Contact> contacts = contactDao.find(contactQuery);
+        List<Contact> contacts = contactQuery.execute();
         Assert.assertNotNull(contacts);
         Assert.assertTrue(contacts.size() > 0);
         Assert.assertEquals("Osuna", contacts.get(0).getLastName());

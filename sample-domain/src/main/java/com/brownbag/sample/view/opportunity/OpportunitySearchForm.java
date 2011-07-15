@@ -15,47 +15,32 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.account.contactmanyselect;
+package com.brownbag.sample.view.opportunity;
 
-import com.brownbag.core.view.entity.manyselect.ManySelect;
-import com.brownbag.sample.dao.ContactDao;
-import com.brownbag.sample.entity.Contact;
+import com.brownbag.core.view.entity.SearchForm;
+import com.brownbag.core.view.entity.field.FormFields;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-
+/**
+ * User: Juan
+ * Date: 2/8/11
+ * Time: 7:52 PM
+ */
 @Component
-@Scope("session")
-public class ContactManySelect extends ManySelect<Contact> {
-
-    @Resource
-    private ContactDao contactDao;
-
-    @Resource
-    private ContactManySelectResults contactManySelectResults;
-
-    @Resource
-    private ContactManySelectQuery contactManySelectQuery;
+@Scope("prototype")
+public class OpportunitySearchForm extends SearchForm<OpportunityQuery> {
 
     @Override
     public String getEntityCaption() {
-        return "Company Contacts";
+        return "Opportunity Search Form";
     }
 
     @Override
-    public ContactDao getEntityDao() {
-        return contactDao;
-    }
+    public void configureFields(FormFields formFields) {
+        formFields.setPosition("accountName", 0, 0);
+        formFields.setPosition("salesStages", 0, 1);
 
-    @Override
-    public ContactManySelectQuery getEntityQuery() {
-        return contactManySelectQuery;
-    }
-
-    @Override
-    public ContactManySelectResults getResultsComponent() {
-        return contactManySelectResults;
+        formFields.getFormField("salesStages").setMultiSelectDimensions(3, 10);
     }
 }
-

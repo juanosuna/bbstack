@@ -19,7 +19,6 @@ package com.brownbag.sample.dao;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.sample.entity.Country;
-import com.brownbag.sample.entity.State;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

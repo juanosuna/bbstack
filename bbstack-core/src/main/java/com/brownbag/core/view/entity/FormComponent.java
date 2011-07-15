@@ -30,6 +30,7 @@ import com.vaadin.data.util.VaadinPropertyDescriptor;
 import com.vaadin.ui.*;
 import org.vaadin.peter.contextmenu.ContextMenu;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;

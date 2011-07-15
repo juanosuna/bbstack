@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
         "classpath:/spring/applicationContext-data-access.xml",
+        "classpath:/spring/applicationContext-test.xml",
         "classpath:/spring/applicationContext-scan.xml"
 })
 @Transactional

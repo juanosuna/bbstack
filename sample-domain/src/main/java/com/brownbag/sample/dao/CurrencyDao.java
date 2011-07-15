@@ -15,35 +15,25 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity.manyselect;
+package com.brownbag.sample.dao;
 
-import com.brownbag.core.view.entity.EntityQuery;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import com.brownbag.core.dao.EntityDao;
+import com.brownbag.sample.entity.Currency;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- * User: Juan
- * Date: 2/8/11
- * Time: 12:01 AM
- */
-@Component
-@Scope("session")
-public abstract class ManySelectQuery<T, P> extends EntityQuery<T> {
+import javax.persistence.Query;
+import java.util.List;
 
-    private P parent;
-
-    public P getParent() {
-        return parent;
-    }
-
-    public void setParent(P parent) {
-        this.parent = parent;
-    }
+@Repository
+@Transactional
+public class CurrencyDao extends EntityDao<Currency, String> {
 
     @Override
-    public String toString() {
-        return "EntityManySelectQuery{" +
-                "parent='" + parent +
-                '}';
+    public List<Currency> findAll() {
+        Query query = getEntityManager().createQuery("SELECT c FROM Currency c");
+        query.setHint("org.hibernate.cacheable", true);
+
+        return query.getResultList();
     }
 }

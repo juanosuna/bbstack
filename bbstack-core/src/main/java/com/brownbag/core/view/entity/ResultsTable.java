@@ -17,6 +17,7 @@
 
 package com.brownbag.core.view.entity;
 
+import com.brownbag.core.dao.EntityQuery;
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.view.entity.field.DisplayField;
 import com.brownbag.core.view.entity.field.DisplayFields;
@@ -29,6 +30,8 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apache.commons.beanutils.PropertyUtils;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -108,6 +111,22 @@ public class ResultsTable extends Table {
         }
     }
 
+    public int getFirstResult() {
+        EntityQuery query = results.getEntityQuery();
+        return query.getResultCount() == 0 ? 0 : query.getFirstResult() + 1;
+    }
+
+    public void setFirstResult(int firstResult) {
+        clearSelection();
+        results.getEntityQuery().setFirstResult(firstResult - 1);
+        executeCurrentQuery();
+    }
+
+    public void refresh() {
+        clearSelection();
+        executeCurrentQuery();
+    }
+
     public void firstPage() {
         clearSelection();
         results.getEntityQuery().firstPage();
@@ -162,7 +181,12 @@ public class ResultsTable extends Table {
 
             if (format == null) {
                 if (property.getType() == Date.class) {
-                    format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    Temporal temporal = displayField.getAnnotation(Temporal.class);
+                    if (temporal != null && temporal.value().equals(TemporalType.DATE)) {
+                        format = new SimpleDateFormat("yyyy-MM-dd");
+                    } else {
+                        format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    }
                 } else if (property.getType() == BigDecimal.class) {
                     format = new DecimalFormat("###,###.##");
                     return format.format(property.getValue());
@@ -214,7 +238,7 @@ public class ResultsTable extends Table {
                 EntityForm entityForm = formLink.getEntityForm();
                 entityForm.setCloseListener(results, "search");
                 entityForm.load(propertyBean);
-                entityForm.open();
+                entityForm.open(false);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {

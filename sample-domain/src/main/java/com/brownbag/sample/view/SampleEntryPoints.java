@@ -4,6 +4,7 @@ import com.brownbag.core.view.MainEntryPoints;
 import com.brownbag.core.view.entity.EntryPoint;
 import com.brownbag.sample.view.account.AccountEntryPoint;
 import com.brownbag.sample.view.contact.ContactEntryPoint;
+import com.brownbag.sample.view.opportunity.OpportunityEntryPoint;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -26,11 +27,15 @@ public class SampleEntryPoints extends MainEntryPoints {
     @Resource
     private AccountEntryPoint accountEntryPoint;
 
+    @Resource
+    private OpportunityEntryPoint opportunityEntryPoint;
+
     @Override
     public List<EntryPoint> getEntryPoints() {
         List<EntryPoint> entryPoints = new ArrayList<EntryPoint>();
         entryPoints.add(contactEntryPoint);
         entryPoints.add(accountEntryPoint);
+        entryPoints.add(opportunityEntryPoint);
 
         return entryPoints;
     }

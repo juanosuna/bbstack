@@ -15,11 +15,11 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.contact.accountsingleselect;
+package com.brownbag.sample.view.opportunity;
 
+import com.brownbag.core.view.entity.Results;
 import com.brownbag.core.view.entity.field.DisplayFields;
-import com.brownbag.core.view.entity.singleselect.SingleSelectResults;
-import com.brownbag.sample.entity.Account;
+import com.brownbag.sample.entity.Opportunity;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -29,19 +29,22 @@ import org.springframework.stereotype.Component;
  * Time: 4:04 PM
  */
 @Component
-@Scope("session")
-public class AccountSingleSelectResults extends SingleSelectResults<Account> {
+@Scope("prototype")
+public class OpportunityResults extends Results<Opportunity> {
 
     @Override
     public void configureFields(DisplayFields displayFields) {
         displayFields.setPropertyIds(new String[]{
                 "name",
-                "address.state",
-                "address.country",
+                "account.name",
+                "salesStage",
+                "expectedCloseDate",
+                "amount",
                 "lastModified",
                 "modifiedBy"
         });
 
-        displayFields.getField("name").setSortable(false);
+        displayFields.getField("name").setLabel("Name");
+        displayFields.getField("account.name").setLabel("Account");
     }
 }

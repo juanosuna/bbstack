@@ -22,7 +22,6 @@ import com.brownbag.core.util.assertion.Assert;
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.util.ActionContextMenu;
-import com.vaadin.addon.chameleon.ChameleonTheme;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ThemeResource;
@@ -31,7 +30,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.dialogs.ConfirmDialog;
-import org.vaadin.dialogs.DefaultConfirmDialogFactory;
 
 import javax.annotation.Resource;
 import java.util.Collection;
@@ -108,7 +106,7 @@ public abstract class Results<T> extends ResultsComponent<T> {
 
     public void editImpl(Object itemId) {
         loadItem(itemId);
-        getEntityForm().open();
+        getEntityForm().open(true);
     }
 
     private Object currentItemId;

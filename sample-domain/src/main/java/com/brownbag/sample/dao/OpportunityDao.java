@@ -15,25 +15,14 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity.singleselect;
+package com.brownbag.sample.dao;
 
-import com.brownbag.core.view.entity.SearchFormResults;
+import com.brownbag.core.dao.EntityDao;
+import com.brownbag.sample.entity.Opportunity;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- * User: Juan
- * Date: 5/7/11
- * Time: 5:27 PM
- */
-public abstract class SingleSelect<T> extends SearchFormResults<T> {
-
-    protected SingleSelect() {
-        super();
-    }
-
-    public abstract SingleSelectResults getResultsComponent();
-
-    public String getEntityCaption() {
-        return null;
-    }
-
+@Repository
+@Transactional
+public class OpportunityDao extends EntityDao<Opportunity, Long> {
 }

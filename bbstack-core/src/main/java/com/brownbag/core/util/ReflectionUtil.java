@@ -49,22 +49,26 @@ public class ReflectionUtil {
     }
 
     public static Class getGenericArgumentType(Class clazz) {
+        return getGenericArgumentType(clazz, 0);
+    }
+
+    public static Class getGenericArgumentType(Class clazz, int argIndex) {
         Type type = clazz.getGenericSuperclass();
 
         if (type != null && type instanceof ParameterizedType) {
-            return (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+            return (Class) ((ParameterizedType) type).getActualTypeArguments()[argIndex];
         } else {
             if (!(type instanceof Class) || type.equals(Object.class)) {
                 return null;
             } else {
-                return getGenericArgumentType((Class) type);
+                return getGenericArgumentType((Class) type, argIndex);
             }
         }
     }
 
     public static Class getCollectionValueType(Class beanType, String beanProperty) {
         PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(beanType, beanProperty);
-        Class propertyType =  descriptor.getPropertyType();
+        Class propertyType = descriptor.getPropertyType();
         Assert.PROGRAMMING.assertTrue(Collection.class.isAssignableFrom(propertyType),
                 "Bean property not a collection type: " + beanType + "." + beanProperty);
 

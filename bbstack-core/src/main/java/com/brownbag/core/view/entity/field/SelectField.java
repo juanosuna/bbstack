@@ -3,12 +3,13 @@ package com.brownbag.core.view.entity.field;
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.singleselect.SingleSelect;
+import com.brownbag.core.view.entity.entityselect.EntitySelect;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.vaadin.addon.customfield.CustomField;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +26,7 @@ public class SelectField extends CustomField {
 
     private TextField field;
 
-    private SingleSelect singleSelect;
+    private EntitySelect entitySelect;
 
     private Button clearButton;
 
@@ -35,10 +36,10 @@ public class SelectField extends CustomField {
     private String propertyId;
 
 
-    public SelectField(EntityForm entityForm, String propertyId, SingleSelect singleSelect) {
+    public SelectField(EntityForm entityForm, String propertyId, EntitySelect entitySelect) {
         this.entityForm = entityForm;
         this.propertyId = propertyId;
-        this.singleSelect = singleSelect;
+        this.entitySelect = entitySelect;
         this.uiMessageSource = entityForm.getUiMessageSource();
         postConstruct();
     }
@@ -72,7 +73,7 @@ public class SelectField extends CustomField {
         clearButton.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
         layout.addComponent(clearButton);
 
-        singleSelect.getResultsComponent().addSelectButtonListener(this, "itemSelected");
+//        entitySelect.getResultsComponent().addSelectButtonListener(this, "itemSelected");
         addClearListener(this, "itemCleared");
 
         setCompositionRoot(layout);
@@ -82,10 +83,12 @@ public class SelectField extends CustomField {
         Object selectedValue = getSelectedValue();
         Object entity = entityForm.getEntity();
         try {
-            BeanUtils.setProperty(entity, propertyId, selectedValue);
+            PropertyUtils.setProperty(entity, propertyId, selectedValue);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
         entityForm.refreshFromDataSource();
@@ -95,10 +98,12 @@ public class SelectField extends CustomField {
     public void itemCleared() {
         Object entity = entityForm.getEntity();
         try {
-            BeanUtils.setProperty(entity, propertyId, null);
-        } catch (IllegalAccessException e) {
+            PropertyUtils.setProperty(entity, propertyId, null);
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
         entityForm.refreshFromDataSource();
@@ -109,7 +114,7 @@ public class SelectField extends CustomField {
     }
 
     public Object getSelectedValue() {
-        return singleSelect.getResultsComponent().getSelectedValue();
+        return entitySelect.getResultsComponent().getSelectedValue();
     }
 
     public void open() {
@@ -121,10 +126,12 @@ public class SelectField extends CustomField {
         layout.setSizeUndefined();
         popupWindow.setSizeUndefined();
         popupWindow.setModal(true);
-        popupWindow.addComponent(singleSelect);
+        popupWindow.addComponent(entitySelect);
         popupWindow.setClosable(true);
-        singleSelect.getResultsComponent().getEntityQuery().clear();
-        singleSelect.getResultsComponent().search();
+        entitySelect.getResultsComponent().getEntityQuery().clear();
+        entitySelect.getResultsComponent().search();
+        entitySelect.getResultsComponent().setSelectButtonListener(this, "itemSelected");
+
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
     }
 

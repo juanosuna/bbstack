@@ -27,8 +27,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 
 @PatternIfThen(ifProperty = "country.id", ifRegex = "^US$",
         thenProperty = "zipCode", thenRegex = "^\\d{5}$|^\\d{5}$",
@@ -39,7 +37,7 @@ public class Address extends WritableEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private AddressType type = AddressType.PHYSICAL;
+    private AddressType type = AddressType.PRIMARY;
 
     @NotNull
     @NotBlank

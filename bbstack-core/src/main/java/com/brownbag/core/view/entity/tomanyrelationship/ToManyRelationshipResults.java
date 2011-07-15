@@ -15,16 +15,18 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.view.entity.manyselect;
+package com.brownbag.core.view.entity.tomanyrelationship;
 
+import com.brownbag.core.dao.ToManyRelationshipQuery;
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.ResultsComponent;
-import com.brownbag.core.view.entity.singleselect.SingleSelect;
+import com.brownbag.core.view.entity.entityselect.EntitySelect;
 import com.brownbag.core.view.entity.util.ActionContextMenu;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.dialogs.ConfirmDialog;
 
@@ -37,7 +39,7 @@ import java.util.Collection;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class ManySelectResults<T> extends ResultsComponent<T> {
+public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
 
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
@@ -53,7 +55,7 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
     private Button addButton;
     private Button removeButton;
 
-    protected ManySelectResults() {
+    protected ToManyRelationshipResults() {
         super();
     }
 
@@ -61,7 +63,7 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
 
     public abstract String getPropertyId();
 
-    public abstract SingleSelect getSingleSelect();
+    public abstract EntitySelect getEntitySelect();
 
     public void postConstruct() {
         super.postConstruct();
@@ -87,7 +89,7 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
         getCrudButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
 
         getResultsTable().setMultiSelect(true);
-        getSingleSelect().getResultsComponent().getResultsTable().setMultiSelect(true);
+        getEntitySelect().getResultsComponent().getResultsTable().setMultiSelect(true);
 
         contextMenu.addAction("entityResults.remove", this, "remove");
         contextMenu.setActionEnabled("entityResults.remove", true);
@@ -103,24 +105,24 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
         layout.setSizeUndefined();
         popupWindow.setSizeUndefined();
         popupWindow.setModal(true);
-        SingleSelect singleSelect = getSingleSelect();
-        singleSelect.getResultsComponent().getEntityQuery().clear();
-        singleSelect.getResultsComponent().search();
-        popupWindow.addComponent(singleSelect);
+        EntitySelect entitySelect = getEntitySelect();
+        entitySelect.getResultsComponent().getEntityQuery().clear();
+        entitySelect.getResultsComponent().search();
+        popupWindow.addComponent(entitySelect);
         popupWindow.setClosable(true);
-        getSingleSelect().getResultsComponent().addSelectButtonListener(this, "itemsSelected");
+        getEntitySelect().getResultsComponent().setSelectButtonListener(this, "itemsSelected");
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
     }
 
     public void itemsSelected() {
         close();
-        Collection selectedValues = getSingleSelect().getResultsComponent().getSelectedValues();
+        Collection selectedValues = getEntitySelect().getResultsComponent().getSelectedValues();
         valuesSelected(selectedValues.toArray());
     }
 
     @Override
-    public ManySelectQuery getEntityQuery() {
-        return (ManySelectQuery) super.getEntityQuery();
+    public ToManyRelationshipQuery getEntityQuery() {
+        return (ToManyRelationshipQuery) super.getEntityQuery();
     }
 
     public void valuesSelected(Object... values) {
@@ -128,10 +130,12 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
         for (Object value : values) {
             value = getEntityDao().getReference(value);
             try {
-                BeanUtils.setProperty(value, getPropertyId(), parent);
+                PropertyUtils.setProperty(value, getPropertyId(), parent);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
             getEntityDao().persist(value);
@@ -143,10 +147,12 @@ public abstract class ManySelectResults<T> extends ResultsComponent<T> {
         for (Object value : values) {
             value = getEntityDao().getReference(value);
             try {
-                BeanUtils.setProperty(value, getPropertyId(), null);
+                PropertyUtils.setProperty(value, getPropertyId(), null);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
             getEntityDao().persist(value);

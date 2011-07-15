@@ -15,18 +15,27 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.contact.accountsingleselect;
+package com.brownbag.sample.entity;
 
-import com.brownbag.sample.view.account.AccountSearchForm;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
-/**
- * User: Juan
- * Date: 2/8/11
- * Time: 7:52 PM
- */
-@Component
-@Scope("session")
-public class AccountSingleSelectSearchForm extends AccountSearchForm {
+import com.brownbag.core.entity.ReferenceEntity;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
+
+@Entity
+@Table
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = CACHE_REGION)
+public class SalesStage extends ReferenceEntity {
+
+    public SalesStage() {
+    }
+
+    public SalesStage(String id) {
+        super(id, id);
+    }
 }

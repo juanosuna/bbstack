@@ -24,7 +24,6 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
-import java.util.Currency;
 import java.util.Date;
 
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
@@ -41,16 +40,26 @@ public class TestInitializer extends AbstractDomainTest {
     private AccountTypeDao accountTypeDao;
 
     @Autowired
+    private SalesStageDao salesStageDao;
+
+    @Autowired
     private ContactDao contactDao;
 
     @Autowired
     private AccountDao accountDao;
 
+    @Autowired
+    private OpportunityDao opportunityDao;
+
+    @Autowired
+    private CurrencyDao currencyDao;
+
     //    @IfProfileValue(name="initDB", value="true")
     @Test
     public void initialize() throws Exception {
-
         initializeAccountTypes();
+        initializeSalesStages();
+        initializeCurrencies();
         initializeCountriesStates();
         initializeContacts();
     }
@@ -99,14 +108,14 @@ public class TestInitializer extends AbstractDomainTest {
             address.setCountry(country);
             address.setState(new State("NC"));
             address.setZipCode("28202");
-            account.setAnnualRevenueCurrency(Currency.getInstance("USD"));
+            account.setCurrency(new Currency("USD"));
         } else {
             address.setCity("Toronto");
             Country country = new Country("CA");
             address.setCountry(country);
             address.setState(new State("ON"));
             address.setZipCode("M4B 1B4");
-            account.setAnnualRevenueCurrency(Currency.getInstance("CAD"));
+            account.setCurrency(new Currency("CAD"));
         }
         account.setAddress(address);
 
@@ -116,6 +125,31 @@ public class TestInitializer extends AbstractDomainTest {
         account.setAnnualRevenue(1000000);
 
         accountDao.persist(account);
+
+        initializeOpportunity(account, i);
+    }
+
+    private void initializeOpportunity(Account account, int i) {
+        Opportunity opportunity = new Opportunity();
+        opportunity.setName("opportunityName" + i);
+        opportunity.setAccount(account);
+
+        if (i % 2 == 0) {
+            SalesStage salesStage = new SalesStage("Prospecting");
+            opportunity.setSalesStage(salesStage);
+            opportunity.setCurrency(new Currency("USD"));
+        } else {
+            SalesStage salesStage = new SalesStage("Needs Analysis");
+            opportunity.setSalesStage(salesStage);
+            opportunity.setCurrency(new Currency("CAD"));
+        }
+        opportunity.setExpectedCloseDate(new Date());
+        opportunity.setProbability(.2f);
+        opportunity.setCommission(.05f);
+
+        opportunity.setAmount(1000);
+
+        opportunityDao.persist(opportunity);
     }
 
     private void initializeCountriesStates() {
@@ -150,6 +184,14 @@ public class TestInitializer extends AbstractDomainTest {
         stateDao.persist(state);
     }
 
+    private void initializeCurrencies() {
+        Currency currency = new Currency("CAD", "Canadian Dollar");
+        currencyDao.persist(currency);
+
+        currency = new Currency("USD", "US Dollar");
+        currencyDao.persist(currency);
+    }
+
     private void initializeAccountTypes() {
         AccountType accountType = new AccountType("Analyst");
         accountTypeDao.persist(accountType);
@@ -177,6 +219,20 @@ public class TestInitializer extends AbstractDomainTest {
 
         accountType = new AccountType("Press");
         accountTypeDao.persist(accountType);
+    }
+
+    private void initializeSalesStages() {
+        SalesStage salesStage = new SalesStage("Prospecting");
+        salesStageDao.persist(salesStage);
+
+        salesStage = new SalesStage("Qualification");
+        salesStageDao.persist(salesStage);
+
+        salesStage = new SalesStage("Needs Analysis");
+        salesStageDao.persist(salesStage);
+
+        salesStage = new SalesStage("Value Proposition");
+        salesStageDao.persist(salesStage);
     }
 
     public static Date createBirthDate() {

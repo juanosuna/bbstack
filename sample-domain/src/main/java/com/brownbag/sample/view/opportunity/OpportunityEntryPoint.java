@@ -15,11 +15,11 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.account;
+package com.brownbag.sample.view.opportunity;
 
 import com.brownbag.core.view.entity.EntryPoint;
-import com.brownbag.sample.dao.AccountDao;
-import com.brownbag.sample.entity.Account;
+import com.brownbag.sample.dao.OpportunityDao;
+import com.brownbag.sample.entity.Opportunity;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -27,51 +27,51 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
-public class AccountEntryPoint extends EntryPoint<Account> {
+public class OpportunityEntryPoint extends EntryPoint<Opportunity> {
 
     @Resource
-    private AccountDao accountDao;
+    private OpportunityDao opportunityDao;
 
     @Resource
-    private AccountQuery accountQuery;
+    private OpportunityQuery opportunityQuery;
 
     @Resource
-    private AccountSearchForm accountSearchForm;
+    private OpportunitySearchForm opportunitySearchForm;
 
     @Resource
-    private AccountResults accountResults;
+    private OpportunityResults opportunityResults;
 
     @Resource
-    private AccountForm accountForm;
+    private OpportunityForm opportunityForm;
 
     @Override
     public String getEntityCaption() {
-        return "Accounts";
+        return "Opportunities";
     }
 
     @Override
-    public AccountDao getEntityDao() {
-        return accountDao;
+    public OpportunityDao getEntityDao() {
+        return opportunityDao;
     }
 
     @Override
-    public AccountQuery getEntityQuery() {
-        return accountQuery;
+    public OpportunityQuery getEntityQuery() {
+        return opportunityQuery;
     }
 
     @Override
-    public AccountSearchForm getSearchForm() {
-        return accountSearchForm;
+    public OpportunitySearchForm getSearchForm() {
+        return opportunitySearchForm;
     }
 
     @Override
-    public AccountResults getResultsComponent() {
-        return accountResults;
+    public OpportunityResults getResultsComponent() {
+        return opportunityResults;
     }
 
     @Override
-    public AccountForm getEntityForm() {
-        return accountForm;
+    public OpportunityForm getEntityForm() {
+        return opportunityForm;
     }
 }
 
