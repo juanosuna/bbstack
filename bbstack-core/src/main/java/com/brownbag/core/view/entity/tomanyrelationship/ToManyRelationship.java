@@ -17,7 +17,6 @@
 
 package com.brownbag.core.view.entity.tomanyrelationship;
 
-import com.brownbag.core.dao.ToManyRelationshipQuery;
 import com.brownbag.core.view.entity.EntityComponent;
 
 import javax.annotation.PostConstruct;
@@ -33,11 +32,10 @@ public abstract class ToManyRelationship<T> extends EntityComponent<T> {
         super();
     }
 
-    public abstract ToManyRelationshipQuery getEntityQuery();
-
     public abstract ToManyRelationshipResults getResultsComponent();
 
     @PostConstruct
+    @Override
     public void postConstruct() {
         super.postConstruct();
 

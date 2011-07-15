@@ -89,6 +89,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         this.results = results;
     }
 
+    @PostConstruct
     public void postConstruct() {
         setSizeUndefined();
         form = new ConfigurableForm();

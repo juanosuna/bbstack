@@ -23,8 +23,8 @@ import com.brownbag.core.view.entity.util.ActionContextMenu;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Collection;
 
@@ -38,8 +38,8 @@ public abstract class EntitySelectResults<T> extends ResultsComponent<T> {
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
 
-    @Autowired
-    private ActionContextMenu contextMenu;
+    @Resource
+    private ActionContextMenu actionContextMenu;
 
     private Button selectButton;
 
@@ -47,6 +47,8 @@ public abstract class EntitySelectResults<T> extends ResultsComponent<T> {
         super();
     }
 
+    @PostConstruct
+    @Override
     public void postConstruct() {
         super.postConstruct();
         addSelectionChangedListener(this, "selectionChanged");
@@ -70,18 +72,18 @@ public abstract class EntitySelectResults<T> extends ResultsComponent<T> {
         if (itemId instanceof Collection) {
             if (((Collection) itemId).size() > 0) {
                 selectButton.setEnabled(true);
-                getResultsTable().addActionHandler(contextMenu);
+                getResultsTable().addActionHandler(actionContextMenu);
             } else {
                 selectButton.setEnabled(false);
-                getResultsTable().removeActionHandler(contextMenu);
+                getResultsTable().removeActionHandler(actionContextMenu);
             }
         } else {
             if (itemId != null) {
                 selectButton.setEnabled(true);
-                getResultsTable().addActionHandler(contextMenu);
+                getResultsTable().addActionHandler(actionContextMenu);
             } else {
                 selectButton.setEnabled(false);
-                getResultsTable().removeActionHandler(contextMenu);
+                getResultsTable().removeActionHandler(actionContextMenu);
             }
         }
     }
@@ -89,7 +91,7 @@ public abstract class EntitySelectResults<T> extends ResultsComponent<T> {
     public void setSelectButtonListener(Object target, String methodName) {
         selectButton.removeListener(Button.ClickEvent.class, target, methodName);
         selectButton.addListener(Button.ClickEvent.class, target, methodName);
-        contextMenu.addAction("entityResults.select", target, methodName);
-        contextMenu.setActionEnabled("entityResults.select", true);
+        actionContextMenu.addAction("entityResults.select", target, methodName);
+        actionContextMenu.setActionEnabled("entityResults.select", true);
     }
 }

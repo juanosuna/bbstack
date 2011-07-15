@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 7/14/11
  * Time: 11:23 AM
  */
-public abstract class StructuredEntityQuery<T> extends EntityQuery {
+public abstract class StructuredEntityQuery<T> extends EntityQuery<T> {
 
     public abstract List<Predicate> buildCriteria(CriteriaBuilder builder, Root<T> rootEntity);
 

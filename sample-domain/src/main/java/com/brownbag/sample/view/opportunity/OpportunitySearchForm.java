@@ -32,15 +32,15 @@ import org.springframework.stereotype.Component;
 public class OpportunitySearchForm extends SearchForm<OpportunityQuery> {
 
     @Override
-    public String getEntityCaption() {
-        return "Opportunity Search Form";
-    }
-
-    @Override
     public void configureFields(FormFields formFields) {
         formFields.setPosition("accountName", 0, 0);
         formFields.setPosition("salesStages", 0, 1);
 
         formFields.getFormField("salesStages").setMultiSelectDimensions(3, 10);
+    }
+
+    @Override
+    public String getEntityCaption() {
+        return "Opportunity Search Form";
     }
 }

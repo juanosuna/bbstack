@@ -21,7 +21,7 @@ public class BeanPropertyType {
     private Class collectionValueType;
     private Set<Annotation> annotations = new HashSet<Annotation>();
 
-    public BeanPropertyType(BeanPropertyType parent, String id, Class type, Class containerType, Class collectionValueType) {
+    private BeanPropertyType(BeanPropertyType parent, String id, Class type, Class containerType, Class collectionValueType) {
         this.parent = parent;
         this.id = id;
         this.type = type;

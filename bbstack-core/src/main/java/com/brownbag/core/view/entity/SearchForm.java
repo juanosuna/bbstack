@@ -17,12 +17,13 @@
 
 package com.brownbag.core.view.entity;
 
-import com.brownbag.core.dao.EntityQuery;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+
+import javax.annotation.PostConstruct;
 
 /**
  * User: Juan
@@ -31,23 +32,17 @@ import com.vaadin.ui.HorizontalLayout;
  */
 public abstract class SearchForm<T> extends FormComponent<T> {
 
-    private EntityQuery entityQuery;
 
-    EntityQuery getEntityQuery() {
-        return entityQuery;
-    }
-
-    void setEntityQuery(EntityQuery entityQuery) {
-        this.entityQuery = entityQuery;
-    }
-
+    @PostConstruct
     @Override
     public void postConstruct() {
         super.postConstruct();
 
         getForm().addStyleName("searchForm");
+    }
 
-        BeanItem beanItem = createBeanItem(getEntityQuery());
+    public void postWire() {
+        BeanItem beanItem = createBeanItem(getResults().getEntityQuery());
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
     }
 
@@ -78,9 +73,9 @@ public abstract class SearchForm<T> extends FormComponent<T> {
     }
 
     public void clear() {
-        getEntityQuery().clear();
+        getResults().getEntityQuery().clear();
         getResults().getResultsTable().setSortContainerPropertyId(null);
-        BeanItem beanItem = createBeanItem(getEntityQuery());
+        BeanItem beanItem = createBeanItem(getResults().getEntityQuery());
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
         getResults().search();

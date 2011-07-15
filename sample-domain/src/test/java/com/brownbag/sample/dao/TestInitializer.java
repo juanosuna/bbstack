@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -30,28 +31,28 @@ import java.util.Date;
 @Transactional
 public class TestInitializer extends AbstractDomainTest {
 
-    @Autowired
+    @Resource
     private StateDao stateDao;
 
-    @Autowired
+    @Resource
     private CountryDao countryDao;
 
-    @Autowired
+    @Resource
     private AccountTypeDao accountTypeDao;
 
-    @Autowired
+    @Resource
     private SalesStageDao salesStageDao;
 
-    @Autowired
+    @Resource
     private ContactDao contactDao;
 
-    @Autowired
+    @Resource
     private AccountDao accountDao;
 
-    @Autowired
+    @Resource
     private OpportunityDao opportunityDao;
 
-    @Autowired
+    @Resource
     private CurrencyDao currencyDao;
 
     //    @IfProfileValue(name="initDB", value="true")

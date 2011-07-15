@@ -106,7 +106,7 @@ public class ReflectionUtil {
         }
     }
 
-    public static boolean isBeanEmpty(Object bean, PersistenceUnitUtil unitUtil) {
+    public static boolean isBeanEmpty(Object bean) {
         if (bean == null) {
             return true;
         }

@@ -19,9 +19,12 @@ package com.brownbag.sample.view.opportunity;
 
 import com.brownbag.core.view.entity.Results;
 import com.brownbag.core.view.entity.field.DisplayFields;
+import com.brownbag.sample.dao.OpportunityDao;
 import com.brownbag.sample.entity.Opportunity;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * User: Juan
@@ -31,6 +34,30 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("prototype")
 public class OpportunityResults extends Results<Opportunity> {
+
+    @Resource
+    private OpportunityDao opportunityDao;
+
+    @Resource
+    private OpportunityQuery opportunityQuery;
+
+    @Resource
+    private OpportunityForm opportunityForm;
+
+    @Override
+    public OpportunityDao getEntityDao() {
+        return opportunityDao;
+    }
+
+    @Override
+    public OpportunityQuery getEntityQuery() {
+        return opportunityQuery;
+    }
+
+    @Override
+    public OpportunityForm getEntityForm() {
+        return opportunityForm;
+    }
 
     @Override
     public void configureFields(DisplayFields displayFields) {

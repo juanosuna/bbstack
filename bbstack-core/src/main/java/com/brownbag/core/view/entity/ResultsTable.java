@@ -53,7 +53,7 @@ public class ResultsTable extends Table {
     protected ResultsTable(ResultsComponent results) {
         this.results = results;
         addStyleName("strong striped");
-        postConstruct();
+        initialize();
     }
 
     public DisplayFields getEntityFields() {
@@ -64,7 +64,7 @@ public class ResultsTable extends Table {
         return results.getEntityType();
     }
 
-    public void postConstruct() {
+    public void initialize() {
         setEditable(true);
         setTableFieldFactory(new TableButtonLinkFactory());
 

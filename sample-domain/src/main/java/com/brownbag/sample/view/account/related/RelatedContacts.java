@@ -25,7 +25,6 @@ import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.view.select.ContactSelect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -40,27 +39,11 @@ import java.util.List;
 public class RelatedContacts extends ToManyRelationship<Contact> {
 
     @Resource
-    private ContactDao contactDao;
-
-    @Resource
-    private RelatedContactsQuery relatedContactsQuery;
-
-    @Resource
     private RelatedContactsResults relatedContactsResults;
 
     @Override
     public String getEntityCaption() {
         return "Company Contacts";
-    }
-
-    @Override
-    public ContactDao getEntityDao() {
-        return contactDao;
-    }
-
-    @Override
-    public ToManyRelationshipQuery getEntityQuery() {
-        return relatedContactsQuery;
     }
 
     @Override
@@ -70,9 +53,61 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
 
     @Component
     @Scope("prototype")
+    public static class RelatedContactsResults extends ToManyRelationshipResults<Contact> {
+
+        @Resource
+        private ContactDao contactDao;
+
+        @Resource
+        private ContactSelect contactSelect;
+
+        @Resource
+        private RelatedContactsQuery relatedContactsQuery;
+
+        @Override
+        public ContactDao getEntityDao() {
+            return contactDao;
+        }
+
+        @Override
+        public ContactSelect getEntitySelect() {
+            return contactSelect;
+        }
+
+        @Override
+        public ToManyRelationshipQuery getEntityQuery() {
+            return relatedContactsQuery;
+        }
+
+        @Override
+        public void configureFields(DisplayFields displayFields) {
+            displayFields.setPropertyIds(new String[]{
+                    "name",
+                    "address.state",
+                    "address.country",
+                    "lastModified",
+                    "modifiedBy"
+            });
+
+            displayFields.getField("name").setSortable(false);
+        }
+
+        @Override
+        public String getPropertyId() {
+            return "account";
+        }
+
+        @Override
+        public String getEntityCaption() {
+            return "Contacts";
+        }
+    }
+
+    @Component
+    @Scope("prototype")
     public static class RelatedContactsQuery extends ToManyRelationshipQuery<Contact, Account> {
 
-        @Autowired
+        @Resource
         private ContactDao contactDao;
 
         private Account account;
@@ -135,42 +170,6 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
                     '}';
         }
 
-    }
-
-    @Component
-    @Scope("prototype")
-    public static class RelatedContactsResults extends ToManyRelationshipResults<Contact> {
-
-        @Resource
-        private ContactSelect contactSelect;
-
-        @Override
-        public void configureFields(DisplayFields displayFields) {
-            displayFields.setPropertyIds(new String[]{
-                    "name",
-                    "address.state",
-                    "address.country",
-                    "lastModified",
-                    "modifiedBy"
-            });
-
-            displayFields.getField("name").setSortable(false);
-        }
-
-        @Override
-        public ContactSelect getEntitySelect() {
-            return contactSelect;
-        }
-
-        @Override
-        public String getPropertyId() {
-            return "account";
-        }
-
-        @Override
-        public String getEntityCaption() {
-            return "Contacts";
-        }
     }
 }
 

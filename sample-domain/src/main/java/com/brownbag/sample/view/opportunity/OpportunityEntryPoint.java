@@ -18,7 +18,6 @@
 package com.brownbag.sample.view.opportunity;
 
 import com.brownbag.core.view.entity.EntryPoint;
-import com.brownbag.sample.dao.OpportunityDao;
 import com.brownbag.sample.entity.Opportunity;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -30,34 +29,10 @@ import javax.annotation.Resource;
 public class OpportunityEntryPoint extends EntryPoint<Opportunity> {
 
     @Resource
-    private OpportunityDao opportunityDao;
-
-    @Resource
-    private OpportunityQuery opportunityQuery;
-
-    @Resource
     private OpportunitySearchForm opportunitySearchForm;
 
     @Resource
     private OpportunityResults opportunityResults;
-
-    @Resource
-    private OpportunityForm opportunityForm;
-
-    @Override
-    public String getEntityCaption() {
-        return "Opportunities";
-    }
-
-    @Override
-    public OpportunityDao getEntityDao() {
-        return opportunityDao;
-    }
-
-    @Override
-    public OpportunityQuery getEntityQuery() {
-        return opportunityQuery;
-    }
 
     @Override
     public OpportunitySearchForm getSearchForm() {
@@ -70,8 +45,8 @@ public class OpportunityEntryPoint extends EntryPoint<Opportunity> {
     }
 
     @Override
-    public OpportunityForm getEntityForm() {
-        return opportunityForm;
+    public String getEntityCaption() {
+        return "Opportunities";
     }
 }
 

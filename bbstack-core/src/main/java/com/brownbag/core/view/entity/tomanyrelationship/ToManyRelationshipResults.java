@@ -25,11 +25,10 @@ import com.brownbag.core.view.entity.entityselect.EntitySelect;
 import com.brownbag.core.view.entity.util.ActionContextMenu;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.dialogs.ConfirmDialog;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -47,8 +46,8 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
     @Resource(name = "entityMessageSource")
     private MessageSource entityMessageSource;
 
-    @Autowired
-    private ActionContextMenu contextMenu;
+    @Resource
+    private ActionContextMenu actionContextMenu;
 
     private Window popupWindow;
 
@@ -63,8 +62,14 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
 
     public abstract String getPropertyId();
 
-    public abstract EntitySelect getEntitySelect();
+    public abstract EntitySelect<T> getEntitySelect();
 
+    @Override
+    public abstract ToManyRelationshipQuery getEntityQuery();
+
+
+    @PostConstruct
+    @Override
     public void postConstruct() {
         super.postConstruct();
 
@@ -91,8 +96,8 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
         getResultsTable().setMultiSelect(true);
         getEntitySelect().getResultsComponent().getResultsTable().setMultiSelect(true);
 
-        contextMenu.addAction("entityResults.remove", this, "remove");
-        contextMenu.setActionEnabled("entityResults.remove", true);
+        actionContextMenu.addAction("entityResults.remove", this, "remove");
+        actionContextMenu.setActionEnabled("entityResults.remove", true);
         addSelectionChangedListener(this, "selectionChanged");
     }
 
@@ -116,18 +121,13 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
 
     public void itemsSelected() {
         close();
-        Collection selectedValues = getEntitySelect().getResultsComponent().getSelectedValues();
-        valuesSelected(selectedValues.toArray());
+        Collection<T> selectedValues = getEntitySelect().getResultsComponent().getSelectedValues();
+        valuesSelected((T[]) selectedValues.toArray());
     }
 
-    @Override
-    public ToManyRelationshipQuery getEntityQuery() {
-        return (ToManyRelationshipQuery) super.getEntityQuery();
-    }
-
-    public void valuesSelected(Object... values) {
+    public void valuesSelected(T... values) {
         Object parent = getEntityQuery().getParent();
-        for (Object value : values) {
+        for (T value : values) {
             value = getEntityDao().getReference(value);
             try {
                 PropertyUtils.setProperty(value, getPropertyId(), parent);
@@ -143,8 +143,8 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
         searchImpl(false);
     }
 
-    public void valuesRemoved(Object... values) {
-        for (Object value : values) {
+    public void valuesRemoved(T... values) {
+        for (T value : values) {
             value = getEntityDao().getReference(value);
             try {
                 PropertyUtils.setProperty(value, getPropertyId(), null);
@@ -170,12 +170,12 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
     }
 
     public void removeImpl() {
-        Collection selectedValues = getSelectedValues();
-        valuesRemoved(selectedValues.toArray());
+        Collection<T> selectedValues = getSelectedValues();
+        valuesRemoved((T[]) selectedValues.toArray());
     }
 
     public void remove() {
-        ConfirmDialog dialog = ConfirmDialog.show(MainApplication.getInstance().getMainWindow(),
+        ConfirmDialog.show(MainApplication.getInstance().getMainWindow(),
                 uiMessageSource.getMessage("entityResults.confirmationCaption"),
                 uiMessageSource.getMessage("entityResults.confirmationPrompt"),
                 uiMessageSource.getMessage("entityResults.confirmationYes"),
@@ -192,10 +192,10 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
     public void selectionChanged() {
         Collection itemIds = (Collection) getResultsTable().getValue();
         if (itemIds.size() > 0) {
-            getResultsTable().addActionHandler(contextMenu);
+            getResultsTable().addActionHandler(actionContextMenu);
             removeButton.setEnabled(true);
         } else {
-            getResultsTable().removeActionHandler(contextMenu);
+            getResultsTable().removeActionHandler(actionContextMenu);
             removeButton.setEnabled(false);
         }
     }

@@ -174,7 +174,7 @@
                         </goals>
                         <configuration>
                             <resourceSrc>${project.build.directory}/${project.build.finalName}.war</resourceSrc>
-                            <resourceDest></resourceDest>
+                            <!--<resourceDest></resourceDest>-->
                             <serverId>brownbag</serverId>
                             <url>scp://www.brownbagconsulting.com//usr/share/jetty.new/webapps/</url>
                         </configuration>

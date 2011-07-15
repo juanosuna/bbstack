@@ -17,9 +17,9 @@
 
 package com.brownbag.sample.view.select;
 
-import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.core.view.entity.entityselect.EntitySelect;
 import com.brownbag.core.view.entity.entityselect.EntitySelectResults;
+import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.view.contact.ContactQuery;
@@ -34,26 +34,10 @@ import javax.annotation.Resource;
 public class ContactSelect extends EntitySelect<Contact> {
 
     @Resource
-    private ContactDao contactDao;
-
-    @Resource
-    private ContactQuery contactQuery;
-
-    @Resource
     private ContactSearchForm contactSearchForm;
 
     @Resource
     private ContactSelectResults contactSelectResults;
-
-    @Override
-    public ContactDao getEntityDao() {
-        return contactDao;
-    }
-
-    @Override
-    public ContactQuery getEntityQuery() {
-        return contactQuery;
-    }
 
     @Override
     public ContactSearchForm getSearchForm() {
@@ -68,6 +52,22 @@ public class ContactSelect extends EntitySelect<Contact> {
     @Component
     @Scope("prototype")
     public static class ContactSelectResults extends EntitySelectResults<Contact> {
+
+        @Resource
+        private ContactDao contactDao;
+
+        @Resource
+        private ContactQuery contactQuery;
+
+        @Override
+        public ContactDao getEntityDao() {
+            return contactDao;
+        }
+
+        @Override
+        public ContactQuery getEntityQuery() {
+            return contactQuery;
+        }
 
         @Override
         public void configureFields(DisplayFields displayFields) {

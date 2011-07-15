@@ -19,9 +19,12 @@ package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.Results;
 import com.brownbag.core.view.entity.field.DisplayFields;
+import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * User: Juan
@@ -31,6 +34,30 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("prototype")
 public class AccountResults extends Results<Account> {
+
+    @Resource
+    private AccountDao accountDao;
+
+    @Resource
+    private AccountQuery accountQuery;
+
+    @Resource
+    private AccountForm accountForm;
+
+    @Override
+    public AccountDao getEntityDao() {
+        return accountDao;
+    }
+
+    @Override
+    public AccountQuery getEntityQuery() {
+        return accountQuery;
+    }
+
+    @Override
+    public AccountForm getEntityForm() {
+        return accountForm;
+    }
 
     @Override
     public void configureFields(DisplayFields displayFields) {

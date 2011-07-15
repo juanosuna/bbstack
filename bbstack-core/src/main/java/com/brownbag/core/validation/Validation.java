@@ -70,7 +70,7 @@ public class Validation {
 
         try {
             int currentIndex = -1;
-            String currentPropertyPath = propertyPath;
+            String currentPropertyPath;
 
             do {
                 currentIndex = propertyPath.indexOf(".", ++currentIndex);
@@ -91,7 +91,6 @@ public class Validation {
                 }
             } while (currentIndex >= 0);
         } catch (IllegalArgumentException e) {
-            System.out.print(e.getMessage());
             // ignore null property path
         }
 
@@ -122,9 +121,7 @@ public class Validation {
     public boolean hasAnnotation(Class beanClass, String propertyName, Class annotationClass) {
         PropertyDescriptor descriptor = validator.getConstraintsForClass(beanClass).getConstraintsForProperty(propertyName);
         if (descriptor != null) {
-            Iterator<ConstraintDescriptor<?>> it = descriptor.getConstraintDescriptors().iterator();
-            while (it.hasNext()) {
-                final ConstraintDescriptor<?> d = it.next();
+            for (ConstraintDescriptor<?> d : descriptor.getConstraintDescriptors()) {
                 Annotation annotation = d.getAnnotation();
                 if (annotationClass.isAssignableFrom(annotation.getClass())) {
                     return true;

@@ -22,10 +22,10 @@ import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import java.util.Set;
 @Scope("prototype")
 public class AccountQuery extends StructuredEntityQuery<Account> {
 
-    @Autowired
+    @Resource
     private AccountDao accountDao;
 
     private String name;
@@ -134,5 +134,4 @@ public class AccountQuery extends StructuredEntityQuery<Account> {
                 ", states=" + states +
                 '}';
     }
-
 }

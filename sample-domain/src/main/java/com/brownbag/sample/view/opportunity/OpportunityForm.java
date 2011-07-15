@@ -40,11 +40,6 @@ public class OpportunityForm extends EntityForm<Opportunity> {
     private AccountSelect accountSelect;
 
     @Override
-    public String getEntityCaption() {
-        return "Opportunity Form";
-    }
-
-    @Override
     public void configureFields(FormFields formFields) {
 
         formFields.setPosition("Overview", "name", 0, 0);
@@ -62,5 +57,10 @@ public class OpportunityForm extends EntityForm<Opportunity> {
 
         SelectField selectField = new SelectField(this, "account", accountSelect);
         formFields.setField("account.name", selectField);
+    }
+
+    @Override
+    public String getEntityCaption() {
+        return "Opportunity Form";
     }
 }

@@ -18,8 +18,6 @@
 package com.brownbag.core.dao;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;

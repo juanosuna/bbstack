@@ -23,14 +23,15 @@ import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.vaadin.data.Property;
-import com.vaadin.data.Validator;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.data.validator.IntegerValidator;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -46,15 +47,11 @@ public abstract class ResultsComponent<T> extends CustomComponent {
     @Resource(name = "entityMessageSource")
     private MessageSource entityMessageSource;
 
-    private EntityDao entityDao;
     private ResultsTable resultsTable;
-    private EntityForm entityForm;
-    private EntityQuery entityQuery;
     private DisplayFields displayFields;
     private TextField firstResultTextField;
     private Label resultCountLabel;
 
-    private Button refreshButton;
     private Select pageSizeMenu;
     private Button firstButton;
     private Button previousButton;
@@ -76,38 +73,19 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         return ReflectionUtil.getGenericArgumentType(getClass());
     }
 
-    public EntityDao getEntityDao() {
-        return entityDao;
-    }
-
-    void setEntityDao(EntityDao entityDao) {
-        this.entityDao = entityDao;
-    }
+    public abstract EntityDao<T, ? extends Serializable> getEntityDao();
 
     public ResultsTable getResultsTable() {
         return resultsTable;
     }
 
-    public EntityForm getEntityForm() {
-        return entityForm;
-    }
-
-    void setEntityForm(EntityForm entityForm) {
-        this.entityForm = entityForm;
-    }
-
-    public EntityQuery getEntityQuery() {
-        return entityQuery;
-    }
-
-    void setEntityQuery(EntityQuery entityQuery) {
-        this.entityQuery = entityQuery;
-    }
+    public abstract EntityQuery<T> getEntityQuery();
 
     public HorizontalLayout getCrudButtons() {
         return crudButtons;
     }
 
+    @PostConstruct
     public void postConstruct() {
         displayFields = new DisplayFields(getEntityType(), entityMessageSource);
         configureFields(displayFields);
@@ -153,7 +131,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
 
         resultCountDisplay.addComponent(new Label(" &nbsp; ", Label.CONTENT_XHTML));
 
-        refreshButton = new Button(null, getResultsTable(), "refresh");
+        Button refreshButton = new Button(null, getResultsTable(), "refresh");
         refreshButton.setDescription(uiMessageSource.getMessage("entityResults.refresh.description"));
         refreshButton.setSizeUndefined();
         refreshButton.addStyleName("borderless");
@@ -175,14 +153,11 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         pageSizeMenu.setItemCaption(50, "50 " + perPageText);
         pageSizeMenu.addItem(100);
         pageSizeMenu.setItemCaption(100, "100 " + perPageText);
-        MethodProperty pageProperty = new MethodProperty(this, "pageSize");
-        pageSizeMenu.setPropertyDataSource(pageProperty);
         pageSizeMenu.setFilteringMode(Select.FILTERINGMODE_OFF);
         pageSizeMenu.setNewItemsAllowed(false);
         pageSizeMenu.setNullSelectionAllowed(false);
         pageSizeMenu.setImmediate(true);
         pageSizeMenu.setWidth(7, UNITS_EM);
-        pageSizeMenu.addListener(Property.ValueChangeEvent.class, this, "search");
         navigationButtons.addComponent(pageSizeMenu);
 
         firstButton = new Button(null, getResultsTable(), "firstPage");
@@ -262,6 +237,12 @@ public abstract class ResultsComponent<T> extends CustomComponent {
 
         pageSizeMenu.setEnabled(getEntityQuery().getResultCount() > 10);
         firstResultTextField.setEnabled(getEntityQuery().getResultCount() > 10);
+    }
+
+    public void postWire() {
+        MethodProperty pageProperty = new MethodProperty(this, "pageSize");
+        pageSizeMenu.setPropertyDataSource(pageProperty);
+        pageSizeMenu.addListener(Property.ValueChangeEvent.class, this, "search");
     }
 
     public int getPageSize() {

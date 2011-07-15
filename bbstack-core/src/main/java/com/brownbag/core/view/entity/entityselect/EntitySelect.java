@@ -17,23 +17,22 @@
 
 package com.brownbag.core.view.entity.entityselect;
 
-import com.brownbag.core.view.entity.SearchFormResults;
+import com.brownbag.core.view.entity.EntryPoint;
 
 /**
  * User: Juan
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntitySelect<T> extends SearchFormResults<T> {
+public abstract class EntitySelect<T> extends EntryPoint<T> {
 
     protected EntitySelect() {
         super();
     }
 
-    public abstract EntitySelectResults getResultsComponent();
+    public abstract EntitySelectResults<T> getResultsComponent();
 
     public String getEntityCaption() {
         return null;
     }
-
 }

@@ -17,9 +17,9 @@
 
 package com.brownbag.sample.view.select;
 
-import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.core.view.entity.entityselect.EntitySelect;
 import com.brownbag.core.view.entity.entityselect.EntitySelectResults;
+import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.view.account.AccountQuery;
@@ -34,26 +34,10 @@ import javax.annotation.Resource;
 public class AccountSelect extends EntitySelect<Account> {
 
     @Resource
-    private AccountDao accountDao;
-
-    @Resource
-    private AccountQuery accountQuery;
-
-    @Resource
     private AccountSearchForm accountSearchForm;
 
     @Resource
     private AccountSelectResults accountSelectResults;
-
-    @Override
-    public AccountDao getEntityDao() {
-        return accountDao;
-    }
-
-    @Override
-    public AccountQuery getEntityQuery() {
-        return accountQuery;
-    }
 
     @Override
     public AccountSearchForm getSearchForm() {
@@ -68,6 +52,22 @@ public class AccountSelect extends EntitySelect<Account> {
     @Component
     @Scope("prototype")
     public static class AccountSelectResults extends EntitySelectResults<Account> {
+
+        @Resource
+        private AccountDao accountDao;
+
+        @Resource
+        private AccountQuery accountQuery;
+
+        @Override
+        public AccountDao getEntityDao() {
+            return accountDao;
+        }
+
+        @Override
+        public AccountQuery getEntityQuery() {
+            return accountQuery;
+        }
 
         @Override
         public void configureFields(DisplayFields displayFields) {

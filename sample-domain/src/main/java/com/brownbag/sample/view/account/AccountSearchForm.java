@@ -46,11 +46,6 @@ public class AccountSearchForm extends SearchForm<AccountQuery> {
     private FormField statesField;
 
     @Override
-    public String getEntityCaption() {
-        return "Account Search Form";
-    }
-
-    @Override
     public void configureFields(FormFields formFields) {
 
         formFields.setPosition("name", 0, 0);
@@ -70,5 +65,10 @@ public class AccountSearchForm extends SearchForm<AccountQuery> {
         List<State> states = stateDao.findByCountry(newCountry);
         statesField.setSelectItems(states);
         statesField.setVisible(states.size() > 0);
+    }
+
+    @Override
+    public String getEntityCaption() {
+        return "Account Search Form";
     }
 }

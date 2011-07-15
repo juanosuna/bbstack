@@ -31,8 +31,9 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.validation.ConstraintViolation;
 import javax.validation.metadata.ConstraintDescriptor;
 import java.lang.annotation.Annotation;
@@ -47,7 +48,7 @@ import java.util.Set;
  */
 public abstract class EntityForm<T> extends FormComponent<T> {
 
-    @Autowired
+    @Resource
     private Validation validation;
 
     private Window formWindow;
@@ -66,6 +67,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         return new FormFields(getEntityType(), entityMessageSource, true);
     }
 
+    @PostConstruct
     @Override
     public void postConstruct() {
         super.postConstruct();
@@ -125,8 +127,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         if (toManyRelationships.size() > 0) {
             for (ToManyRelationship toManyRelationship : toManyRelationships) {
                 Object parent = getEntity();
-                toManyRelationship.getEntityQuery().clear();
-                toManyRelationship.getEntityQuery().setParent(parent);
+                toManyRelationship.getResultsComponent().getEntityQuery().clear();
+                toManyRelationship.getResultsComponent().getEntityQuery().setParent(parent);
                 toManyRelationship.getResultsComponent().search();
 
             }

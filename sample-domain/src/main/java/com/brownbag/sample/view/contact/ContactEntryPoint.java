@@ -18,7 +18,6 @@
 package com.brownbag.sample.view.contact;
 
 import com.brownbag.core.view.entity.EntryPoint;
-import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Contact;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -30,34 +29,10 @@ import javax.annotation.Resource;
 public class ContactEntryPoint extends EntryPoint<Contact> {
 
     @Resource
-    private ContactDao contactDao;
-
-    @Resource
-    private ContactQuery contactQuery;
-
-    @Resource
     private ContactSearchForm contactSearchForm;
 
     @Resource
     private ContactResults contactResults;
-
-    @Resource
-    private ContactForm contactForm;
-
-    @Override
-    public String getEntityCaption() {
-        return "Contacts";
-    }
-
-    @Override
-    public ContactDao getEntityDao() {
-        return contactDao;
-    }
-
-    @Override
-    public ContactQuery getEntityQuery() {
-        return contactQuery;
-    }
 
     @Override
     public ContactSearchForm getSearchForm() {
@@ -70,8 +45,8 @@ public class ContactEntryPoint extends EntryPoint<Contact> {
     }
 
     @Override
-    public ContactForm getEntityForm() {
-        return contactForm;
+    public String getEntityCaption() {
+        return "Contacts";
     }
 }
 

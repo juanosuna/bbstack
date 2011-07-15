@@ -17,9 +17,9 @@
 
 package com.brownbag.sample.view.select;
 
-import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.core.view.entity.entityselect.EntitySelect;
 import com.brownbag.core.view.entity.entityselect.EntitySelectResults;
+import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.dao.OpportunityDao;
 import com.brownbag.sample.entity.Opportunity;
 import com.brownbag.sample.view.opportunity.OpportunityQuery;
@@ -34,26 +34,10 @@ import javax.annotation.Resource;
 public class OpportunitySelect extends EntitySelect<Opportunity> {
 
     @Resource
-    private OpportunityDao opportunityDao;
-
-    @Resource
-    private OpportunityQuery opportunityQuery;
-
-    @Resource
     private OpportunitySearchForm opportunitySearchForm;
 
     @Resource
     private OpportunitySelectResults opportunitySelectResults;
-
-    @Override
-    public OpportunityDao getEntityDao() {
-        return opportunityDao;
-    }
-
-    @Override
-    public OpportunityQuery getEntityQuery() {
-        return opportunityQuery;
-    }
 
     @Override
     public OpportunitySearchForm getSearchForm() {
@@ -68,6 +52,22 @@ public class OpportunitySelect extends EntitySelect<Opportunity> {
     @Component
     @Scope("prototype")
     public static class OpportunitySelectResults extends EntitySelectResults<Opportunity> {
+
+        @Resource
+        private OpportunityDao opportunityDao;
+
+        @Resource
+        private OpportunityQuery opportunityQuery;
+
+        @Override
+        public OpportunityDao getEntityDao() {
+            return opportunityDao;
+        }
+
+        @Override
+        public OpportunityQuery getEntityQuery() {
+            return opportunityQuery;
+        }
 
         @Override
         public void configureFields(DisplayFields displayFields) {

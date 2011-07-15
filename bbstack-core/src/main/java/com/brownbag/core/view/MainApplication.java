@@ -24,7 +24,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.dialogs.DefaultConfirmDialogFactory;
@@ -40,7 +39,7 @@ public class MainApplication extends Application implements HttpServletRequestLi
     @Resource(name = "uiMessageSource")
     private MessageSource messageSource;
 
-    @Autowired
+    @Resource
     private MainEntryPoints mainEntryPoints;
 
     public static MainApplication getInstance() {
@@ -74,7 +73,6 @@ public class MainApplication extends Application implements HttpServletRequestLi
         mainWindow.getContent().setSizeUndefined();
         setMainWindow(mainWindow);
 
-        mainEntryPoints.postConstruct();
         mainWindow.addComponent(mainEntryPoints);
     }
 

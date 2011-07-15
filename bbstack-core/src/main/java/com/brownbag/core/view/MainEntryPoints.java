@@ -20,12 +20,14 @@ package com.brownbag.core.view;
 import com.brownbag.core.view.entity.EntryPoint;
 import com.vaadin.ui.TabSheet;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 public abstract class MainEntryPoints extends TabSheet {
 
     public abstract List<EntryPoint> getEntryPoints();
 
+    @PostConstruct
     public void postConstruct() {
         setSizeUndefined();
         List<EntryPoint> entryPoints = getEntryPoints();

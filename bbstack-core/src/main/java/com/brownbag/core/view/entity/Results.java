@@ -28,9 +28,9 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.dialogs.ConfirmDialog;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Collection;
 
@@ -44,8 +44,8 @@ public abstract class Results<T> extends ResultsComponent<T> {
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
 
-    @Autowired
-    private ActionContextMenu contextMenu;
+    @Resource
+    private ActionContextMenu actionContextMenu;
 
     private Button editButton;
     private Button deleteButton;
@@ -54,8 +54,14 @@ public abstract class Results<T> extends ResultsComponent<T> {
         super();
     }
 
+    public abstract EntityForm<T> getEntityForm();
+
+    @PostConstruct
+    @Override
     public void postConstruct() {
         super.postConstruct();
+
+        wireRelationships();
 
         getResultsTable().setMultiSelect(true);
 
@@ -84,8 +90,8 @@ public abstract class Results<T> extends ResultsComponent<T> {
         crudButtons.addComponent(deleteButton);
 
         addSelectionChangedListener(this, "selectionChanged");
-        contextMenu.addAction("entityResults.edit", this, "edit");
-        contextMenu.addAction("entityResults.delete", this, "delete");
+        actionContextMenu.addAction("entityResults.edit", this, "edit");
+        actionContextMenu.addAction("entityResults.delete", this, "delete");
 
         getCrudButtons().addComponent(crudButtons, 0);
         getCrudButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
@@ -93,8 +99,11 @@ public abstract class Results<T> extends ResultsComponent<T> {
         getResultsTable().addListener(new DoubleClickListener());
     }
 
-    public void create() {
+    private void wireRelationships() {
         getEntityForm().setResults(this);
+    }
+
+    public void create() {
         getEntityForm().create();
     }
 
@@ -114,7 +123,6 @@ public abstract class Results<T> extends ResultsComponent<T> {
     public void loadItem(Object itemId) {
         currentItemId = itemId;
         BeanItem beanItem = getResultsTable().getContainerDataSource().getItem(itemId);
-        getEntityForm().setResults(this);
         getEntityForm().load((WritableEntity) beanItem.getBean());
     }
 
@@ -151,11 +159,11 @@ public abstract class Results<T> extends ResultsComponent<T> {
         return nextItemId != null || getEntityQuery().hasNextPage();
     }
 
-    public void deleteImpl() {
+    private void deleteImpl() {
         Collection itemIds = (Collection) getResultsTable().getValue();
         for (Object itemId : itemIds) {
-            BeanItem beanItem = getResultsTable().getContainerDataSource().getItem(itemId);
-            Object entity = beanItem.getBean();
+            BeanItem<T> beanItem = getResultsTable().getContainerDataSource().getItem(itemId);
+            T entity = beanItem.getBean();
             getEntityDao().remove(entity);
         }
 
@@ -167,7 +175,7 @@ public abstract class Results<T> extends ResultsComponent<T> {
     }
 
     public void delete() {
-        ConfirmDialog dialog = ConfirmDialog.show(MainApplication.getInstance().getMainWindow(),
+        ConfirmDialog.show(MainApplication.getInstance().getMainWindow(),
                 uiMessageSource.getMessage("entityResults.confirmationCaption"),
                 uiMessageSource.getMessage("entityResults.confirmationPrompt"),
                 uiMessageSource.getMessage("entityResults.confirmationYes"),
@@ -184,21 +192,21 @@ public abstract class Results<T> extends ResultsComponent<T> {
     public void selectionChanged() {
         Collection itemIds = (Collection) getResultsTable().getValue();
         if (itemIds.size() == 1) {
-            contextMenu.setActionEnabled("entityResults.edit", true);
-            contextMenu.setActionEnabled("entityResults.delete", true);
-            getResultsTable().removeActionHandler(contextMenu);
-            getResultsTable().addActionHandler(contextMenu);
+            actionContextMenu.setActionEnabled("entityResults.edit", true);
+            actionContextMenu.setActionEnabled("entityResults.delete", true);
+            getResultsTable().removeActionHandler(actionContextMenu);
+            getResultsTable().addActionHandler(actionContextMenu);
             editButton.setEnabled(true);
             deleteButton.setEnabled(true);
         } else if (itemIds.size() > 1) {
-            contextMenu.setActionEnabled("entityResults.edit", false);
-            contextMenu.setActionEnabled("entityResults.delete", true);
-            getResultsTable().removeActionHandler(contextMenu);
-            getResultsTable().addActionHandler(contextMenu);
+            actionContextMenu.setActionEnabled("entityResults.edit", false);
+            actionContextMenu.setActionEnabled("entityResults.delete", true);
+            getResultsTable().removeActionHandler(actionContextMenu);
+            getResultsTable().addActionHandler(actionContextMenu);
             editButton.setEnabled(false);
             deleteButton.setEnabled(true);
         } else {
-            getResultsTable().removeActionHandler(contextMenu);
+            getResultsTable().removeActionHandler(actionContextMenu);
             editButton.setEnabled(false);
             deleteButton.setEnabled(false);
         }

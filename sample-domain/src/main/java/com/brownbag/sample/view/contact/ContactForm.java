@@ -47,11 +47,6 @@ public class ContactForm extends EntityForm<Contact> {
     private AccountSelect accountSelect;
 
     @Override
-    public String getEntityCaption() {
-        return "Contact Form";
-    }
-
-    @Override
     public void configureFields(FormFields formFields) {
         formFields.setPosition("Overview", "firstName", 0, 0);
         formFields.setPosition("Overview", "lastName", 0, 1);
@@ -105,5 +100,10 @@ public class ContactForm extends EntityForm<Contact> {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
         getFormFields().setSelectItems("otherAddress.state", states);
+    }
+
+    @Override
+    public String getEntityCaption() {
+        return "Contact Form";
     }
 }

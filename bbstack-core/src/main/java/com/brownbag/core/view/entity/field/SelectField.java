@@ -8,7 +8,6 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.vaadin.addon.customfield.CustomField;
 
@@ -41,10 +40,10 @@ public class SelectField extends CustomField {
         this.propertyId = propertyId;
         this.entitySelect = entitySelect;
         this.uiMessageSource = entityForm.getUiMessageSource();
-        postConstruct();
+        initialize();
     }
 
-    public void postConstruct() {
+    public void initialize() {
         setSizeUndefined();
         field = new TextField();
         FormField.initAbstractFieldDefaults(field);

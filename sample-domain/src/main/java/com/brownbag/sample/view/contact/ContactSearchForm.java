@@ -46,11 +46,6 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     private FormField statesField;
 
     @Override
-    public String getEntityCaption() {
-        return "Contact Search Form";
-    }
-
-    @Override
     public void configureFields(FormFields formFields) {
 
         formFields.setPosition("lastName", 0, 0);
@@ -70,5 +65,10 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
         List<State> states = stateDao.findByCountry(newCountry);
         statesField.setSelectItems(states);
         statesField.setVisible(states.size() > 0);
+    }
+
+    @Override
+    public String getEntityCaption() {
+        return "Contact Search Form";
     }
 }

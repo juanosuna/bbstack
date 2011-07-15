@@ -17,8 +17,6 @@
 
 package com.brownbag.core.view.entity;
 
-import com.brownbag.core.dao.EntityDao;
-import com.brownbag.core.dao.EntityQuery;
 import com.brownbag.core.view.MessageSource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
@@ -44,10 +42,6 @@ public abstract class EntityComponent<T> extends CustomComponent {
     protected EntityComponent() {
     }
 
-    public abstract EntityDao getEntityDao();
-
-    public abstract EntityQuery getEntityQuery();
-
     public abstract ResultsComponent getResultsComponent();
 
     public abstract String getEntityCaption();
@@ -59,7 +53,6 @@ public abstract class EntityComponent<T> extends CustomComponent {
     @PostConstruct
     public void postConstruct() {
         wireRelationships();
-        postConstructRelatedBeans();
 
         VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
@@ -70,12 +63,7 @@ public abstract class EntityComponent<T> extends CustomComponent {
     }
 
     private void wireRelationships() {
-        getResultsComponent().setEntityDao(getEntityDao());
-        getResultsComponent().setEntityQuery(getEntityQuery());
-    }
-
-    private void postConstructRelatedBeans() {
-        getResultsComponent().postConstruct();
+        getResultsComponent().postWire();
     }
 
     public void setCustomSizeUndefined() {

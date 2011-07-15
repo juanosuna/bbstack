@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import javax.annotation.Resource;
 import javax.validation.ConstraintViolation;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ import java.util.Set;
 })
 public class ValidationTest extends AbstractCoreTest {
 
-    @Autowired
+    @Resource
     private Validation validation;
 
     @Test

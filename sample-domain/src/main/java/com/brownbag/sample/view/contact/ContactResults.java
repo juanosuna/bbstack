@@ -19,7 +19,7 @@ package com.brownbag.sample.view.contact;
 
 import com.brownbag.core.view.entity.Results;
 import com.brownbag.core.view.entity.field.DisplayFields;
-import com.brownbag.sample.entity.Account;
+import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.view.account.AccountForm;
 import org.springframework.context.annotation.Scope;
@@ -37,12 +37,30 @@ import javax.annotation.Resource;
 public class ContactResults extends Results<Contact> {
 
     @Resource
+    private ContactDao contactDao;
+
+    @Resource
+    private ContactQuery contactQuery;
+
+    @Resource
+    private ContactForm contactForm;
+
+    @Resource
     private AccountForm accountForm;
 
     @Override
-    public void postConstruct() {
-        super.postConstruct();
-        accountForm.postConstruct();
+    public ContactDao getEntityDao() {
+        return contactDao;
+    }
+
+    @Override
+    public ContactQuery getEntityQuery() {
+        return contactQuery;
+    }
+
+    @Override
+    public ContactForm getEntityForm() {
+        return contactForm;
     }
 
     @Override

@@ -22,10 +22,10 @@ import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import java.util.Set;
 @Scope("prototype")
 public class ContactQuery extends StructuredEntityQuery<Contact> {
 
-    @Autowired
+    @Resource
     private ContactDao contactDao;
 
     private String lastName;

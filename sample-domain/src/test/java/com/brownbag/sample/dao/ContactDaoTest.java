@@ -32,16 +32,16 @@ import java.util.List;
 
 public class ContactDaoTest extends AbstractDomainTest {
 
-    @Autowired
+    @Resource
     private ContactDao contactDao;
 
-    @Autowired
+    @Resource
     private AddressDao addressDao;
 
-    @Autowired
+    @Resource
     private StateDao stateDao;
 
-    @Autowired
+    @Resource
     private CountryDao countryDao;
 
     @Resource

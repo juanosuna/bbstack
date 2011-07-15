@@ -4,10 +4,10 @@ import com.brownbag.core.util.MethodDelegate;
 import com.brownbag.core.util.assertion.Assert;
 import com.brownbag.core.view.MessageSource;
 import com.vaadin.event.Action;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.Map;
 @Component
 public class ActionContextMenu implements Action.Handler {
 
-    @Autowired
+    @Resource
     private MessageSource uiMessageSource;
 
     private Map<String, ContextMenuAction> actions = new LinkedHashMap<String, ContextMenuAction>();

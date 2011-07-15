@@ -53,8 +53,12 @@ public class AccountForm extends EntityForm<Account> {
     private RelatedOpportunities relatedOpportunities;
 
     @Override
-    public String getEntityCaption() {
-        return "Account Form";
+    public List<ToManyRelationship> getToManyRelationships() {
+        List<ToManyRelationship> toManyRelationships = new ArrayList<ToManyRelationship>();
+        toManyRelationships.add(relatedContacts);
+        toManyRelationships.add(relatedOpportunities);
+
+        return toManyRelationships;
     }
 
     @Override
@@ -84,11 +88,7 @@ public class AccountForm extends EntityForm<Account> {
     }
 
     @Override
-    public List<ToManyRelationship> getToManyRelationships() {
-        List<ToManyRelationship> toManyRelationships = new ArrayList<ToManyRelationship>();
-        toManyRelationships.add(relatedContacts);
-        toManyRelationships.add(relatedOpportunities);
-
-        return toManyRelationships;
+    public String getEntityCaption() {
+        return "Account Form";
     }
 }

@@ -17,6 +17,11 @@
 
 package com.brownbag.core.view.entity;
 
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import org.vaadin.jouni.animator.Animator;
+
 import javax.annotation.PostConstruct;
 
 /**
@@ -24,27 +29,53 @@ import javax.annotation.PostConstruct;
  * Date: 5/7/11
  * Time: 5:27 PM
  */
-public abstract class EntryPoint<T> extends SearchFormResults<T> {
+public abstract class EntryPoint<T> extends EntityComponent<T> {
+    private Button toggleSearchFormButton;
+    private Animator searchFormAnimator;
 
     protected EntryPoint() {
         super();
     }
 
-    public abstract EntityForm getEntityForm();
+    public abstract SearchForm getSearchForm();
+
+    public abstract ResultsComponent<T> getResultsComponent();
 
     @PostConstruct
+    @Override
     public void postConstruct() {
         super.postConstruct();
 
         wireRelationships();
-        postConstructRelatedBeans();
+
+        HorizontalLayout searchFormLayout = new HorizontalLayout();
+        searchFormLayout.setMargin(false, false, true, false);
+        toggleSearchFormButton = new Button(null, this, "toggleSearchForm");
+        toggleSearchFormButton.setDescription(uiMessageSource.getMessage("entryPoint.toggleSearchForm.description"));
+        toggleSearchFormButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
+        toggleSearchFormButton.addStyleName("borderless");
+        searchFormLayout.addComponent(toggleSearchFormButton);
+
+        searchFormAnimator = new Animator(getSearchForm());
+        searchFormAnimator.setSizeUndefined();
+        searchFormLayout.addComponent(searchFormAnimator);
+
+        addComponent(searchFormLayout);
+        addComponent(getResultsComponent());
     }
 
     private void wireRelationships() {
-        getResultsComponent().setEntityForm(getEntityForm());
+        getSearchForm().setResults(getResultsComponent());
+        getSearchForm().postWire();
     }
 
-    private void postConstructRelatedBeans() {
-        getEntityForm().postConstruct();
+    public void toggleSearchForm() {
+        searchFormAnimator.setRolledUp(!searchFormAnimator.isRolledUp());
+        // todo beautify icons
+        if (searchFormAnimator.isRolledUp()) {
+            toggleSearchFormButton.setIcon(new ThemeResource("../customTheme/icons/expand-icon.png"));
+        } else {
+            toggleSearchFormButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
+        }
     }
 }

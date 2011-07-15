@@ -18,7 +18,6 @@
 package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.EntryPoint;
-import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -30,34 +29,10 @@ import javax.annotation.Resource;
 public class AccountEntryPoint extends EntryPoint<Account> {
 
     @Resource
-    private AccountDao accountDao;
-
-    @Resource
-    private AccountQuery accountQuery;
-
-    @Resource
     private AccountSearchForm accountSearchForm;
 
     @Resource
     private AccountResults accountResults;
-
-    @Resource
-    private AccountForm accountForm;
-
-    @Override
-    public String getEntityCaption() {
-        return "Accounts";
-    }
-
-    @Override
-    public AccountDao getEntityDao() {
-        return accountDao;
-    }
-
-    @Override
-    public AccountQuery getEntityQuery() {
-        return accountQuery;
-    }
 
     @Override
     public AccountSearchForm getSearchForm() {
@@ -70,8 +45,8 @@ public class AccountEntryPoint extends EntryPoint<Account> {
     }
 
     @Override
-    public AccountForm getEntityForm() {
-        return accountForm;
+    public String getEntityCaption() {
+        return "Accounts";
     }
 }
 

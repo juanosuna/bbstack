@@ -25,7 +25,6 @@ import com.brownbag.sample.dao.OpportunityDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Opportunity;
 import com.brownbag.sample.view.select.OpportunitySelect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -40,27 +39,11 @@ import java.util.List;
 public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
 
     @Resource
-    private OpportunityDao opportunityDao;
-
-    @Resource
-    private RelatedOpportunitiesQuery relatedOpportunitiesQuery;
-
-    @Resource
     private RelatedOpportunitiesResults relatedOpportunitiesResults;
 
     @Override
     public String getEntityCaption() {
         return "Company Sales Opportunities";
-    }
-
-    @Override
-    public OpportunityDao getEntityDao() {
-        return opportunityDao;
-    }
-
-    @Override
-    public ToManyRelationshipQuery getEntityQuery() {
-        return relatedOpportunitiesQuery;
     }
 
     @Override
@@ -70,9 +53,64 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
 
     @Component
     @Scope("prototype")
+    public static class RelatedOpportunitiesResults extends ToManyRelationshipResults<Opportunity> {
+
+        @Resource
+        private OpportunityDao opportunityDao;
+
+        @Resource
+        private RelatedOpportunitiesQuery relatedOpportunitiesQuery;
+
+        @Resource
+        private OpportunitySelect opportunitySelect;
+
+        @Override
+        public OpportunityDao getEntityDao() {
+            return opportunityDao;
+        }
+
+        @Override
+        public RelatedOpportunitiesQuery getEntityQuery() {
+            return relatedOpportunitiesQuery;
+        }
+
+        @Override
+        public OpportunitySelect getEntitySelect() {
+            return opportunitySelect;
+        }
+
+        @Override
+        public void configureFields(DisplayFields displayFields) {
+            displayFields.setPropertyIds(new String[]{
+                    "name",
+                    "account.name",
+                    "salesStage",
+                    "expectedCloseDate",
+                    "amount",
+                    "lastModified",
+                    "modifiedBy"
+            });
+
+            displayFields.getField("name").setLabel("Name");
+            displayFields.getField("account.name").setLabel("Account");
+        }
+
+        @Override
+        public String getPropertyId() {
+            return "account";
+        }
+
+        @Override
+        public String getEntityCaption() {
+            return "Opportunities";
+        }
+    }
+
+    @Component
+    @Scope("prototype")
     public static class RelatedOpportunitiesQuery extends ToManyRelationshipQuery<Opportunity, Account> {
 
-        @Autowired
+        @Resource
         private OpportunityDao opportunityDao;
 
         private Account account;
@@ -131,45 +169,6 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
             return "RelatedOpportunities{" +
                     "account='" + account + '\'' +
                     '}';
-        }
-    }
-
-    @Component
-    @Scope("prototype")
-    public static class RelatedOpportunitiesResults extends ToManyRelationshipResults<Opportunity> {
-
-        @Resource
-        private OpportunitySelect opportunitySelect;
-
-        @Override
-        public void configureFields(DisplayFields displayFields) {
-            displayFields.setPropertyIds(new String[]{
-                    "name",
-                    "account.name",
-                    "salesStage",
-                    "expectedCloseDate",
-                    "amount",
-                    "lastModified",
-                    "modifiedBy"
-            });
-
-            displayFields.getField("name").setLabel("Name");
-            displayFields.getField("account.name").setLabel("Account");
-        }
-
-        @Override
-        public OpportunitySelect getEntitySelect() {
-            return opportunitySelect;
-        }
-
-        @Override
-        public String getPropertyId() {
-            return "account";
-        }
-
-        @Override
-        public String getEntityCaption() {
-            return "Opportunities";
         }
     }
 }
