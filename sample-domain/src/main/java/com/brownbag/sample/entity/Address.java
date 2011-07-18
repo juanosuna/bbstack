@@ -19,7 +19,6 @@ package com.brownbag.sample.entity;
 
 
 import com.brownbag.core.entity.WritableEntity;
-import com.brownbag.core.util.StringUtil;
 import com.brownbag.core.validation.AssertTrueForProperty;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
@@ -101,12 +100,72 @@ public class Address extends WritableEntity {
     }
 
     @AssertTrueForProperty(property = "zipCode", message = "US zip code must be 5 or 9 digits")
-    public boolean isZipCodeValid() {
+    public boolean isUSZipCodeValid() {
         if (getZipCode() != null && getCountry() != null && getCountry().getId().equals("US")) {
             return getZipCode().matches("^\\d{5}$|^\\d{5}$");
         } else {
             return true;
         }
+    }
+
+    @AssertTrueForProperty(property = "zipCode", message = "CA zip code must be have the format: A0A 0A0")
+    public boolean isCAZipCodeValid() {
+        if (getZipCode() != null && getCountry() != null && getCountry().getId().equals("CA")) {
+            return getZipCode().matches("^[a-zA-Z]\\d[a-zA-Z] \\d[a-zA-Z]\\d$");
+        } else {
+            return true;
+        }
+    }
+
+    @AssertTrueForProperty(property = "zipCode", message = "Zip code invalid for selected country")
+    public boolean isZipCodeValidForCountry() {
+        if (getZipCode() != null && getCountry() != null && getCountry().getMinPostalCode() != null
+                && getCountry().getMaxPostalCode() != null && !getCountry().getId().equals("US")
+                    && !getCountry().getId().equals("CA")) {
+
+            String minRegex = "^";
+            char[] chars = getCountry().getMinPostalCode().toCharArray();
+            for (Character aChar : chars) {
+                if (aChar.toString().matches("\\d")) {
+                    minRegex += "\\d";
+                } else if (aChar.toString().matches("\\w")) {
+                    minRegex += "\\w";
+                } else if (aChar.toString().matches("\\s")) {
+                    minRegex += "\\s";
+                } else {
+                    minRegex += aChar;
+                }
+            }
+            minRegex += "$";
+
+            String maxRegex = "^";
+            chars = getCountry().getMaxPostalCode().toCharArray();
+            for (Character aChar : chars) {
+                if (aChar.toString().matches("\\d")) {
+                    maxRegex += "\\d";
+                } else if (aChar.toString().matches("\\w")) {
+                    maxRegex += "\\w";
+                } else if (aChar.toString().matches("\\s")) {
+                    maxRegex += "\\s";
+                } else {
+                    maxRegex += aChar;
+                }
+            }
+            maxRegex += "$";
+
+            if (!getZipCode().matches(minRegex) && !getZipCode().matches(maxRegex)) {
+                return false;
+            }
+
+            if (getZipCode().compareTo(getCountry().getMinPostalCode()) < 0) {
+                return false;
+            }
+            if (getZipCode().compareTo(getCountry().getMaxPostalCode()) > 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public State getState() {

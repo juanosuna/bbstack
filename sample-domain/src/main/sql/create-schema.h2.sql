@@ -72,6 +72,8 @@
     create table SAMPLE.COUNTRY (
         ID varchar(255) not null,
         NAME varchar(255),
+        MAX_POSTAL_CODE varchar(255),
+        MIN_POSTAL_CODE varchar(255),
         TYPE varchar(255),
         primary key (ID)
     );

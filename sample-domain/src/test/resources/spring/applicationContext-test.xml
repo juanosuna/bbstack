@@ -36,8 +36,12 @@
         </property>
     </bean>
 
-    <bean id="geoPlanet" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean"
+    <bean id="geoPlanetRestClient" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean"
           p:serviceInterface="com.brownbag.sample.geoplanet.GeoPlanetRestClient"
           p:baseUri="http://query.yahooapis.com/v1/public"/>
+
+    <bean id="geoNamesRestClient" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean"
+          p:serviceInterface="com.brownbag.sample.geonames.GeoNamesRestClient"
+          p:baseUri="http://api.geonames.org"/>
 
 </beans>

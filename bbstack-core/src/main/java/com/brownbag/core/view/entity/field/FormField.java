@@ -237,8 +237,10 @@ public class FormField extends DisplayField {
         if (getFormFields().attachValidators()) {
             BeanPropertyType beanProperty = com.brownbag.core.util.BeanPropertyType.getBeanPropertyType(getDisplayFields().getEntityType(),
                     getPropertyId());
-            BeanValidationValidator.addValidator(field, beanProperty.getId(), beanProperty.getContainerType());
-            isRequired = field.isRequired();
+            if (beanProperty.isValidatable()) {
+                BeanValidationValidator.addValidator(field, beanProperty.getId(), beanProperty.getContainerType());
+                isRequired = field.isRequired();
+            }
         }
 
         if (field instanceof AbstractField) {

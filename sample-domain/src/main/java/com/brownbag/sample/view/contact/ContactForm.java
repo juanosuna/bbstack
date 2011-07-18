@@ -25,6 +25,7 @@ import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.select.AccountSelect;
 import com.vaadin.data.Property;
+import com.vaadin.ui.Field;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -92,20 +93,27 @@ public class ContactForm extends EntityForm<Contact> {
     }
 
     public void countryChanged(Property.ValueChangeEvent event) {
-        countryChangedImpl(event, "address.state");
+        countryChangedImpl(event, "address");
     }
 
     public void otherCountryChanged(Property.ValueChangeEvent event) {
-        countryChangedImpl(event, "otherAddress.state");
+        countryChangedImpl(event, "otherAddress");
     }
 
-    public void countryChangedImpl(Property.ValueChangeEvent event, String propertyId) {
+    public void countryChangedImpl(Property.ValueChangeEvent event, String addressPropertyId) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
-        FormField stateField = getFormFields().getFormField(propertyId);
+        FormField stateField = getFormFields().getFormField(addressPropertyId + ".state");
         stateField.setVisible(!states.isEmpty());
         stateField.setRequired(!states.isEmpty());
         stateField.setSelectItems(states);
+        Field zipCodeField = getFormFields().getFormField(addressPropertyId + ".zipCode").getField();
+        if (newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
+            zipCodeField.setDescription(
+                    "Postal code range: " + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode());
+        } else {
+            zipCodeField.setDescription(null);
+        }
     }
 
     @Override

@@ -124,6 +124,37 @@ public class BeanPropertyType {
         return Collection.class.isAssignableFrom(type);
     }
 
+    public boolean isValidatable() {
+        BeanPropertyType beanPropertyType = parent;
+        while (beanPropertyType != null) {
+            try {
+                Class containingType = beanPropertyType.getContainerType();
+                String id = beanPropertyType.getId();
+
+                PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(containingType, id);
+                Method readMethod = descriptor.getReadMethod();
+                Valid validAnnotation = null;
+                if (readMethod != null) {
+                    validAnnotation = readMethod.getAnnotation(Valid.class);
+                }
+                if (validAnnotation == null) {
+                    Field field = containingType.getDeclaredField(id);
+                    validAnnotation = field.getAnnotation(Valid.class);
+                }
+
+                if (validAnnotation == null) {
+                    return false;
+                } else {
+                    beanPropertyType = beanPropertyType.getParent();
+                }
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return true;
+    }
+
     public BeanPropertyType getRoot() {
         if (parent == null) {
             return this;

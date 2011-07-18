@@ -19,6 +19,7 @@ package com.brownbag.sample.dao;
 
 import com.brownbag.sample.entity.*;
 import com.brownbag.sample.entity.Currency;
+import com.brownbag.sample.geonames.GeoNamesService;
 import com.brownbag.sample.geoplanet.GeoPlanetService;
 import org.junit.Test;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -66,6 +67,9 @@ public class TestInitializer extends AbstractDomainTest {
     @Resource
     private GeoPlanetService geoPlanetService;
 
+    @Resource
+    private GeoNamesService geoNamesService;
+
     //    @IfProfileValue(name="initDB", value="true")
     @Test
     public void initialize() throws Exception {
@@ -79,7 +83,13 @@ public class TestInitializer extends AbstractDomainTest {
 
     private void initializeCountries() {
         Set<Country> countries = geoPlanetService.getCountries();
+        Map<String, Country> countriesWithPostCodeRange = geoNamesService.getCountries();
         for (Country country : countries) {
+            Country countryWithPostalCodeRange = countriesWithPostCodeRange.get(country.getId());
+            if (countryWithPostalCodeRange != null) {
+                country.setMinPostalCode(countryWithPostalCodeRange.getMinPostalCode());
+                country.setMaxPostalCode(countryWithPostalCodeRange.getMaxPostalCode());
+            }
             countryDao.persist(country);
         }
 

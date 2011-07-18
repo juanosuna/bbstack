@@ -33,6 +33,8 @@ import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
 public class Country extends ReferenceEntity {
 
     private String type;
+    private String minPostalCode;
+    private String maxPostalCode;
 
     public Country() {
     }
@@ -51,5 +53,21 @@ public class Country extends ReferenceEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getMinPostalCode() {
+        return minPostalCode;
+    }
+
+    public void setMinPostalCode(String minPostalCode) {
+        this.minPostalCode = minPostalCode;
+    }
+
+    public String getMaxPostalCode() {
+        return maxPostalCode;
+    }
+
+    public void setMaxPostalCode(String maxPostalCode) {
+        this.maxPostalCode = maxPostalCode;
     }
 }
