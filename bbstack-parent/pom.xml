@@ -315,6 +315,24 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxrs</artifactId>
+                <version>2.2.1.GA</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxb-provider</artifactId>
+                <version>2.2.1.GA</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-spring</artifactId>
+                <version>2.2.1.GA</version>
+            </dependency>
+
             <!-- JEE APIs -->
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>

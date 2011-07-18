@@ -19,7 +19,8 @@ package com.brownbag.sample.entity;
 
 
 import com.brownbag.core.entity.WritableEntity;
-import com.brownbag.core.validation.PatternIfThen;
+import com.brownbag.core.util.StringUtil;
+import com.brownbag.core.validation.AssertTrueForProperty;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotBlank;
@@ -28,38 +29,28 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@PatternIfThen(ifProperty = "country.id", ifRegex = "^US$",
-        thenProperty = "zipCode", thenRegex = "^\\d{5}$|^\\d{5}$",
-        message = "US zip code must be 5 or 9 digits")
+import static com.brownbag.core.util.StringUtil.isEqual;
+
 @Entity
 @Table
 public class Address extends WritableEntity {
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private AddressType type = AddressType.PRIMARY;
 
-    @NotNull
-    @NotBlank
-    @Size(min = 1, max = 16)
     private String street;
 
-    @NotNull
-    @NotBlank
-    @Size(min = 1, max = 16)
     private String city;
 
     private String zipCode;
 
     @Index(name = "IDX_ADDRESS_STATE")
     @ForeignKey(name = "FK_ADDRESS_STATE")
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     private State state;
 
     @Index(name = "IDX_ADDRESS_COUNTRY")
     @ForeignKey(name = "FK_ADDRESS_COUNTRY")
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     private Country country;
 
@@ -70,6 +61,7 @@ public class Address extends WritableEntity {
         this.type = type;
     }
 
+    @NotNull
     public AddressType getType() {
         return type;
     }
@@ -78,6 +70,9 @@ public class Address extends WritableEntity {
         this.type = type;
     }
 
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 16)
     public String getStreet() {
         return street;
     }
@@ -86,6 +81,9 @@ public class Address extends WritableEntity {
         this.street = street;
     }
 
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 16)
     public String getCity() {
         return city;
     }
@@ -102,6 +100,15 @@ public class Address extends WritableEntity {
         this.zipCode = zipCode;
     }
 
+    @AssertTrueForProperty(property = "zipCode", message = "US zip code must be 5 or 9 digits")
+    public boolean isZipCodeValid() {
+        if (getZipCode() != null && getCountry() != null && getCountry().getId().equals("US")) {
+            return getZipCode().matches("^\\d{5}$|^\\d{5}$");
+        } else {
+            return true;
+        }
+    }
+
     public State getState() {
         return state;
     }
@@ -110,6 +117,16 @@ public class Address extends WritableEntity {
         this.state = state;
     }
 
+    @AssertTrueForProperty(property = "state", message = "State is required for selected country")
+    public boolean isStateValid() {
+        if (getCountry() != null && isEqual(getCountry().getId(), "US", "CA", "MX", "AU")) {
+            return getState() != null;
+        } else {
+            return true;
+        }
+    }
+
+    @NotNull
     public Country getCountry() {
         return country;
     }

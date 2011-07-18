@@ -42,7 +42,7 @@
         TYPE varchar(255) not null,
         ZIP_CODE varchar(255),
         COUNTRY varchar(255) not null,
-        STATE varchar(255) not null,
+        STATE varchar(255),
         primary key (ID),
         unique (UUID)
     );
@@ -72,6 +72,7 @@
     create table SAMPLE.COUNTRY (
         ID varchar(255) not null,
         NAME varchar(255),
+        TYPE varchar(255),
         primary key (ID)
     );
 
@@ -117,6 +118,8 @@
     create table SAMPLE.STATE (
         ID varchar(255) not null,
         NAME varchar(255),
+        CODE varchar(255),
+        TYPE varchar(255),
         COUNTRY varchar(255) not null,
         primary key (ID)
     );

@@ -31,7 +31,7 @@ public class CountryDao extends EntityDao<Country, String> {
 
     @Override
     public List<Country> findAll() {
-        Query query = getEntityManager().createQuery("SELECT c FROM Country c");
+        Query query = getEntityManager().createQuery("SELECT c FROM Country c ORDER BY c.name");
         query.setHint("org.hibernate.cacheable", true);
 
         return query.getResultList();

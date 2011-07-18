@@ -48,6 +48,10 @@
         <level value="info"/>
     </logger>
 
+    <logger name="org.jboss.resteasy.core">
+        <level value="info"/>
+    </logger>
+
     <logger name="com.brownbag">
         <level value="debug"/>
     </logger>

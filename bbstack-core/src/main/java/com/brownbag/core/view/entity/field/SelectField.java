@@ -33,12 +33,13 @@ public class SelectField extends CustomField {
 
     private EntityForm entityForm;
     private String propertyId;
+    private String displayPropertyId;
 
-
-    public SelectField(EntityForm entityForm, String propertyId, EntitySelect entitySelect) {
+    public SelectField(EntityForm entityForm, String propertyId, EntitySelect entitySelect, String displayPropertyId) {
         this.entityForm = entityForm;
         this.propertyId = propertyId;
         this.entitySelect = entitySelect;
+        this.displayPropertyId = displayPropertyId;
         this.uiMessageSource = entityForm.getUiMessageSource();
         initialize();
     }
@@ -90,7 +91,9 @@ public class SelectField extends CustomField {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-        entityForm.refreshFromDataSource();
+
+        Property property = field.getPropertyDataSource();
+        field.setPropertyDataSource(property);
         close();
     }
 
@@ -105,7 +108,9 @@ public class SelectField extends CustomField {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        entityForm.refreshFromDataSource();
+
+        Property property = field.getPropertyDataSource();
+        field.setPropertyDataSource(property);
     }
 
     public void addClearListener(Object target, String methodName) {

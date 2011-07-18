@@ -18,6 +18,7 @@
 package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.EntityForm;
+import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.tomanyrelationship.ToManyRelationship;
 import com.brownbag.sample.dao.StateDao;
@@ -84,7 +85,10 @@ public class AccountForm extends EntityForm<Account> {
     public void countryChanged(Property.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
-        getFormFields().setSelectItems("address.state", states);
+        FormField stateField = getFormFields().getFormField("address.state");
+        stateField.setVisible(!states.isEmpty());
+        stateField.setRequired(!states.isEmpty());
+        stateField.setSelectItems(states);
     }
 
     @Override

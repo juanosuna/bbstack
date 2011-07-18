@@ -18,18 +18,26 @@
 package com.brownbag.sample.dao;
 
 import com.brownbag.sample.entity.*;
+import com.brownbag.sample.entity.Currency;
+import com.brownbag.sample.geoplanet.GeoPlanetService;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 @Transactional
 public class TestInitializer extends AbstractDomainTest {
+
+    public static Set<String> COUNTRIES_WITH_STATES = new HashSet<String>(Arrays.asList(
+            "United States",
+            "Canada",
+            "Mexico",
+            "Australia"
+    ));
 
     @Resource
     private StateDao stateDao;
@@ -55,134 +63,34 @@ public class TestInitializer extends AbstractDomainTest {
     @Resource
     private CurrencyDao currencyDao;
 
+    @Resource
+    private GeoPlanetService geoPlanetService;
+
     //    @IfProfileValue(name="initDB", value="true")
     @Test
     public void initialize() throws Exception {
+        initializeCountries();
+        initializeStates();
         initializeAccountTypes();
         initializeSalesStages();
         initializeCurrencies();
-        initializeCountriesStates();
         initializeContacts();
     }
 
-    private void initializeContacts() {
-        for (Integer i = 0; i < 1000; i++) {
-            Contact contact = new Contact(
-                    "first" + i,
-                    "last" + i,
-                    i.toString()
-            );
-            contact.setSocialSecurityNumber("123456789");
-            contact.setBirthDate(createBirthDate());
-
-            Address address = new Address();
-            address.setStreet(i + " Main St");
-            if (i % 2 == 0) {
-                address.setCity("Charlotte");
-                Country country = new Country("US");
-                address.setCountry(country);
-                address.setState(new State("NC"));
-                address.setZipCode("28202");
-            } else {
-                address.setCity("Toronto");
-                Country country = new Country("CA");
-                address.setCountry(country);
-                address.setState(new State("ON"));
-                address.setZipCode("M4B 1B4");
-            }
-            contact.setAddress(address);
-            initializeAccount(contact, i);
-            contactDao.persist(contact);
+    private void initializeCountries() {
+        Set<Country> countries = geoPlanetService.getCountries();
+        for (Country country : countries) {
+            countryDao.persist(country);
         }
+
+        countryDao.getEntityManager().flush();
     }
 
-    private void initializeAccount(Contact contact, int i) {
-        Account account = new Account();
-        account.setName("companyName" + i);
-        contact.setAccount(account);
-
-        Address address = new Address();
-        address.setStreet(i + " Main St");
-        if (i % 2 == 0) {
-            address.setCity("Charlotte");
-            Country country = new Country("US");
-            address.setCountry(country);
-            address.setState(new State("NC"));
-            address.setZipCode("28202");
-            account.setCurrency(new Currency("USD"));
-        } else {
-            address.setCity("Toronto");
-            Country country = new Country("CA");
-            address.setCountry(country);
-            address.setState(new State("ON"));
-            address.setZipCode("M4B 1B4");
-            account.setCurrency(new Currency("CAD"));
+    private void initializeStates() {
+        Set<State> states = geoPlanetService.getStates(COUNTRIES_WITH_STATES);
+        for (State state : states) {
+            stateDao.persist(state);
         }
-        account.setAddress(address);
-
-        account.addType(new AccountType("Investor"));
-        account.addType(new AccountType("Customer"));
-        account.setNumberOfEmployees(1000);
-        account.setAnnualRevenue(1000000);
-
-        accountDao.persist(account);
-
-        initializeOpportunity(account, i);
-    }
-
-    private void initializeOpportunity(Account account, int i) {
-        Opportunity opportunity = new Opportunity();
-        opportunity.setName("opportunityName" + i);
-        opportunity.setAccount(account);
-
-        if (i % 2 == 0) {
-            SalesStage salesStage = new SalesStage("Prospecting");
-            opportunity.setSalesStage(salesStage);
-            opportunity.setCurrency(new Currency("USD"));
-        } else {
-            SalesStage salesStage = new SalesStage("Needs Analysis");
-            opportunity.setSalesStage(salesStage);
-            opportunity.setCurrency(new Currency("CAD"));
-        }
-        opportunity.setExpectedCloseDate(new Date());
-        opportunity.setProbability(.2f);
-        opportunity.setCommission(.05f);
-
-        opportunity.setAmount(1000);
-
-        opportunityDao.persist(opportunity);
-    }
-
-    private void initializeCountriesStates() {
-        Country canada = new Country("CA", "Canada");
-        countryDao.persist(canada);
-
-        State state = new State("ON", "Ontario", canada);
-        stateDao.persist(state);
-
-        state = new State("QC", "Quebec", canada);
-        stateDao.persist(state);
-
-        state = new State("NS", "Nova Scotia", canada);
-        stateDao.persist(state);
-
-        state = new State("NL", "Newfoundland", canada);
-        stateDao.persist(state);
-
-        Country us = new Country("US", "United States");
-        countryDao.persist(us);
-
-        state = new State("NC", "North Carolina", us);
-        stateDao.persist(state);
-
-        state = new State("SC", "South Carolina", us);
-        stateDao.persist(state);
-
-        state = new State("VA", "Virginia", us);
-        stateDao.persist(state);
-
-        state = new State("WV", "West Virginia", us);
-        stateDao.persist(state);
     }
 
     private void initializeCurrencies() {
@@ -234,6 +142,94 @@ public class TestInitializer extends AbstractDomainTest {
 
         salesStage = new SalesStage("Value Proposition");
         salesStageDao.persist(salesStage);
+    }
+
+    private void initializeContacts() {
+        for (Integer i = 0; i < 1000; i++) {
+            Contact contact = new Contact(
+                    "first" + i,
+                    "last" + i,
+                    i.toString()
+            );
+            contact.setSocialSecurityNumber("123456789");
+            contact.setBirthDate(createBirthDate());
+
+            Address address = new Address();
+            address.setStreet(i + " Main St");
+            if (i % 2 == 0) {
+                address.setCity("Charlotte");
+                Country country = new Country("US");
+                address.setCountry(country);
+                address.setState(new State("US-NC"));
+                address.setZipCode("28202");
+            } else {
+                address.setCity("Toronto");
+                Country country = new Country("CA");
+                address.setCountry(country);
+                address.setState(new State("CA-ON"));
+                address.setZipCode("M4B 1B4");
+            }
+            contact.setAddress(address);
+            initializeAccount(contact, i);
+            contactDao.persist(contact);
+        }
+    }
+
+    private void initializeAccount(Contact contact, int i) {
+        Account account = new Account();
+        account.setName("companyName" + i);
+        contact.setAccount(account);
+
+        Address address = new Address();
+        address.setStreet(i + " Main St");
+        if (i % 2 == 0) {
+            address.setCity("Charlotte");
+            Country country = new Country("US");
+            address.setCountry(country);
+            address.setState(new State("US-NC"));
+            address.setZipCode("28202");
+            account.setCurrency(new Currency("USD"));
+        } else {
+            address.setCity("Toronto");
+            Country country = new Country("CA");
+            address.setCountry(country);
+            address.setState(new State("CA-ON"));
+            address.setZipCode("M4B 1B4");
+            account.setCurrency(new Currency("CAD"));
+        }
+        account.setAddress(address);
+
+        account.addType(new AccountType("Investor"));
+        account.addType(new AccountType("Customer"));
+        account.setNumberOfEmployees(1000);
+        account.setAnnualRevenue(1000000);
+
+        accountDao.persist(account);
+
+        initializeOpportunity(account, i);
+    }
+
+    private void initializeOpportunity(Account account, int i) {
+        Opportunity opportunity = new Opportunity();
+        opportunity.setName("opportunityName" + i);
+        opportunity.setAccount(account);
+
+        if (i % 2 == 0) {
+            SalesStage salesStage = new SalesStage("Prospecting");
+            opportunity.setSalesStage(salesStage);
+            opportunity.setCurrency(new Currency("USD"));
+        } else {
+            SalesStage salesStage = new SalesStage("Needs Analysis");
+            opportunity.setSalesStage(salesStage);
+            opportunity.setCurrency(new Currency("CAD"));
+        }
+        opportunity.setExpectedCloseDate(new Date());
+        opportunity.setProbability(.2f);
+        opportunity.setCommission(.05f);
+
+        opportunity.setAmount(1000);
+
+        opportunityDao.persist(opportunity);
     }
 
     public static Date createBirthDate() {

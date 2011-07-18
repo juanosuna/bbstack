@@ -55,7 +55,7 @@ public class OpportunityForm extends EntityForm<Opportunity> {
 
         formFields.setLabel("account.name", "Account");
 
-        SelectField selectField = new SelectField(this, "account", accountSelect);
+        SelectField selectField = new SelectField(this, "account", accountSelect, "account.name");
         formFields.setField("account.name", selectField);
     }
 

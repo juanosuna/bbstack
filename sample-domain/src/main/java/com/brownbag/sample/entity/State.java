@@ -37,10 +37,12 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_ONLY;
 @Cache(usage = READ_ONLY, region = CACHE_REGION)
 public class State extends ReferenceEntity {
 
+    private String code;
+    private String type;
+
     @Index(name = "IDX_STATE_COUNTRY")
     @ForeignKey(name = "FK_STATE_COUNTRY")
-    @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Country country;
 
     public State() {
@@ -53,8 +55,37 @@ public class State extends ReferenceEntity {
     public State(String id, String name, Country country) {
         super(id, name);
         this.country = country;
+        this.code = extractStateCode();
     }
 
+    private String extractStateCode() {
+        if (getId().contains("-")) {
+            String[] codeParts = getId().split("-");
+            if (codeParts.length == 2 && codeParts[0].equals(getCountry().getId())) {
+                return codeParts[1];
+            }
+        }
+
+        return null;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @NotNull
     public Country getCountry() {
         return country;
     }

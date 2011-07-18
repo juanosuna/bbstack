@@ -32,6 +32,8 @@ import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = CACHE_REGION)
 public class Country extends ReferenceEntity {
 
+    private String type;
+
     public Country() {
     }
 
@@ -41,5 +43,13 @@ public class Country extends ReferenceEntity {
 
     public Country(String id, String name) {
         super(id, name);
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

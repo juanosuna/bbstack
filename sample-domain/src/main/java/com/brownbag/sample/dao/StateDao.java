@@ -30,7 +30,8 @@ import java.util.List;
 @Transactional
 public class StateDao extends EntityDao<State, String> {
     public List<State> findByCountry(Country country) {
-        Query query = getEntityManager().createQuery("SELECT s FROM State s JOIN FETCH s.country WHERE s.country = :country");
+        Query query = getEntityManager().createQuery("SELECT s FROM State s JOIN FETCH s.country WHERE s.country = :country" +
+                " ORDER BY s.name");
         query.setParameter("country", country);
         query.setHint("org.hibernate.cacheable", true);
 
@@ -39,7 +40,8 @@ public class StateDao extends EntityDao<State, String> {
 
     @Override
     public List<State> findAll() {
-        Query query = getEntityManager().createQuery("SELECT s FROM State s JOIN FETCH s.country");
+        Query query = getEntityManager().createQuery("SELECT s FROM State s JOIN FETCH s.country" +
+                " ORDER BY s.name");
         query.setHint("org.hibernate.cacheable", true);
 
         return query.getResultList();

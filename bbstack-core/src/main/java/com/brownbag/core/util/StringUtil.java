@@ -9,6 +9,16 @@ import org.apache.commons.lang.StringUtils;
  */
 public class StringUtil {
 
+    public static boolean isEqual(String s, String... args) {
+        for (String arg : args) {
+            if (s.equals(arg)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static String extractAfterPeriod(String str) {
         int periodIndex = str.indexOf(".");
         if (periodIndex < 0) {

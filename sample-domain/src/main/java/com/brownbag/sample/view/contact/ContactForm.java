@@ -18,6 +18,7 @@
 package com.brownbag.sample.view.contact;
 
 import com.brownbag.core.view.entity.EntityForm;
+import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.sample.dao.StateDao;
@@ -78,7 +79,7 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setSelectItems("otherAddress.state", new ArrayList());
         formFields.addValueChangeListener("otherAddress.country", this, "otherCountryChanged");
 
-        SelectField selectField = new SelectField(this, "account", accountSelect);
+        SelectField selectField = new SelectField(this, "account", accountSelect, "account.name");
         formFields.setField("account.name", selectField);
     }
 
@@ -91,15 +92,20 @@ public class ContactForm extends EntityForm<Contact> {
     }
 
     public void countryChanged(Property.ValueChangeEvent event) {
-        Country newCountry = (Country) event.getProperty().getValue();
-        List<State> states = stateDao.findByCountry(newCountry);
-        getFormFields().setSelectItems("address.state", states);
+        countryChangedImpl(event, "address.state");
     }
 
     public void otherCountryChanged(Property.ValueChangeEvent event) {
+        countryChangedImpl(event, "otherAddress.state");
+    }
+
+    public void countryChangedImpl(Property.ValueChangeEvent event, String propertyId) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
-        getFormFields().setSelectItems("otherAddress.state", states);
+        FormField stateField = getFormFields().getFormField(propertyId);
+        stateField.setVisible(!states.isEmpty());
+        stateField.setRequired(!states.isEmpty());
+        stateField.setSelectItems(states);
     }
 
     @Override

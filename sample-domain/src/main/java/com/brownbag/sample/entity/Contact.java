@@ -35,17 +35,10 @@ import java.util.Date;
 @Table
 public class Contact extends WritableEntity {
 
-    @NotBlank
-    @NotNull
-    @Size(min = 1, max = 16)
     private String firstName;
 
-    @NotBlank
-    @NotNull
-    @Size(min = 1, max = 16)
     private String lastName;
 
-    @Size(min = 1, max = 16)
     private String title;
 
     @Index(name = "IDX_CONTACT_ACCOUNT")
@@ -53,24 +46,18 @@ public class Contact extends WritableEntity {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     private Account account;
 
-    @Past
     @Temporal(TemporalType.DATE)
     private Date birthDate;
 
-    @Pattern(regexp = "^\\d+$", message = "Must contain only 9 digits")
-    @Size(min = 9, max = 9)
     private String socialSecurityNumber;
 
     private boolean doNotCall;
 
-    @Valid
-    @NotNull
     @Index(name = "IDX_CONTACT_PRIMARY_ADDRESS")
     @ForeignKey(name = "FK_CONTACT_PRIMARY_ADDRESS")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address = new Address(AddressType.PRIMARY);
 
-    @Valid
     @Index(name = "IDX_CONTACT_OTHER_ADDRESS")
     @ForeignKey(name = "FK_CONTACT_OTHER_ADDRESS")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -88,6 +75,9 @@ public class Contact extends WritableEntity {
         this.socialSecurityNumber = socialSecurityNumber;
     }
 
+    @NotBlank
+    @NotNull
+    @Size(min = 1, max = 16)
     public String getFirstName() {
         return firstName;
     }
@@ -96,6 +86,9 @@ public class Contact extends WritableEntity {
         this.firstName = firstName;
     }
 
+    @NotBlank
+    @NotNull
+    @Size(min = 1, max = 16)
     public String getLastName() {
         return lastName;
     }
@@ -108,6 +101,7 @@ public class Contact extends WritableEntity {
         return getLastName() + ", " + getFirstName();
     }
 
+    @Size(min = 1, max = 16)
     public String getTitle() {
         return title;
     }
@@ -124,6 +118,7 @@ public class Contact extends WritableEntity {
         this.account = account;
     }
 
+    @Past
     public Date getBirthDate() {
         return birthDate;
     }
@@ -132,6 +127,8 @@ public class Contact extends WritableEntity {
         this.birthDate = birthDate;
     }
 
+    @Pattern(regexp = "^\\d+$", message = "Must contain only 9 digits")
+    @Size(min = 9, max = 9)
     public String getSocialSecurityNumber() {
         return socialSecurityNumber;
     }
@@ -148,6 +145,8 @@ public class Contact extends WritableEntity {
         this.doNotCall = doNotCall;
     }
 
+    @Valid
+    @NotNull
     public Address getAddress() {
         return address;
     }
@@ -159,6 +158,7 @@ public class Contact extends WritableEntity {
         this.address = address;
     }
 
+    @Valid
     public Address getOtherAddress() {
         return otherAddress;
     }

@@ -21,7 +21,7 @@ import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.MethodDelegate;
 import com.brownbag.core.util.SpringApplicationContext;
-import com.brownbag.core.validation.PatternIfThen;
+import com.brownbag.core.validation.AssertTrueForProperty;
 import com.brownbag.core.validation.Validation;
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.field.FormField;
@@ -56,6 +56,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     private Button nextButton;
     private Button previousButton;
+
+    private Button saveButton;
 
     private MethodDelegate closeListener;
 
@@ -100,7 +102,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         resetButton.addStyleName("small default");
         footerLayout.addComponent(resetButton);
 
-        Button saveButton = new Button(uiMessageSource.getMessage("entityForm.save"), this, "save");
+        saveButton = new Button(uiMessageSource.getMessage("entityForm.save"), this, "save");
         saveButton.setDescription(uiMessageSource.getMessage("entityForm.save.description"));
         saveButton.setIcon(new ThemeResource("icons/16/save.png"));
         saveButton.addStyleName("small default");
@@ -280,7 +282,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         WritableEntity entity = (WritableEntity) beanItem.getBean();
 
-        boolean isValid = validatePatternIfThens(entity);
+        boolean isValid = validate(entity);
         if (getForm().isValid() && isValid) {
             if (entity.getId() != null) {
                 entity.updateLastModified();
@@ -294,34 +296,54 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         }
     }
 
-    private boolean validatePatternIfThens(WritableEntity entity) {
-        boolean isValid = true;
+    private boolean validate(WritableEntity entity) {
+        clearComponentErrors();
+
         Set<ConstraintViolation<WritableEntity>> constraintViolations = validation.validate(entity);
         for (ConstraintViolation constraintViolation : constraintViolations) {
-            String message = constraintViolation.getMessage();
-            UserError error = new UserError(message);
+            String propertyPath = constraintViolation.getPropertyPath().toString();
+
             ConstraintDescriptor descriptor = constraintViolation.getConstraintDescriptor();
             Annotation annotation = descriptor.getAnnotation();
-            if (annotation instanceof PatternIfThen) {
-                PatternIfThen patternIfThen = (PatternIfThen) annotation;
-                String thenProperty = constraintViolation.getPropertyPath()
-                        + "." + patternIfThen.thenProperty();
-                FormField thenField = getFormFields().getFormField(thenProperty);
-                AbstractComponent fieldComponent = (AbstractComponent) thenField.getField();
-                fieldComponent.setComponentError(error);
-                isValid = false;
+
+            FormField field;
+            if (annotation instanceof AssertTrueForProperty) {
+                if (propertyPath.lastIndexOf(".") > 0) {
+                    propertyPath = propertyPath.substring(0, propertyPath.lastIndexOf(".") + 1);
+                } else {
+                    propertyPath = "";
+                }
+                AssertTrueForProperty assertTrueForProperty = (AssertTrueForProperty) annotation;
+                propertyPath += assertTrueForProperty.property();
+                field = getFormFields().getFormField(propertyPath);
+                AbstractComponent fieldComponent = (AbstractComponent) field.getField();
+                UserError userError = new UserError(constraintViolation.getMessage());
+                fieldComponent.setComponentError(userError);
+            } else {
+                field = getFormFields().getFormField(propertyPath);
             }
-        }
-        if (isValid) {
-            clearComponentErrors();
+
+            String tabName = field.getTabName();
+            TabSheet.Tab tab = getTabByName(tabName);
+            tab.setComponentError(new UserError("Tab contains invalid values"));
         }
 
-        return isValid;
+        if (!constraintViolations.isEmpty()) {
+            saveButton.setComponentError(new UserError("Form contains invalid values"));
+        }
+
+        return constraintViolations.isEmpty();
     }
 
     public void clearComponentErrors() {
         getFormFields().clearErrors();
         getForm().setComponentError(null);
+        saveButton.setComponentError(null);
+
+        Set<String> tabNames = getFormFields().getTabNames();
+        for (String tabName : tabNames) {
+            getTabByName(tabName).setComponentError(null);
+        }
     }
 
     public void reset() {

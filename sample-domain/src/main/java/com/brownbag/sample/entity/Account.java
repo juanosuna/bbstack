@@ -38,15 +38,10 @@ import java.util.Set;
 @Table
 public class Account extends WritableEntity {
 
-    @NotBlank
-    @NotNull
-    @Size(min = 1, max = 16)
     private String name;
 
-    @Min(0)
     private Integer numberOfEmployees;
 
-    @Min(0)
     private BigDecimal annualRevenue;
 
     @Index(name = "IDX_ACCOUNT_CURRENCY")
@@ -64,7 +59,6 @@ public class Account extends WritableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Industry industry;
 
-    @Valid
     @Index(name = "IDX_ACCOUNT_ADDRESS")
     @ForeignKey(name = "FK_ACCOUNT_ADDRESS")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -79,6 +73,9 @@ public class Account extends WritableEntity {
     public Account() {
     }
 
+    @NotBlank
+    @NotNull
+    @Size(min = 1, max = 16)
     public String getName() {
         return name;
     }
@@ -87,6 +84,7 @@ public class Account extends WritableEntity {
         this.name = name;
     }
 
+    @Min(0)
     public Integer getNumberOfEmployees() {
         return numberOfEmployees;
     }
@@ -95,6 +93,7 @@ public class Account extends WritableEntity {
         this.numberOfEmployees = numberOfEmployees;
     }
 
+    @Min(0)
     public BigDecimal getAnnualRevenue() {
         return annualRevenue;
     }
@@ -148,6 +147,7 @@ public class Account extends WritableEntity {
         this.industry = industry;
     }
 
+    @Valid
     public Address getAddress() {
         return address;
     }

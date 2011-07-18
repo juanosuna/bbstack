@@ -34,9 +34,6 @@ import java.util.Date;
 @Table
 public class Opportunity extends WritableEntity {
 
-    @NotBlank
-    @NotNull
-    @Size(min = 1, max = 32)
     private String name;
 
     @Index(name = "IDX_OPPORTUNITY_ACCOUNT")
@@ -52,7 +49,6 @@ public class Opportunity extends WritableEntity {
     @Temporal(TemporalType.DATE)
     private Date expectedCloseDate;
 
-    @Min(0)
     private BigDecimal amount;
 
     @Index(name = "IDX_OPPORTUNITY_CURRENCY")
@@ -74,6 +70,9 @@ public class Opportunity extends WritableEntity {
         this.name = name;
     }
 
+    @NotBlank
+    @NotNull
+    @Size(min = 1, max = 32)
     public String getName() {
         return name;
     }
@@ -106,6 +105,7 @@ public class Opportunity extends WritableEntity {
         this.expectedCloseDate = expectedCloseDate;
     }
 
+    @Min(0)
     public BigDecimal getAmount() {
         return amount;
     }

@@ -69,12 +69,13 @@ public class ContactResults extends Results<Contact> {
                 "firstName",
                 "lastName",
                 "account.name",
-                "address.state",
+                "address.state.code",
                 "address.country",
                 "lastModified",
                 "modifiedBy"
         });
 
+        displayFields.getField("address.state.code").setLabel("State");
         displayFields.getField("account.name").setLabel("Account");
         displayFields.getField("account.name").setFormLink("account", accountForm);
     }

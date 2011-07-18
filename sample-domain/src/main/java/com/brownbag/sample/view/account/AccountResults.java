@@ -63,7 +63,7 @@ public class AccountResults extends Results<Account> {
     public void configureFields(DisplayFields displayFields) {
         displayFields.setPropertyIds(new String[]{
                 "name",
-                "address.state",
+                "address.state.code",
                 "address.country",
                 "numberOfEmployees",
                 "annualRevenueFormattedInCurrency",
@@ -71,6 +71,7 @@ public class AccountResults extends Results<Account> {
                 "modifiedBy"
         });
 
+        displayFields.getField("address.state.code").setLabel("State");
         displayFields.getField("numberOfEmployees").setLabel("# of Employees");
         displayFields.getField("annualRevenueFormattedInCurrency").setLabel("Annual Revenue");
         displayFields.getField("annualRevenueFormattedInCurrency").setSortable(false);
