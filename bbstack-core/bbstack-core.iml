@@ -83,6 +83,7 @@
     <orderEntry type="library" name="Maven: com.h2database:h2:1.3.157" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.8.3" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.libphonenumber:libphonenumber:3.7" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin:vaadin:6.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:customfield:0.9.3" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin.addon:beanvalidation-addon:0.6.2" level="project" />

@@ -164,6 +164,10 @@ public abstract class FormComponent<T> extends CustomComponent {
     }
 
     protected void resetTabs() {
+        resetTabs(true);
+    }
+
+    protected void resetTabs(boolean selectFirstTab) {
         if (tabSheet == null) return;
 
         Set<String> tabNames = formFields.getTabNames();
@@ -184,7 +188,10 @@ public abstract class FormComponent<T> extends CustomComponent {
         }
 
         resetContextMenu();
-        selectFirstTab();
+
+        if (selectFirstTab || !getTabByName(getCurrentTabName()).isVisible()) {
+            selectFirstTab();
+        }
     }
 
     private void resetContextMenu() {

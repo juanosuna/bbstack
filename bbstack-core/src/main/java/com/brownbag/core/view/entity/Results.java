@@ -121,9 +121,13 @@ public abstract class Results<T> extends ResultsComponent<T> {
     private Object currentItemId;
 
     public void loadItem(Object itemId) {
+        loadItem(itemId, true);
+    }
+
+    public void loadItem(Object itemId, boolean selectFirstTab) {
         currentItemId = itemId;
         BeanItem beanItem = getResultsTable().getContainerDataSource().getItem(itemId);
-        getEntityForm().load((WritableEntity) beanItem.getBean());
+        getEntityForm().load((WritableEntity) beanItem.getBean(), selectFirstTab);
     }
 
     void editPreviousItem() {
@@ -133,7 +137,7 @@ public abstract class Results<T> extends ResultsComponent<T> {
             previousItemId = getResultsTable().getContainerDataSource().lastItemId();
         }
         if (previousItemId != null) {
-            loadItem(previousItemId);
+            loadItem(previousItemId, false);
         }
     }
 
@@ -150,7 +154,7 @@ public abstract class Results<T> extends ResultsComponent<T> {
         }
 
         if (nextItemId != null) {
-            loadItem(nextItemId);
+            loadItem(nextItemId, false);
         }
     }
 

@@ -51,7 +51,7 @@ public class Address extends WritableEntity {
     @Index(name = "IDX_ADDRESS_COUNTRY")
     @ForeignKey(name = "FK_ADDRESS_COUNTRY")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Country country;
+    private Country country = new Country("US");
 
     public Address() {
     }
@@ -100,7 +100,7 @@ public class Address extends WritableEntity {
     }
 
     @AssertTrueForProperty(property = "zipCode", message = "US zip code must be 5 or 9 digits")
-    public boolean isUSZipCodeValid() {
+    public boolean isUsZipCodeValid() {
         if (getZipCode() != null && getCountry() != null && getCountry().getId().equals("US")) {
             return getZipCode().matches("^\\d{5}$|^\\d{5}$");
         } else {

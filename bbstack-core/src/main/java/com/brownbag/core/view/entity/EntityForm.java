@@ -110,6 +110,10 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void load(WritableEntity entity) {
+        load(entity, true);
+    }
+
+    public void load(WritableEntity entity, boolean selectFirstTab) {
         clearComponentErrors();
 
         WritableEntity loadedEntity = (WritableEntity) getEntityDao().find(entity.getId());
@@ -117,7 +121,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
         loadToManyRelationships();
-        resetTabs();
+        resetTabs(selectFirstTab);
     }
 
     private EntityDao getEntityDao() {
@@ -357,7 +361,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
                 createImpl();
             } else {
                 getForm().discard();
-                load(entity);
+                load(entity, false);
             }
         }
     }

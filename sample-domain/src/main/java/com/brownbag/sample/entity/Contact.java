@@ -19,6 +19,9 @@ package com.brownbag.sample.entity;
 
 
 import com.brownbag.core.entity.WritableEntity;
+import com.brownbag.core.util.assertion.Assert;
+import com.brownbag.core.validation.ValidPhone;
+import com.google.i18n.phonenumbers.NumberParseException;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotBlank;
@@ -27,13 +30,14 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
 @Table
 public class Contact extends WritableEntity {
+
+    public static final String DEFAULT_PHONE_COUNTRY = "US";
 
     private String firstName;
 
@@ -49,7 +53,8 @@ public class Contact extends WritableEntity {
     @Temporal(TemporalType.DATE)
     private Date birthDate;
 
-    private String socialSecurityNumber;
+    @Embedded
+    private Phone mainPhone;
 
     private boolean doNotCall;
 
@@ -69,10 +74,9 @@ public class Contact extends WritableEntity {
     public Contact() {
     }
 
-    public Contact(String firstName, String lastName, String socialSecurityNumber) {
+    public Contact(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.socialSecurityNumber = socialSecurityNumber;
     }
 
     @NotBlank
@@ -127,14 +131,35 @@ public class Contact extends WritableEntity {
         this.birthDate = birthDate;
     }
 
-    @Pattern(regexp = "^\\d+$", message = "Must contain only 9 digits")
-    @Size(min = 9, max = 9)
-    public String getSocialSecurityNumber() {
-        return socialSecurityNumber;
+    public Phone getMainPhone() {
+        return mainPhone;
     }
 
-    public void setSocialSecurityNumber(String socialSecurityNumber) {
-        this.socialSecurityNumber = socialSecurityNumber;
+    public void setMainPhone(Phone mainPhone) {
+        this.mainPhone = mainPhone;
+    }
+
+    @NotNull
+    @ValidPhone(defaultRegionCode = DEFAULT_PHONE_COUNTRY)
+    public String getMainPhoneFormatted() {
+        if (getMainPhone() == null) {
+            return null;
+        } else {
+            return getMainPhone().getFormatted(DEFAULT_PHONE_COUNTRY);
+        }
+    }
+
+    public void setMainPhoneFormatted(@ValidPhone(defaultRegionCode = DEFAULT_PHONE_COUNTRY) String mainPhone) {
+        if (mainPhone == null) {
+            setMainPhone(null);
+        } else {
+            try {
+                Phone phone = new Phone(mainPhone, DEFAULT_PHONE_COUNTRY);
+                setMainPhone(phone);
+            } catch (NumberParseException e) {
+                Assert.PROGRAMMING.fail(e); // this should not happen because of validation
+            }
+        }
     }
 
     public boolean isDoNotCall() {

@@ -27,12 +27,10 @@ import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.*;
+import sun.jdbc.odbc.ee.ObjectPool;
 
 import javax.persistence.Lob;
-import java.util.Collection;
-import java.util.Currency;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: Juan
@@ -215,6 +213,10 @@ public class FormField extends DisplayField {
             return new Select();
         }
 
+        if (propertyType.isEnum()) {
+            return new Select();
+        }
+
         if (Collection.class.isAssignableFrom(propertyType)) {
             return new ListSelect();
         }
@@ -279,8 +281,11 @@ public class FormField extends DisplayField {
             if (Currency.class.isAssignableFrom(valueType)) {
                 referenceEntities = CurrencyUtil.getAvailableCurrencies();
                 ((AbstractSelect) field).setItemCaptionPropertyId("currencyCode");
-
-            } else {
+            } else if (valueType.isEnum()) {
+                Object[] enumConstants = valueType.getEnumConstants();
+                referenceEntities = Arrays.asList(enumConstants);
+            }
+            else {
                 EntityDao propertyDao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class,
                         valueType);
                 referenceEntities = propertyDao.findAll();

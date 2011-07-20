@@ -24,8 +24,11 @@ import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.select.AccountSelect;
+import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Field;
+import org.h2.command.dml.Select;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +56,8 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setPosition("Overview", "firstName", 0, 0);
         formFields.setPosition("Overview", "lastName", 0, 1);
         formFields.setPosition("Overview", "birthDate", 1, 0);
-        formFields.setPosition("Overview", "socialSecurityNumber", 1, 1);
+        formFields.setPosition("Overview", "mainPhoneFormatted", 1, 1);
+        formFields.setPosition("Overview", "mainPhone.type", 1, 2);
         formFields.setPosition("Overview", "account.name", 2, 0);
         formFields.setPosition("Overview", "doNotCall", 2, 1);
 
@@ -73,6 +77,15 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setPosition("Note", "note", 0, 0);
 
         formFields.setLabel("account.name", "Account");
+        formFields.setLabel("mainPhoneFormatted", "Main Phone");
+        formFields.getFormField("mainPhone.type").getField().setWidth(7, Sizeable.UNITS_EM);
+
+        formFields.getFormField("mainPhoneFormatted").getField().setDescription(
+                "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> Example formats:</strong>"+
+                "<ul>"+
+                "  <li>US: (919) 975-5331</li>"+
+                "  <li>Germany: +49 30/70248804</li>"+
+                "</ul>");
 
         formFields.setSelectItems("address.state", new ArrayList());
         formFields.addValueChangeListener("address.country", this, "countryChanged");
@@ -108,7 +121,7 @@ public class ContactForm extends EntityForm<Contact> {
         stateField.setRequired(!states.isEmpty());
         stateField.setSelectItems(states);
         Field zipCodeField = getFormFields().getFormField(addressPropertyId + ".zipCode").getField();
-        if (newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
+        if (newCountry != null && newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
             zipCodeField.setDescription(
                     "Postal code range: " + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode());
         } else {

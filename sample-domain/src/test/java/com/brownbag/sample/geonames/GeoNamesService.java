@@ -25,7 +25,7 @@ public class GeoNamesService {
 
         Map<String, Country> countries = new HashMap<String, Country>();
 
-        GeoNamesResponse geoNamesResponse = geoNamesRestClient.getPostalCodeCountryInfo("demo");
+        GeoNamesResponse geoNamesResponse = geoNamesRestClient.getPostalCodeCountryInfo("josuna");
         for (GeoNamesResponse.CountryPostalCodeRange postalCodeRange : geoNamesResponse.countries) {
             Country country = new Country(postalCodeRange.countryCode);
             country.setMinPostalCode(postalCodeRange.minPostalCode);

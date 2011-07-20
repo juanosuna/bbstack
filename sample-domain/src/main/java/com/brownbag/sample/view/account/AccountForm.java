@@ -91,7 +91,7 @@ public class AccountForm extends EntityForm<Account> {
         stateField.setRequired(!states.isEmpty());
         stateField.setSelectItems(states);
         Field zipCodeField = getFormFields().getFormField("address.zipCode").getField();
-        if (newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
+        if (newCountry != null && newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
             zipCodeField.setDescription(
                     "Postal code range: " + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode());
         } else {

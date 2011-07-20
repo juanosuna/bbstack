@@ -17,15 +17,12 @@
 
 package com.brownbag.sample.dao;
 
-import com.brownbag.sample.entity.Address;
-import com.brownbag.sample.entity.Contact;
-import com.brownbag.sample.entity.Country;
-import com.brownbag.sample.entity.State;
+import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.contact.ContactQuery;
+import com.google.i18n.phonenumbers.NumberParseException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -48,7 +45,7 @@ public class ContactDaoTest extends AbstractDomainTest {
     private ContactQuery contactQuery;
 
     @Before
-    public void setup() {
+    public void setup() throws NumberParseException {
 
         Country country = new Country("MX", "Mexico");
         countryDao.persist(country);
@@ -58,7 +55,8 @@ public class ContactDaoTest extends AbstractDomainTest {
         Contact contact = new Contact();
         contact.setFirstName("Juan");
         contact.setLastName("Osuna");
-        contact.setSocialSecurityNumber("123456789");
+        contact.setMainPhone(new Phone("(704) 555-1212", "US"));
+        contact.getMainPhone().setType(PhoneType.BUSINESS);
         contact.setBirthDate(TestInitializer.createBirthDate());
 
         Address address = new Address();

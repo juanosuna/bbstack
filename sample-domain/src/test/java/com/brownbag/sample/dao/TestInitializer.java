@@ -23,7 +23,6 @@ import com.brownbag.sample.geonames.GeoNamesService;
 import com.brownbag.sample.geoplanet.GeoPlanetService;
 import org.junit.Test;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -156,13 +155,11 @@ public class TestInitializer extends AbstractDomainTest {
 
     private void initializeContacts() {
         for (Integer i = 0; i < 1000; i++) {
-            Contact contact = new Contact(
-                    "first" + i,
-                    "last" + i,
-                    i.toString()
-            );
-            contact.setSocialSecurityNumber("123456789");
+            Contact contact = null;
+            contact = new Contact("first" + i, "last" + i);
             contact.setBirthDate(createBirthDate());
+            contact.setMainPhoneFormatted("(704) 555-1212");
+            contact.getMainPhone().setType(PhoneType.BUSINESS);
 
             Address address = new Address();
             address.setStreet(i + " Main St");

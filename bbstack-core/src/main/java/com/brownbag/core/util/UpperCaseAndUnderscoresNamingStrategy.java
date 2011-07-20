@@ -19,6 +19,7 @@ package com.brownbag.core.util;
 
 import org.hibernate.cfg.ImprovedNamingStrategy;
 
+// DefaultComponentSafeNamingStrategy
 public class UpperCaseAndUnderscoresNamingStrategy extends ImprovedNamingStrategy {
 
     public static final String TABLE_PREFIX = "";
