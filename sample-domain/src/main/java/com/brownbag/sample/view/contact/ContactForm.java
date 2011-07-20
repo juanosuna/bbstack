@@ -28,6 +28,7 @@ import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 import org.h2.command.dml.Select;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -78,14 +79,14 @@ public class ContactForm extends EntityForm<Contact> {
 
         formFields.setLabel("account.name", "Account");
         formFields.setLabel("mainPhoneFormatted", "Main Phone");
-        formFields.getFormField("mainPhone.type").getField().setWidth(7, Sizeable.UNITS_EM);
+        formFields.setWidth("mainPhone.type", 7, Sizeable.UNITS_EM);
 
-        formFields.getFormField("mainPhoneFormatted").getField().setDescription(
-                "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> Example formats:</strong>"+
-                "<ul>"+
-                "  <li>US: (919) 975-5331</li>"+
-                "  <li>Germany: +49 30/70248804</li>"+
-                "</ul>");
+        formFields.setDescription("mainPhoneFormatted",
+                "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> Example formats:</strong>" +
+                        "<ul>" +
+                        "  <li>US: (919) 975-5331</li>" +
+                        "  <li>Germany: +49 30/70248804</li>" +
+                        "</ul>");
 
         formFields.setSelectItems("address.state", new ArrayList());
         formFields.addValueChangeListener("address.country", this, "countryChanged");
@@ -121,9 +122,13 @@ public class ContactForm extends EntityForm<Contact> {
         stateField.setRequired(!states.isEmpty());
         stateField.setSelectItems(states);
         Field zipCodeField = getFormFields().getFormField(addressPropertyId + ".zipCode").getField();
+        ((TextField) zipCodeField).setComponentError(null);
         if (newCountry != null && newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
             zipCodeField.setDescription(
-                    "Postal code range: " + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode());
+                    "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> Postal code range:</strong>" +
+                            "<ul>" +
+                            "  <li>" + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode() + "</li>" +
+                            "</ul>");
         } else {
             zipCodeField.setDescription(null);
         }

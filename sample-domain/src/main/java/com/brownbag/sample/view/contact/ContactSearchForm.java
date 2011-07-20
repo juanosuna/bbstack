@@ -55,7 +55,7 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
         statesField = formFields.getFormField("states");
         statesField.setSelectItems(new ArrayList());
         statesField.setVisible(false);
-        statesField.setMultiSelectDimensions(3, 10);
+        statesField.setMultiSelectDimensions(5, 15);
 
         formFields.addValueChangeListener("country", this, "countryChanged");
     }

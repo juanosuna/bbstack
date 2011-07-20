@@ -30,6 +30,7 @@ import com.vaadin.ui.*;
 import sun.jdbc.odbc.ee.ObjectPool;
 
 import javax.persistence.Lob;
+import java.awt.geom.FlatteningPathIterator;
 import java.util.*;
 
 /**
@@ -188,6 +189,22 @@ public class FormField extends DisplayField {
 
     public void restoreIsRequired() {
         getField().setRequired(isRequired);
+    }
+
+    public float getWidth() {
+        return getField().getWidth();
+    }
+
+    public void setWidth(float width, int unit) {
+        getField().setWidth(width, unit);
+    }
+
+    public String getDescription() {
+        return getField().getDescription();
+    }
+
+    public void setDescription(String description) {
+        getField().setDescription(description);
     }
 
     private Field generateField() {

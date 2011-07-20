@@ -187,6 +187,22 @@ public class FormFields extends DisplayFields {
         getField(propertyId).setLabel(label);
     }
 
+    public float getWidth(String propertyId) {
+        return getFormField(propertyId).getWidth();
+    }
+
+    public void setWidth(String propertyId, float width, int unit) {
+        getFormField(propertyId).setWidth(width, unit);
+    }
+
+    public String getDescription(String propertyId) {
+        return getFormField(propertyId).getDescription();
+    }
+
+    public void setDescription(String propertyId, String description) {
+        getFormField(propertyId).setDescription(description);
+    }
+
     public void setSelectItems(String propertyId, List items) {
         FormField formField = (FormField) getField(propertyId);
         formField.setSelectItems(items);

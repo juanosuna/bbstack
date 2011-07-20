@@ -101,7 +101,7 @@ public class Address extends WritableEntity {
 
     @AssertTrueForProperty(property = "zipCode", message = "US zip code must be 5 or 9 digits")
     public boolean isUsZipCodeValid() {
-        if (getZipCode() != null && getCountry() != null && getCountry().getId().equals("US")) {
+        if (getZipCode() != null && isCountryId("US")) {
             return getZipCode().matches("^\\d{5}$|^\\d{5}$");
         } else {
             return true;
@@ -109,8 +109,8 @@ public class Address extends WritableEntity {
     }
 
     @AssertTrueForProperty(property = "zipCode", message = "CA zip code must be have the format: A0A 0A0")
-    public boolean isCAZipCodeValid() {
-        if (getZipCode() != null && getCountry() != null && getCountry().getId().equals("CA")) {
+    public boolean isCaZipCodeValid() {
+        if (getZipCode() != null && isCountryId("CA")) {
             return getZipCode().matches("^[a-zA-Z]\\d[a-zA-Z] \\d[a-zA-Z]\\d$");
         } else {
             return true;
@@ -119,53 +119,11 @@ public class Address extends WritableEntity {
 
     @AssertTrueForProperty(property = "zipCode", message = "Zip code invalid for selected country")
     public boolean isZipCodeValidForCountry() {
-        if (getZipCode() != null && getCountry() != null && getCountry().getMinPostalCode() != null
-                && getCountry().getMaxPostalCode() != null && !getCountry().getId().equals("US")
-                    && !getCountry().getId().equals("CA")) {
-
-            String minRegex = "^";
-            char[] chars = getCountry().getMinPostalCode().toCharArray();
-            for (Character aChar : chars) {
-                if (aChar.toString().matches("\\d")) {
-                    minRegex += "\\d";
-                } else if (aChar.toString().matches("\\w")) {
-                    minRegex += "\\w";
-                } else if (aChar.toString().matches("\\s")) {
-                    minRegex += "\\s";
-                } else {
-                    minRegex += aChar;
-                }
-            }
-            minRegex += "$";
-
-            String maxRegex = "^";
-            chars = getCountry().getMaxPostalCode().toCharArray();
-            for (Character aChar : chars) {
-                if (aChar.toString().matches("\\d")) {
-                    maxRegex += "\\d";
-                } else if (aChar.toString().matches("\\w")) {
-                    maxRegex += "\\w";
-                } else if (aChar.toString().matches("\\s")) {
-                    maxRegex += "\\s";
-                } else {
-                    maxRegex += aChar;
-                }
-            }
-            maxRegex += "$";
-
-            if (!getZipCode().matches(minRegex) && !getZipCode().matches(maxRegex)) {
-                return false;
-            }
-
-            if (getZipCode().compareTo(getCountry().getMinPostalCode()) < 0) {
-                return false;
-            }
-            if (getZipCode().compareTo(getCountry().getMaxPostalCode()) > 0) {
-                return false;
-            }
+        if (getZipCode() != null && getCountry() != null && !isCountryId("US", "CA")) {
+            return getCountry().isZipCodeValid(getZipCode());
+        } else {
+            return true;
         }
-
-        return true;
     }
 
     public State getState() {
@@ -192,5 +150,17 @@ public class Address extends WritableEntity {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public boolean isCountryId(String... countryId) {
+        if (getCountry() != null) {
+            for (String id : countryId) {
+                if (getCountry().getId().equals(id)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

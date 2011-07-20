@@ -7,7 +7,6 @@ import com.google.i18n.phonenumbers.Phonenumber;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -26,15 +25,14 @@ public class Phone implements Serializable {
     public Phone() {
     }
 
-    public Phone(String fullNumber, String regionCode) throws NumberParseException {
+    public Phone(String fullNumber, String defaultRegionCode) throws NumberParseException {
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-        Phonenumber.PhoneNumber phoneNumber = phoneUtil.parse(fullNumber, regionCode);
+        Phonenumber.PhoneNumber phoneNumber = phoneUtil.parse(fullNumber, defaultRegionCode);
 
         this.countryCode = phoneNumber.getCountryCode();
         this.number = phoneNumber.getNationalNumber();
     }
 
-    @Transient
     public String getFormatted(String defaultRegionCode) {
         Phonenumber.PhoneNumber phoneNumber = new Phonenumber.PhoneNumber();
         phoneNumber.setCountryCode(countryCode);

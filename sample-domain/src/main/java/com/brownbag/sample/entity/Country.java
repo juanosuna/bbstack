@@ -70,4 +70,50 @@ public class Country extends ReferenceEntity {
     public void setMaxPostalCode(String maxPostalCode) {
         this.maxPostalCode = maxPostalCode;
     }
+
+    public boolean isZipCodeValid(String zipCode) {
+        if (getMinPostalCode() != null) {
+            String minRegex = "^";
+            char[] chars = getMinPostalCode().toCharArray();
+            for (Character aChar : chars) {
+                if (aChar.toString().matches("\\d")) {
+                    minRegex += "\\d";
+                } else if (aChar.toString().matches("\\w")) {
+                    minRegex += "\\w";
+                } else if (aChar.toString().matches("\\s")) {
+                    minRegex += "\\s";
+                } else {
+                    minRegex += aChar;
+                }
+            }
+            minRegex += "$";
+
+            if (!zipCode.matches(minRegex) || zipCode.compareTo(getMinPostalCode()) < 0) {
+                return false;
+            }
+        }
+
+        if (getMaxPostalCode() != null) {
+            String maxRegex = "^";
+            char[] chars = getMaxPostalCode().toCharArray();
+            for (Character aChar : chars) {
+                if (aChar.toString().matches("\\d")) {
+                    maxRegex += "\\d";
+                } else if (aChar.toString().matches("\\w")) {
+                    maxRegex += "\\w";
+                } else if (aChar.toString().matches("\\s")) {
+                    maxRegex += "\\s";
+                } else {
+                    maxRegex += aChar;
+                }
+            }
+            maxRegex += "$";
+
+            if (!zipCode.matches(maxRegex) || zipCode.compareTo(getMaxPostalCode()) > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

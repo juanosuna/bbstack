@@ -29,6 +29,7 @@ import com.brownbag.sample.view.account.related.RelatedContacts;
 import com.brownbag.sample.view.account.related.RelatedOpportunities;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -91,9 +92,13 @@ public class AccountForm extends EntityForm<Account> {
         stateField.setRequired(!states.isEmpty());
         stateField.setSelectItems(states);
         Field zipCodeField = getFormFields().getFormField("address.zipCode").getField();
+        ((TextField) zipCodeField).setComponentError(null);
         if (newCountry != null && newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
             zipCodeField.setDescription(
-                    "Postal code range: " + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode());
+                    "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> Postal code range:</strong>" +
+                            "<ul>" +
+                            "  <li>" + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode() + "</li>" +
+                            "</ul>");
         } else {
             zipCodeField.setDescription(null);
         }
