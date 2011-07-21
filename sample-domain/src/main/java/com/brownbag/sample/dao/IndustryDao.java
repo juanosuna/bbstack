@@ -22,7 +22,20 @@ import com.brownbag.sample.entity.Industry;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
+import java.util.List;
+
+import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
+
 @Repository
-@Transactional
 public class IndustryDao extends EntityDao<Industry, String> {
+
+    @Override
+    public List<Industry> findAll() {
+        Query query = getEntityManager().createQuery("SELECT i FROM Industry i ORDER BY i.name");
+        setReadOnly(query);
+
+        return query.getResultList();
+    }
+
 }

@@ -8,12 +8,11 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class BeanPropertyType {
+    private static Map<String, BeanPropertyType> cache = new HashMap<String, BeanPropertyType>();
+
     private BeanPropertyType parent;
     private String id;
     private Class type;
@@ -68,6 +67,15 @@ public class BeanPropertyType {
     }
 
     public static BeanPropertyType getBeanPropertyType(Class clazz, String propertyPath) {
+        String key = clazz.getName() + "." + propertyPath;
+        if (!cache.containsKey(key)) {
+            cache.put(key, getBeanPropertyTypeImpl(clazz, propertyPath));
+        }
+
+        return cache.get(key);
+    }
+
+    public static BeanPropertyType getBeanPropertyTypeImpl(Class clazz, String propertyPath) {
         String[] properties = propertyPath.split("\\.");
         Class containingType;
         Class currentPropertyType = clazz;

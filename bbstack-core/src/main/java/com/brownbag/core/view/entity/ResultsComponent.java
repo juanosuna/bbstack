@@ -290,7 +290,6 @@ public abstract class ResultsComponent<T> extends CustomComponent {
                 new Object[]{
                         query.getResultCount() == 0 ? 0 : query.getLastResult(),
                         query.getResultCount()});
-        firstResultTextField.setValue(query.getResultCount() == 0 ? 0 : query.getFirstResult() + 1);
         firstResultTextField.setWidth(Math.max(3, query.getResultCount().toString().length() - 1), Sizeable.UNITS_EM);
         resultCountLabel.setValue(caption);
     }

@@ -22,7 +22,19 @@ import com.brownbag.sample.entity.SalesStage;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
+import java.util.List;
+
+import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
+
 @Repository
-@Transactional
 public class SalesStageDao extends EntityDao<SalesStage, String> {
+    @Override
+    public List<SalesStage> findAll() {
+        Query query = getEntityManager().createQuery("SELECT s FROM SalesStage s ORDER BY s.name");
+        setReadOnly(query);
+
+        return query.getResultList();
+    }
+
 }

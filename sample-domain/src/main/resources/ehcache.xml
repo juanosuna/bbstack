@@ -29,8 +29,18 @@
     <cache
             name="ReadOnly"
             maxElementsInMemory="400000"
+            timeToIdleSeconds="300"
+            timeToLiveSeconds="600"
             eternal="true"
-            overflowToDisk="false"
+            overflowToDisk="true"
             />
+
+    <cache
+            name="ReadOnlyQuery"
+            maxElementsInMemory="1000"
+            eternal="true"
+            timeToIdleSeconds="300"
+            timeToLiveSeconds="600"
+            overflowToDisk="true"/>
 
 </ehcache>

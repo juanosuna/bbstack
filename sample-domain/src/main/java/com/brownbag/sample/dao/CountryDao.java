@@ -25,16 +25,16 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.Query;
 import java.util.List;
 
+import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
+
 @Repository
-@Transactional
 public class CountryDao extends EntityDao<Country, String> {
 
     @Override
     public List<Country> findAll() {
         Query query = getEntityManager().createQuery("SELECT c FROM Country c ORDER BY c.name");
-        query.setHint("org.hibernate.cacheable", true);
+        setReadOnly(query);
 
         return query.getResultList();
     }
-
 }

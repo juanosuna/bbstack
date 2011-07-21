@@ -25,14 +25,15 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.Query;
 import java.util.List;
 
+import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
+
 @Repository
-@Transactional
 public class CurrencyDao extends EntityDao<Currency, String> {
 
     @Override
     public List<Currency> findAll() {
-        Query query = getEntityManager().createQuery("SELECT c FROM Currency c");
-        query.setHint("org.hibernate.cacheable", true);
+        Query query = getEntityManager().createQuery("SELECT c FROM Currency c ORDER BY c.name");
+        setReadOnly(query);
 
         return query.getResultList();
     }

@@ -26,23 +26,22 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.Query;
 import java.util.List;
 
+import static com.brownbag.sample.dao.CacheSettings.*;
+
 @Repository
-@Transactional
 public class StateDao extends EntityDao<State, String> {
     public List<State> findByCountry(Country country) {
-        Query query = getEntityManager().createQuery("SELECT s FROM State s JOIN FETCH s.country WHERE s.country = :country" +
-                " ORDER BY s.name");
+        Query query = getEntityManager().createQuery("SELECT s FROM State s WHERE s.country = :country ORDER BY s.name");
         query.setParameter("country", country);
-        query.setHint("org.hibernate.cacheable", true);
+        setReadOnly(query);
 
         return query.getResultList();
     }
 
     @Override
     public List<State> findAll() {
-        Query query = getEntityManager().createQuery("SELECT s FROM State s JOIN FETCH s.country" +
-                " ORDER BY s.name");
-        query.setHint("org.hibernate.cacheable", true);
+        Query query = getEntityManager().createQuery("SELECT s FROM State s ORDER BY s.name");
+        setReadOnly(query);
 
         return query.getResultList();
     }

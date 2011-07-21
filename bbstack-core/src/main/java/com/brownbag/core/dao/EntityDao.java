@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-@Transactional
 public abstract class EntityDao<T, ID extends Serializable> {
 
     @PersistenceContext
@@ -71,6 +70,7 @@ public abstract class EntityDao<T, ID extends Serializable> {
         return idClass;
     }
 
+    @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void remove(T entity) {
         T attachedEntity = getReference(entity);
@@ -82,36 +82,22 @@ public abstract class EntityDao<T, ID extends Serializable> {
         return getEntityManager().getReference(getPersistentClass(), primaryKey);
     }
 
-    @Transactional(readOnly = true)
     public List<T> findAll() {
         return executeQuery("select c from " + getPersistentClass().getSimpleName() + " c");
     }
 
-    @Transactional(readOnly = true)
     public List<T> findAll(Class<T> t) {
         return executeQuery("select c from " + t.getSimpleName() + " c");
     }
 
-    protected Query createQuery(String query) {
-        return getEntityManager().createQuery(query);
-    }
-
-    protected org.hibernate.Query createHibernateQuery(String query) {
-        Session session = (Session) getEntityManager().getDelegate();
-        return session.createQuery(query);
-    }
-
-    @Transactional(readOnly = true)
     public List<T> executeQuery(String query) {
         return getEntityManager().createQuery(query).getResultList();
     }
 
-    @Transactional(readOnly = true)
     public List<T> executeNativeQuery(String query) {
         return getEntityManager().createNativeQuery(query).getResultList();
     }
 
-    @Transactional(readOnly = true)
     public List<T> executeQuery(String query, int firstResult, int maxResults) {
         Query q = getEntityManager().createQuery(query);
         q.setFirstResult(firstResult);
@@ -120,17 +106,14 @@ public abstract class EntityDao<T, ID extends Serializable> {
         return q.getResultList();
     }
 
-    @Transactional(readOnly = true)
     public T find(ID id) {
         return getEntityManager().find(getPersistentClass(), id);
     }
 
-    @Transactional(readOnly = true)
     public T find(Class<T> t, ID id) {
         return getEntityManager().find(t, id);
     }
 
-    @Transactional(readOnly = true)
     public T findByBusinessKey(String propertyName, Object propertyValue) {
         Session session = (Session) getEntityManager().getDelegate();
 
@@ -141,6 +124,7 @@ public abstract class EntityDao<T, ID extends Serializable> {
         return (T) criteria.uniqueResult();
     }
 
+    @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void delete(T entity) {
         Query query = getEntityManager().createQuery("delete from " + getPersistentClass().getSimpleName()
@@ -151,16 +135,19 @@ public abstract class EntityDao<T, ID extends Serializable> {
         query.executeUpdate();
     }
 
+    @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public T merge(T entity) {
         return getEntityManager().merge(entity);
     }
 
+    @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void persist(T entity) {
         getEntityManager().persist(entity);
     }
 
+    @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void persist(Collection<T> entities) {
         for (T entity : entities) {

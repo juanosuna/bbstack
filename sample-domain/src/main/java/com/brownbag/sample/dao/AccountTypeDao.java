@@ -22,7 +22,19 @@ import com.brownbag.sample.entity.AccountType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
+import java.util.List;
+
+import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
+
 @Repository
-@Transactional
 public class AccountTypeDao extends EntityDao<AccountType, String> {
+
+    @Override
+    public List<AccountType> findAll() {
+        Query query = getEntityManager().createQuery("SELECT a FROM AccountType a ORDER BY a.name");
+        setReadOnly(query);
+
+        return query.getResultList();
+    }
 }
