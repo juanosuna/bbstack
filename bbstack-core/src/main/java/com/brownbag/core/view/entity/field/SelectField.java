@@ -33,13 +33,11 @@ public class SelectField extends CustomField {
 
     private EntityForm entityForm;
     private String propertyId;
-    private String displayPropertyId;
 
-    public SelectField(EntityForm entityForm, String propertyId, EntitySelect entitySelect, String displayPropertyId) {
+    public SelectField(EntityForm entityForm, String propertyId, EntitySelect entitySelect) {
         this.entityForm = entityForm;
         this.propertyId = propertyId;
         this.entitySelect = entitySelect;
-        this.displayPropertyId = displayPropertyId;
         this.uiMessageSource = entityForm.getUiMessageSource();
         initialize();
     }
@@ -132,9 +130,12 @@ public class SelectField extends CustomField {
         popupWindow.setModal(true);
         popupWindow.addComponent(entitySelect);
         popupWindow.setClosable(true);
+
         entitySelect.getResultsComponent().getEntityQuery().clear();
         entitySelect.getResultsComponent().search();
         entitySelect.getResultsComponent().setSelectButtonListener(this, "itemSelected");
+
+        entitySelect.configurePopupWindow(popupWindow);
 
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
     }

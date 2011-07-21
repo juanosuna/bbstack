@@ -28,6 +28,7 @@ import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.tomanyrelationship.ToManyRelationship;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
@@ -59,6 +60,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     private Button saveButton;
 
+    public abstract void configurePopupWindow(Window popupWindow);
+
     private MethodDelegate closeListener;
 
     public List<ToManyRelationship> getToManyRelationships() {
@@ -74,6 +77,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
+
         List<ToManyRelationship> toManyRelationships = getToManyRelationships();
         if (toManyRelationships.size() > 0) {
             toManyRelationshipTabs = new TabSheet();
@@ -82,6 +86,15 @@ public abstract class EntityForm<T> extends FormComponent<T> {
                 toManyRelationshipTabs.addTab(toManyRelationship);
             }
             addComponent(toManyRelationshipTabs);
+        }
+    }
+
+    @Override
+    protected Component animate(Component component) {
+        if (getToManyRelationships().size() > 0) {
+            return super.animate(component);
+        } else {
+            return component;
         }
     }
 
@@ -190,6 +203,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
         formWindow.addComponent(createNavigationFormLayout(createNavigationButtons));
 
+        configurePopupWindow(formWindow);
         MainApplication.getInstance().getMainWindow().addWindow(formWindow);
     }
 
@@ -198,25 +212,45 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         navigationFormLayout.setSizeUndefined();
 
         if (createNavigationButtons) {
+            VerticalLayout previousButtonLayout = new VerticalLayout();
+            previousButtonLayout.setSizeUndefined();
+            previousButtonLayout.setMargin(false);
+            previousButtonLayout.setSpacing(false);
+            Label spaceLabel = new Label("</br></br></br>", Label.CONTENT_XHTML);
+            spaceLabel.setSizeUndefined();
+            previousButtonLayout.addComponent(spaceLabel);
+
             previousButton = new Button(null, this, "previousItem");
             previousButton.setDescription(uiMessageSource.getMessage("entityForm.previous.description"));
             previousButton.setSizeUndefined();
             previousButton.addStyleName("borderless");
-            previousButton.setIcon(new ThemeResource("icons/24/previous.png"));
-            navigationFormLayout.addComponent(previousButton);
-            navigationFormLayout.setComponentAlignment(previousButton, Alignment.MIDDLE_LEFT);
+            previousButton.setIcon(new ThemeResource("icons/16/previous.png"));
+            previousButtonLayout.addComponent(previousButton);
+            navigationFormLayout.addComponent(previousButtonLayout);
+            navigationFormLayout.setComponentAlignment(previousButtonLayout, Alignment.TOP_LEFT);
         }
 
         navigationFormLayout.addComponent(this);
 
         if (createNavigationButtons) {
+            VerticalLayout nextButtonLayout = new VerticalLayout();
+            nextButtonLayout.setSizeUndefined();
+            nextButtonLayout.setMargin(false);
+            nextButtonLayout.setSpacing(false);
+            Label spaceLabel = new Label("</br></br></br>", Label.CONTENT_XHTML);
+            spaceLabel.setSizeUndefined();
+            nextButtonLayout.addComponent(spaceLabel);
+
             nextButton = new Button(null, this, "nextItem");
             nextButton.setDescription(uiMessageSource.getMessage("entityForm.next.description"));
             nextButton.setSizeUndefined();
             nextButton.addStyleName("borderless");
-            nextButton.setIcon(new ThemeResource("icons/24/next.png"));
-            navigationFormLayout.addComponent(nextButton);
-            navigationFormLayout.setComponentAlignment(nextButton, Alignment.MIDDLE_RIGHT);
+            nextButton.setIcon(new ThemeResource("icons/16/next.png"));
+
+            nextButtonLayout.addComponent(nextButton);
+            navigationFormLayout.addComponent(nextButtonLayout);
+            navigationFormLayout.setComponentAlignment(nextButtonLayout, Alignment.TOP_RIGHT);
+
             navigationFormLayout.setSpacing(false);
             navigationFormLayout.setMargin(false);
 

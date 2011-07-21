@@ -116,6 +116,9 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
         popupWindow.addComponent(entitySelect);
         popupWindow.setClosable(true);
         getEntitySelect().getResultsComponent().setSelectButtonListener(this, "itemsSelected");
+
+        entitySelect.configurePopupWindow(popupWindow);
+
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
     }
 

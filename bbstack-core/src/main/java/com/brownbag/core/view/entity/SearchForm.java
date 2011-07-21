@@ -38,6 +38,8 @@ public abstract class SearchForm<T> extends FormComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
+        getForm().setCaption(getEntityCaption());
+
         getForm().addStyleName("searchForm");
     }
 

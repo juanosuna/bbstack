@@ -29,6 +29,7 @@ import com.vaadin.data.Property;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window;
 import org.h2.command.dml.Select;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -94,7 +95,7 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setSelectItems("otherAddress.state", new ArrayList());
         formFields.addValueChangeListener("otherAddress.country", this, "otherCountryChanged");
 
-        SelectField selectField = new SelectField(this, "account", accountSelect, "account.name");
+        SelectField selectField = new SelectField(this, "account", accountSelect);
         formFields.setField("account.name", selectField);
     }
 
@@ -137,5 +138,11 @@ public class ContactForm extends EntityForm<Contact> {
     @Override
     public String getEntityCaption() {
         return "Contact Form";
+    }
+
+    @Override
+    public void configurePopupWindow(Window popupWindow) {
+        popupWindow.setWidth(48, Sizeable.UNITS_EM);
+        popupWindow.setHeight(30, Sizeable.UNITS_EM);
     }
 }

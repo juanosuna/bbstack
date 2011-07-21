@@ -24,6 +24,7 @@ import com.brownbag.sample.dao.OpportunityDao;
 import com.brownbag.sample.entity.Opportunity;
 import com.brownbag.sample.view.opportunity.OpportunityQuery;
 import com.brownbag.sample.view.opportunity.OpportunitySearchForm;
+import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +48,12 @@ public class OpportunitySelect extends EntitySelect<Opportunity> {
     @Override
     public OpportunitySelectResults getResultsComponent() {
         return opportunitySelectResults;
+    }
+
+    @Override
+    public void configurePopupWindow(Window popupWindow) {
+        popupWindow.setHeight(null);
+        popupWindow.setWidth(null);
     }
 
     @Component

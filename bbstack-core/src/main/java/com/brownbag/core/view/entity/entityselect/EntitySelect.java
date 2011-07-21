@@ -18,6 +18,9 @@
 package com.brownbag.core.view.entity.entityselect;
 
 import com.brownbag.core.view.entity.EntryPoint;
+import com.vaadin.ui.Window;
+
+import javax.annotation.PostConstruct;
 
 /**
  * User: Juan
@@ -32,7 +35,17 @@ public abstract class EntitySelect<T> extends EntryPoint<T> {
 
     public abstract EntitySelectResults<T> getResultsComponent();
 
+    public abstract void configurePopupWindow(Window popupWindow);
+
     public String getEntityCaption() {
         return null;
+    }
+
+    @PostConstruct
+    @Override
+    public void postConstruct() {
+        super.postConstruct();
+
+        getResultsComponent().getEntityQuery().setPageSize(5);
     }
 }

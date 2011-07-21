@@ -50,3 +50,25 @@
     color: white;
 }
 
+.v-gridlayout .v-gridlayout-spacing-on {
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+
+.v-gridlayout .v-gridlayout-margin-left {
+    padding-left: 2em;
+}
+
+.v-gridlayout .v-gridlayout-margin-right {
+    padding-right: 2em;
+}
+
+.v-gridlayout .v-gridlayout-margin-top {
+    padding-top: 1em;
+}
+
+.v-gridlayout .v-gridlayout-margin-bottom {
+    padding-bottom: 1em;
+}

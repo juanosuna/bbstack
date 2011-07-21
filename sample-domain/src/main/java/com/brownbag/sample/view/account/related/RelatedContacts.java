@@ -151,8 +151,8 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
         public Path buildOrderByPath(Root<Contact> rootEntity) {
             if (getOrderByPropertyId().equals("address.country")) {
                 return rootEntity.get("address").get("country");
-            } else if (getOrderByPropertyId().equals("address.state")) {
-                return rootEntity.get("address").get("state");
+            } else if (getOrderByPropertyId().equals("address.state.code")) {
+                return rootEntity.get("address").get("state").get("code");
             } else {
                 return null;
             }

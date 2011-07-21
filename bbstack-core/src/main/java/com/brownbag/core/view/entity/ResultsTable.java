@@ -78,7 +78,6 @@ public class ResultsTable extends Table {
 
         setSelectable(true);
         setImmediate(true);
-        setPageLength(10);
         setColumnReorderingAllowed(true);
         setColumnCollapsingAllowed(true);
         setCacheRate(1);
@@ -160,6 +159,8 @@ public class ResultsTable extends Table {
 
         results.refreshResultCountLabel();
         results.refreshNavigationButtonStates();
+//        setPageLength(0);
+        setPageLength(Math.min(entities.size(), results.getPageSize()));
     }
 
     public void clearSelection() {

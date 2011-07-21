@@ -24,6 +24,8 @@ import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.view.account.AccountQuery;
 import com.brownbag.sample.view.account.AccountSearchForm;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +50,13 @@ public class AccountSelect extends EntitySelect<Account> {
     public AccountSelectResults getResultsComponent() {
         return accountSelectResults;
     }
+
+    @Override
+    public void configurePopupWindow(Window popupWindow) {
+        popupWindow.setHeight(null);
+        popupWindow.setWidth(null);
+    }
+
 
     @Component
     @Scope("prototype")

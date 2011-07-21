@@ -28,8 +28,10 @@ import com.brownbag.sample.entity.State;
 import com.brownbag.sample.view.account.related.RelatedContacts;
 import com.brownbag.sample.view.account.related.RelatedOpportunities;
 import com.vaadin.data.Property;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -107,5 +109,11 @@ public class AccountForm extends EntityForm<Account> {
     @Override
     public String getEntityCaption() {
         return "Account Form";
+    }
+
+    @Override
+    public void configurePopupWindow(Window popupWindow) {
+        popupWindow.setWidth(60, Sizeable.UNITS_EM);
+        popupWindow.setHeight(50, Sizeable.UNITS_EM);
     }
 }

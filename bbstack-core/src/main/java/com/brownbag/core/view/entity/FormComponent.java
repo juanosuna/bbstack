@@ -27,7 +27,9 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.NullCapableBeanItem;
 import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
 import com.vaadin.data.util.VaadinPropertyDescriptor;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
+import org.vaadin.jouni.animator.Animator;
 import org.vaadin.peter.contextmenu.ContextMenu;
 
 import javax.annotation.PostConstruct;
@@ -109,16 +111,51 @@ public abstract class FormComponent<T> extends CustomComponent {
         form.setLayout(gridLayout);
 
         createFooterButtons((HorizontalLayout) form.getFooter());
-        form.setCaption(getEntityCaption());
 
-        VerticalLayout layout = new VerticalLayout();
+        VerticalLayout tabsAndForm = new VerticalLayout();
         if (formFields.getTabNames().size() > 1) {
-            initializeTabs(layout);
+            initializeTabs(tabsAndForm);
         }
+        tabsAndForm.addComponent(form);
 
-        layout.addComponent(form);
-        setCompositionRoot(layout);
+        Label spaceLabel = new Label("</br>", Label.CONTENT_XHTML);
+        spaceLabel.setSizeUndefined();
+        tabsAndForm.addComponent(spaceLabel);
+
+        VerticalLayout formComponentLayout = new VerticalLayout();
+        formComponentLayout.addComponent(animate(tabsAndForm));
+
+        setCompositionRoot(formComponentLayout);
         setCustomSizeUndefined();
+    }
+
+    protected Component animate(Component component) {
+        final Animator formAnimator = new Animator(component);
+        formAnimator.setSizeUndefined();
+
+        HorizontalLayout animatorLayout = new HorizontalLayout();
+        animatorLayout.setMargin(false, false, false, false);
+        animatorLayout.setSpacing(false);
+
+        Button toggleFormButton = new Button(null, new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                formAnimator.setRolledUp(!formAnimator.isRolledUp());
+                if (formAnimator.isRolledUp()) {
+                    event.getButton().setIcon(new ThemeResource("../customTheme/icons/expand-icon.png"));
+                } else {
+                    event.getButton().setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
+                }
+            }
+        });
+        toggleFormButton.setDescription(uiMessageSource.getMessage("entryPoint.toggleSearchForm.description"));
+        toggleFormButton.setIcon(new ThemeResource("../customTheme/icons/collapse-icon.png"));
+        toggleFormButton.addStyleName("borderless");
+
+        animatorLayout.addComponent(toggleFormButton);
+        animatorLayout.addComponent(formAnimator);
+
+        return animatorLayout;
     }
 
     private void initializeTabs(VerticalLayout layout) {
@@ -130,7 +167,9 @@ public abstract class FormComponent<T> extends CustomComponent {
         int tabPosition = 0;
         boolean hasOptionalTabs = false;
         for (String tabName : tabNames) {
-            TabSheet.Tab tab = tabSheet.addTab(new Label(), tabName, null);
+            Label emptyLabel = new Label();
+            emptyLabel.setSizeUndefined();
+            TabSheet.Tab tab = tabSheet.addTab(emptyLabel, tabName, null);
             tabPositions.put(tabName, tabPosition++);
             if (formFields.isTabOptional(tabName)) {
                 menu.addAction(uiMessageSource.getMessage("formComponent.add") + " " + tabName,
@@ -155,9 +194,11 @@ public abstract class FormComponent<T> extends CustomComponent {
         tabSheet.addListener(new TabSheet.SelectedTabChangeListener() {
             @Override
             public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
+                form.getLayout().removeAllComponents();
+                GridLayout gridLayout = (GridLayout) form.getLayout();
                 String tabName = getCurrentTabName();
-                GridLayout gridLayout = formFields.createGridLayout(tabName);
-                form.setLayout(gridLayout);
+                gridLayout.setColumns(formFields.getColumns(tabName));
+                gridLayout.setRows(formFields.getRows(tabName));
                 refreshFromDataSource();
             }
         });

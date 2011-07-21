@@ -90,7 +90,6 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         displayFields = new DisplayFields(getEntityType(), entityMessageSource);
         configureFields(displayFields);
         resultsTable = new ResultsTable(this);
-        resultsTable.setSizeUndefined();
 
         VerticalLayout verticalLayout = new VerticalLayout();
         setCompositionRoot(verticalLayout);
@@ -120,16 +119,21 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         HorizontalLayout resultCountDisplay = new HorizontalLayout();
         Label showingLabel = new Label(uiMessageSource.getMessage("entityResults.showing")
                 + " &nbsp ", Label.CONTENT_XHTML);
+        showingLabel.setSizeUndefined();
         showingLabel.addStyleName("small");
         resultCountDisplay.addComponent(showingLabel);
         firstResultTextField = createFirstResultTextField();
         firstResultTextField.addStyleName("small");
+        firstResultTextField.setSizeUndefined();
         resultCountDisplay.addComponent(firstResultTextField);
         resultCountLabel = new Label("", Label.CONTENT_XHTML);
+        resultCountLabel.setSizeUndefined();
         resultCountLabel.addStyleName("small");
         resultCountDisplay.addComponent(resultCountLabel);
 
-        resultCountDisplay.addComponent(new Label(" &nbsp; ", Label.CONTENT_XHTML));
+        Label spaceLabel = new Label(" &nbsp; ", Label.CONTENT_XHTML);
+        spaceLabel.setSizeUndefined();
+        resultCountDisplay.addComponent(spaceLabel);
 
         Button refreshButton = new Button(null, getResultsTable(), "refresh");
         refreshButton.setDescription(uiMessageSource.getMessage("entityResults.refresh.description"));
@@ -145,6 +149,8 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         String perPageText = uiMessageSource.getMessage("entityResults.pageSize");
         pageSizeMenu = new Select();
         pageSizeMenu.addStyleName("small");
+        pageSizeMenu.addItem(5);
+        pageSizeMenu.setItemCaption(5, "5 " + perPageText);
         pageSizeMenu.addItem(10);
         pageSizeMenu.setItemCaption(10, "10 " + perPageText);
         pageSizeMenu.addItem(25);
@@ -251,7 +257,6 @@ public abstract class ResultsComponent<T> extends CustomComponent {
 
     public void setPageSize(int pageSize) {
         getEntityQuery().setPageSize(pageSize);
-        getResultsTable().setPageLength(pageSize);
     }
 
     public void addSelectionChangedListener(Object target, String methodName) {
