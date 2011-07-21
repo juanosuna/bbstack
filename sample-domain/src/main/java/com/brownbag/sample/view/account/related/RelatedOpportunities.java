@@ -91,12 +91,12 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
                     "modifiedBy"
             });
 
-            displayFields.getField("name").setLabel("Name");
-            displayFields.getField("account.name").setLabel("Account");
+            displayFields.setLabel("name", "Name");
+            displayFields.setLabel("account.name", "Account");
         }
 
         @Override
-        public String getPropertyId() {
+        public String getParentPropertyId() {
             return "account";
         }
 

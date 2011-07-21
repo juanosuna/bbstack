@@ -89,12 +89,12 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
                     "modifiedBy"
             });
 
-            displayFields.getField("address.state.code").setLabel("State");
-            displayFields.getField("name").setSortable(false);
+            displayFields.setLabel("address.state.code", "State");
+            displayFields.setSortable("name", false);
         }
 
         @Override
-        public String getPropertyId() {
+        public String getParentPropertyId() {
             return "account";
         }
 

@@ -71,9 +71,9 @@ public class AccountResults extends Results<Account> {
                 "modifiedBy"
         });
 
-        displayFields.getField("address.state.code").setLabel("State");
-        displayFields.getField("numberOfEmployees").setLabel("# of Employees");
-        displayFields.getField("annualRevenueFormattedInCurrency").setLabel("Annual Revenue");
-        displayFields.getField("annualRevenueFormattedInCurrency").setSortable(false);
+        displayFields.setLabel("address.state.code", "State");
+        displayFields.setLabel("numberOfEmployees", "# of Employees");
+        displayFields.setLabel("annualRevenueFormattedInCurrency", "Annual Revenue");
+        displayFields.setSortable("annualRevenueFormattedInCurrency", false);
     }
 }

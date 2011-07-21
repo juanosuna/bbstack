@@ -18,7 +18,6 @@
 package com.brownbag.sample.view.contact;
 
 import com.brownbag.core.view.entity.SearchForm;
-import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.Country;
@@ -43,8 +42,6 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     @Resource
     private StateDao stateDao;
 
-    private FormField statesField;
-
     @Override
     public void configureFields(FormFields formFields) {
 
@@ -52,10 +49,9 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
         formFields.setPosition("country", 0, 1);
         formFields.setPosition("states", 0, 2);
 
-        statesField = formFields.getFormField("states");
-        statesField.setSelectItems(new ArrayList());
-        statesField.setVisible(false);
-        statesField.setMultiSelectDimensions(5, 15);
+        formFields.setSelectItems("states", new ArrayList());
+        formFields.setVisible("states", false);
+        formFields.setMultiSelectDimensions("states", 5, 15);
 
         formFields.addValueChangeListener("country", this, "countryChanged");
     }
@@ -63,8 +59,9 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     public void countryChanged(Property.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
-        statesField.setSelectItems(states);
-        statesField.setVisible(states.size() > 0);
+
+        getFormFields().setSelectItems("states", states);
+        getFormFields().setVisible("states", states.size() > 0);
     }
 
     @Override

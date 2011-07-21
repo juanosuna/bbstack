@@ -20,7 +20,6 @@ package com.brownbag.sample.dao;
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.sample.entity.Contact;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class ContactDao extends EntityDao<Contact, Long> {

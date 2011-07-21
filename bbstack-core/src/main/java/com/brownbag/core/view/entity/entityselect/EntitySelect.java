@@ -35,7 +35,9 @@ public abstract class EntitySelect<T> extends EntryPoint<T> {
 
     public abstract EntitySelectResults<T> getResultsComponent();
 
-    public abstract void configurePopupWindow(Window popupWindow);
+    public void configurePopupWindow(Window popupWindow) {
+        popupWindow.setSizeUndefined();
+    }
 
     public String getEntityCaption() {
         return null;

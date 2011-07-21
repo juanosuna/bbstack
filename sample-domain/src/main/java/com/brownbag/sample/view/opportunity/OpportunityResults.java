@@ -71,7 +71,7 @@ public class OpportunityResults extends Results<Opportunity> {
                 "modifiedBy"
         });
 
-        displayFields.getField("name").setLabel("Name");
-        displayFields.getField("account.name").setLabel("Account");
+        displayFields.setLabel("name", "Name");
+        displayFields.setLabel("account.name", "Account");
     }
 }

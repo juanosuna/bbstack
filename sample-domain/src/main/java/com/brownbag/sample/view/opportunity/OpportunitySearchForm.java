@@ -36,7 +36,7 @@ public class OpportunitySearchForm extends SearchForm<OpportunityQuery> {
         formFields.setPosition("accountName", 0, 0);
         formFields.setPosition("salesStages", 0, 1);
 
-        formFields.getFormField("salesStages").setMultiSelectDimensions(3, 10);
+        formFields.setMultiSelectDimensions("salesStages", 3, 10);
     }
 
     @Override

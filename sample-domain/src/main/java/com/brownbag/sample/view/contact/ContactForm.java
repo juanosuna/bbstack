@@ -18,19 +18,14 @@
 package com.brownbag.sample.view.contact;
 
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.select.AccountSelect;
-import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
-import org.h2.command.dml.Select;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -83,7 +78,8 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setWidth("mainPhone.type", 7, Sizeable.UNITS_EM);
 
         formFields.setDescription("mainPhoneFormatted",
-                "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> Example formats:</strong>" +
+                "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> " +
+                        "Example formats:</strong>" +
                         "<ul>" +
                         "  <li>US: (919) 975-5331</li>" +
                         "  <li>Germany: +49 30/70248804</li>" +
@@ -118,20 +114,25 @@ public class ContactForm extends EntityForm<Contact> {
     public void countryChangedImpl(Property.ValueChangeEvent event, String addressPropertyId) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
-        FormField stateField = getFormFields().getFormField(addressPropertyId + ".state");
-        stateField.setVisible(!states.isEmpty());
-        stateField.setRequired(!states.isEmpty());
-        stateField.setSelectItems(states);
-        Field zipCodeField = getFormFields().getFormField(addressPropertyId + ".zipCode").getField();
-        ((TextField) zipCodeField).setComponentError(null);
+
+        String fullStatePropertyId = addressPropertyId + ".state";
+        FormFields formFields = getFormFields();
+        formFields.setVisible(fullStatePropertyId, !states.isEmpty());
+        formFields.setRequired(fullStatePropertyId, !states.isEmpty());
+        formFields.setSelectItems(fullStatePropertyId, states);
+
+        String fullZipCodePropertyId = addressPropertyId + ".zipCode";
+        formFields.setComponentError(fullZipCodePropertyId, null);
+
         if (newCountry != null && newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
-            zipCodeField.setDescription(
-                    "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> Postal code range:</strong>" +
+            formFields.setDescription(fullZipCodePropertyId,
+                    "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> " +
+                            "Postal code range:</strong>" +
                             "<ul>" +
                             "  <li>" + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode() + "</li>" +
                             "</ul>");
         } else {
-            zipCodeField.setDescription(null);
+            formFields.setDescription(fullZipCodePropertyId, null);
         }
     }
 

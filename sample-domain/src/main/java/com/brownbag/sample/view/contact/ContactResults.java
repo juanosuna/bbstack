@@ -75,8 +75,8 @@ public class ContactResults extends Results<Contact> {
                 "modifiedBy"
         });
 
-        displayFields.getField("address.state.code").setLabel("State");
-        displayFields.getField("account.name").setLabel("Account");
-        displayFields.getField("account.name").setFormLink("account", accountForm);
+        displayFields.setLabel("address.state.code", "State");
+        displayFields.setLabel("account.name", "Account");
+        displayFields.setFormLink("account.name", "account", accountForm);
     }
 }

@@ -20,7 +20,6 @@ package com.brownbag.sample.dao;
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.sample.entity.SalesStage;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 import java.util.List;

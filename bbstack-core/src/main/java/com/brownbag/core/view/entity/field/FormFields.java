@@ -18,7 +18,9 @@
 package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.util.MethodDelegate;
+import com.brownbag.core.util.assertion.Assert;
 import com.brownbag.core.view.MessageSource;
+import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.GridLayout;
@@ -204,10 +206,28 @@ public class FormFields extends DisplayFields {
     }
 
     public void setSelectItems(String propertyId, List items) {
-        FormField formField = (FormField) getField(propertyId);
-        formField.setSelectItems(items);
+        getFormField(propertyId).setSelectItems(items);
     }
 
+    public void setMultiSelectDimensions(String propertyId, int rows, int columns) {
+        getFormField(propertyId).setMultiSelectDimensions(rows, columns);
+    }
+
+    public void setVisible(String propertyId, boolean isVisible) {
+        getFormField(propertyId).setVisible(isVisible);
+    }
+
+    public void setRequired(String propertyId, boolean isRequired) {
+        getFormField(propertyId).setRequired(isRequired);
+    }
+
+    public void setComponentError(String propertyId, ErrorMessage errorMessage) {
+        Assert.PROGRAMMING.assertTrue(getFormField(propertyId).getField() instanceof AbstractComponent,
+                "field is not of the right type");
+
+        AbstractComponent abstractComponent = (AbstractComponent) getFormField(propertyId).getField();
+        abstractComponent.setComponentError(errorMessage);
+    }
 
     public void addValueChangeListener(String propertyId, Object target, String methodName) {
         FormField formField = (FormField) getField(propertyId);

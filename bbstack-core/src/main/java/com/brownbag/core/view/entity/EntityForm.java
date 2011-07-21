@@ -60,7 +60,9 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     private Button saveButton;
 
-    public abstract void configurePopupWindow(Window popupWindow);
+    public void configurePopupWindow(Window popupWindow) {
+        popupWindow.setSizeUndefined();
+    }
 
     private MethodDelegate closeListener;
 

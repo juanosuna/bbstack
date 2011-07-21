@@ -21,12 +21,11 @@ import com.brownbag.core.dao.EntityDao;
 import com.brownbag.sample.entity.Country;
 import com.brownbag.sample.entity.State;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 import java.util.List;
 
-import static com.brownbag.sample.dao.CacheSettings.*;
+import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
 
 @Repository
 public class StateDao extends EntityDao<State, String> {

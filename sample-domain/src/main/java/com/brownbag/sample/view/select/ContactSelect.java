@@ -24,7 +24,6 @@ import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.view.contact.ContactQuery;
 import com.brownbag.sample.view.contact.ContactSearchForm;
-import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -48,12 +47,6 @@ public class ContactSelect extends EntitySelect<Contact> {
     @Override
     public ContactSelectResults getResultsComponent() {
         return contactSelectResults;
-    }
-
-    @Override
-    public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setHeight(null);
-        popupWindow.setWidth(null);
     }
 
 
@@ -87,8 +80,8 @@ public class ContactSelect extends EntitySelect<Contact> {
                     "modifiedBy"
             });
 
-            displayFields.getField("address.state.code").setLabel("State");
-            displayFields.getField("name").setSortable(false);
+            displayFields.setLabel("address.state.code", "State");
+            displayFields.setSortable("name", false);
         }
     }
 }

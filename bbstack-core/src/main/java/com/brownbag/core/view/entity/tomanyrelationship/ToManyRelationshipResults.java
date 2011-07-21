@@ -60,7 +60,7 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
 
     public abstract String getEntityCaption();
 
-    public abstract String getPropertyId();
+    public abstract String getParentPropertyId();
 
     public abstract EntitySelect<T> getEntitySelect();
 
@@ -133,7 +133,7 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
         for (T value : values) {
             value = getEntityDao().getReference(value);
             try {
-                PropertyUtils.setProperty(value, getPropertyId(), parent);
+                PropertyUtils.setProperty(value, getParentPropertyId(), parent);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {
@@ -150,7 +150,7 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
         for (T value : values) {
             value = getEntityDao().getReference(value);
             try {
-                PropertyUtils.setProperty(value, getPropertyId(), null);
+                PropertyUtils.setProperty(value, getParentPropertyId(), null);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {

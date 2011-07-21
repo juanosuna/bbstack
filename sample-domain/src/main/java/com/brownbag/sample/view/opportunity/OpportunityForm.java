@@ -22,7 +22,6 @@ import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.sample.entity.Opportunity;
 import com.brownbag.sample.view.select.AccountSelect;
-import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -63,11 +62,5 @@ public class OpportunityForm extends EntityForm<Opportunity> {
     @Override
     public String getEntityCaption() {
         return "Opportunity Form";
-    }
-
-    @Override
-    public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setHeight(null);
-        popupWindow.setWidth(null);
     }
 }

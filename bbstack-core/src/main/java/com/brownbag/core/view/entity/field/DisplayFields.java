@@ -19,6 +19,7 @@ package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.util.CollectionsUtil;
 import com.brownbag.core.view.MessageSource;
+import com.brownbag.core.view.entity.EntityForm;
 
 import java.util.*;
 
@@ -105,5 +106,17 @@ public class DisplayFields {
         }
 
         return nonSortablePropertyIds;
+    }
+
+    public void setLabel(String propertyId, String label) {
+        getField(propertyId).setLabel(label);
+    }
+
+    public void setSortable(String propertyId, boolean isSortable) {
+        getField(propertyId).setSortable(isSortable);
+    }
+
+    public void setFormLink(String propertyId, String entityPropertyId, EntityForm entityForm) {
+        getField(propertyId).setFormLink(entityPropertyId, entityForm);
     }
 }

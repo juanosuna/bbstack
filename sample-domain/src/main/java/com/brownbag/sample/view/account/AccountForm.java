@@ -18,7 +18,6 @@
 package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.tomanyrelationship.ToManyRelationship;
 import com.brownbag.sample.dao.StateDao;
@@ -29,8 +28,6 @@ import com.brownbag.sample.view.account.related.RelatedContacts;
 import com.brownbag.sample.view.account.related.RelatedOpportunities;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -80,7 +77,7 @@ public class AccountForm extends EntityForm<Account> {
         formFields.setPosition("Address", "address.zipCode", 1, 1);
         formFields.setPosition("Address", "address.state", 2, 0);
 
-        formFields.getFormField("types").setMultiSelectDimensions(3, 10);
+        formFields.setMultiSelectDimensions("types", 3, 10);
 
         formFields.setSelectItems("address.state", new ArrayList());
         formFields.addValueChangeListener("address.country", this, "countryChanged");
@@ -89,20 +86,22 @@ public class AccountForm extends EntityForm<Account> {
     public void countryChanged(Property.ValueChangeEvent event) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
-        FormField stateField = getFormFields().getFormField("address.state");
-        stateField.setVisible(!states.isEmpty());
-        stateField.setRequired(!states.isEmpty());
-        stateField.setSelectItems(states);
-        Field zipCodeField = getFormFields().getFormField("address.zipCode").getField();
-        ((TextField) zipCodeField).setComponentError(null);
+
+        FormFields formFields = getFormFields();
+        formFields.setVisible("address.state", !states.isEmpty());
+        formFields.setRequired("address.state", !states.isEmpty());
+        formFields.setSelectItems("address.state", states);
+
+        formFields.setComponentError("address.zipCode", null);
         if (newCountry != null && newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
-            zipCodeField.setDescription(
-                    "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> Postal code range:</strong>" +
+            formFields.setDescription("address.zipCode",
+                    "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> " +
+                            "Postal code range:</strong>" +
                             "<ul>" +
                             "  <li>" + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode() + "</li>" +
                             "</ul>");
         } else {
-            zipCodeField.setDescription(null);
+            formFields.setDescription("address.zipCode", null);
         }
     }
 
