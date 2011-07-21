@@ -48,6 +48,11 @@ import java.util.List;
  */
 public class ResultsTable extends Table {
 
+    public static final SimpleDateFormat DEFAULT_DAY_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public static final DecimalFormat DEFAULT_MONEY_FORMAT = new DecimalFormat("###,###.##");
+    public static final DecimalFormat DEFAULT_NUMBER_FORMAT = new DecimalFormat();
+
     private ResultsComponent results;
 
     protected ResultsTable(ResultsComponent results) {
@@ -184,15 +189,15 @@ public class ResultsTable extends Table {
                 if (property.getType() == Date.class) {
                     Temporal temporal = displayField.getAnnotation(Temporal.class);
                     if (temporal != null && temporal.value().equals(TemporalType.DATE)) {
-                        format = new SimpleDateFormat("yyyy-MM-dd");
+                        format = DEFAULT_DAY_FORMAT;
                     } else {
-                        format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                        format = DEFAULT_TIME_FORMAT;
                     }
                 } else if (property.getType() == BigDecimal.class) {
-                    format = new DecimalFormat("###,###.##");
+                    format = DEFAULT_MONEY_FORMAT;
                     return format.format(property.getValue());
                 } else if (Number.class.isAssignableFrom(property.getType())) {
-                    format = new DecimalFormat();
+                    format = DEFAULT_NUMBER_FORMAT;
                 }
             }
         }
