@@ -46,6 +46,13 @@ public class PhoneValidator implements ConstraintValidator<ValidPhone, Object> {
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
         try {
+            if (fullNumber.matches(".*[a-zA-Z]+.*")) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate(
+                        "Phone number may not contain letters").addConstraintViolation();
+                return false;
+            }
+
             Phonenumber.PhoneNumber phoneNumber = phoneUtil.parse(fullNumber, validPhone.defaultRegionCode());
 
             PhoneNumberUtil.ValidationResult result = phoneUtil.isPossibleNumberWithReason(phoneNumber);

@@ -90,18 +90,25 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         displayFields = new DisplayFields(getEntityType(), entityMessageSource);
         configureFields(displayFields);
         resultsTable = new ResultsTable(this);
+        configureTable(resultsTable);
 
         VerticalLayout verticalLayout = new VerticalLayout();
         setCompositionRoot(verticalLayout);
 
         crudButtons = new HorizontalLayout();
         HorizontalLayout navigationLine = createNavigationLine();
+        if (resultsTable.getWidth() > 0) {
+            navigationLine.setWidth(resultsTable.getWidth(), resultsTable.getWidthUnits());
+        }
         addComponent(crudButtons);
         addComponent(navigationLine);
 
         addComponent(resultsTable);
 
         setCustomSizeUndefined();
+    }
+
+    public void configureTable(ResultsTable resultsTable) {
     }
 
     @Override

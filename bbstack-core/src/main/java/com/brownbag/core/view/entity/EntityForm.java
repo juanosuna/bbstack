@@ -154,6 +154,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
             }
             toManyRelationshipTabs.setVisible(true);
+            toManyRelationshipTabs.setEnabled(true);
         }
     }
 
@@ -167,7 +168,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         open(false);
 
         if (getToManyRelationships().size() > 0) {
-            toManyRelationshipTabs.setVisible(false);
+            toManyRelationshipTabs.setEnabled(false);
         }
     }
 

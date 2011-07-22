@@ -26,6 +26,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.NullCapableBeanItemContainer;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -70,6 +71,7 @@ public class ResultsTable extends Table {
     }
 
     public void initialize() {
+        setSizeUndefined();
         setEditable(true);
         setTableFieldFactory(new TableButtonLinkFactory());
 

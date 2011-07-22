@@ -29,6 +29,7 @@ import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
 import com.vaadin.data.util.VaadinPropertyDescriptor;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.jouni.animator.Animator;
 import org.vaadin.peter.contextmenu.ContextMenu;
 
@@ -52,7 +53,7 @@ public abstract class FormComponent<T> extends CustomComponent {
     @Resource
     protected MessageSource entityMessageSource;
 
-    private Form form;
+    private ConfigurableForm form;
     private ResultsComponent results;
     private FormFields formFields;
     private TabSheet tabSheet;
@@ -113,6 +114,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         createFooterButtons((HorizontalLayout) form.getFooter());
 
         VerticalLayout tabsAndForm = new VerticalLayout();
+        tabsAndForm.setSizeUndefined();
         if (formFields.getTabNames().size() > 1) {
             initializeTabs(tabsAndForm);
         }
@@ -199,7 +201,12 @@ public abstract class FormComponent<T> extends CustomComponent {
                 String tabName = getCurrentTabName();
                 gridLayout.setColumns(formFields.getColumns(tabName));
                 gridLayout.setRows(formFields.getRows(tabName));
-                refreshFromDataSource();
+                Set<FormField> formFields = getFormFields().getFormFields(tabName);
+                for (FormField formField : formFields) {
+                    String propertyId = formField.getPropertyId();
+                    Field field = formField.getField();
+                    form.attachField(propertyId, field);
+                }
             }
         });
     }

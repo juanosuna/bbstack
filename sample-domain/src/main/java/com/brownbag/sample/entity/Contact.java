@@ -157,7 +157,7 @@ public class Contact extends WritableEntity {
                 Phone phone = new Phone(mainPhone, DEFAULT_PHONE_COUNTRY);
                 setMainPhone(phone);
             } catch (NumberParseException e) {
-                Assert.PROGRAMMING.fail(e); // this should not happen because of validation
+                // ignore, since validation will fail and signal user
             }
         }
     }

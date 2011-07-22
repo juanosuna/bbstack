@@ -18,10 +18,12 @@
 package com.brownbag.sample.view.contact;
 
 import com.brownbag.core.view.entity.Results;
+import com.brownbag.core.view.entity.ResultsTable;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.view.account.AccountForm;
+import com.vaadin.terminal.Sizeable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -78,5 +80,10 @@ public class ContactResults extends Results<Contact> {
         displayFields.setLabel("address.state.code", "State");
         displayFields.setLabel("account.name", "Account");
         displayFields.setFormLink("account.name", "account", accountForm);
+    }
+
+    @Override
+    public void configureTable(ResultsTable resultsTable) {
+        resultsTable.setWidth(60, Sizeable.UNITS_EM);
     }
 }
