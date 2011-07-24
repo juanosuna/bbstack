@@ -1,15 +1,15 @@
 /*
  * BROWN BAG CONFIDENTIAL
  *
- * Brown Bag Consulting LLC
- * Copyright (c) 2011. All Rights Reserved.
+ * Copyright (c) 2011 Brown Bag Consulting LLC
+ * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
  * the property of Brown Bag Consulting LLC and its suppliers,
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
+ * patents in process, and are protected by trade secret or copyrightlaw.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -41,11 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/**
- * User: Juan
- * Date: 5/7/11
- * Time: 5:27 PM
- */
 public abstract class EntityForm<T> extends FormComponent<T> {
 
     @Resource
@@ -132,7 +127,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         BeanItem beanItem = createBeanItem(loadedEntity);
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
-        validate((WritableEntity) getEntity());
+        validate();
 
         loadToManyRelationships();
         resetTabs(selectFirstTab);
@@ -158,7 +153,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void clear() {
-        clearComponentErrors();
+        clearAllErrors();
         getForm().setItemDataSource(null, getFormFields().getPropertyIds());
     }
 
@@ -176,7 +171,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         BeanItem beanItem = createBeanItem(newEntity);
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
-        validate((WritableEntity) getEntity());
+        validate();
 
         resetTabs();
     }
@@ -300,7 +295,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void cancel() {
-        clearComponentErrors();
+        clearAllErrors();
         getForm().discard();
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         if (beanItem == null) {
@@ -319,11 +314,10 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     public void save() {
         getForm().commit();
-        BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
-        WritableEntity entity = (WritableEntity) beanItem.getBean();
 
-        boolean isValid = validate(entity);
+        boolean isValid = validate();
         if (getForm().isValid() && isValid) {
+            WritableEntity entity = (WritableEntity) getEntity();
             if (entity.getId() != null) {
                 entity.updateLastModified();
                 WritableEntity mergedEntity = (WritableEntity) getEntityDao().merge(entity);
@@ -336,8 +330,10 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         }
     }
 
-    public boolean validate(WritableEntity entity) {
-        clearComponentErrors();
+    public boolean validate() {
+        WritableEntity entity = (WritableEntity) getEntity();
+
+        clearAllErrors();
 
         Set<ConstraintViolation<WritableEntity>> constraintViolations = validation.validate(entity);
         for (ConstraintViolation constraintViolation : constraintViolations) {
@@ -363,12 +359,12 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             }
         }
 
-        syncTabSaveButtonErrors();
+        syncTabAndSaveButtonErrors();
 
         return constraintViolations.isEmpty();
     }
 
-    public void clearComponentErrors() {
+    public void clearAllErrors() {
         getFormFields().clearErrors();
         getForm().setComponentError(null);
         saveButton.setComponentError(null);
@@ -379,7 +375,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         }
     }
 
-    public void syncTabSaveButtonErrors() {
+    public void syncTabAndSaveButtonErrors() {
         Set<String> tabNames = getFormFields().getTabNames();
         boolean formHasErrors = false;
         for (String tabName : tabNames) {
@@ -410,7 +406,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void reset() {
-        clearComponentErrors();
+        clearAllErrors();
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         if (beanItem == null) {
             createImpl();

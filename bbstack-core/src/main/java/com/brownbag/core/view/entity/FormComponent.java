@@ -1,15 +1,15 @@
 /*
  * BROWN BAG CONFIDENTIAL
  *
- * Brown Bag Consulting LLC
- * Copyright (c) 2011. All Rights Reserved.
+ * Copyright (c) 2011 Brown Bag Consulting LLC
+ * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
  * the property of Brown Bag Consulting LLC and its suppliers,
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
+ * patents in process, and are protected by trade secret or copyrightlaw.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -17,13 +17,11 @@
 
 package com.brownbag.core.view.entity;
 
-import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.util.LayoutContextMenu;
-import com.vaadin.data.Buffered;
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
@@ -32,7 +30,6 @@ import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
 import com.vaadin.data.util.VaadinPropertyDescriptor;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.jouni.animator.Animator;
 import org.vaadin.peter.contextmenu.ContextMenu;
 
@@ -43,11 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * User: Juan
- * Date: 5/7/11
- * Time: 5:27 PM
- */
 public abstract class FormComponent<T> extends CustomComponent {
 
     @Resource
@@ -285,9 +277,12 @@ public abstract class FormComponent<T> extends CustomComponent {
             tab.setVisible(false);
         }
 
+        BeanItem beanItem = createBeanItem(getEntity());
+        getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
+
         if (this instanceof EntityForm) {
             EntityForm entityForm = (EntityForm) this;
-            entityForm.validate((WritableEntity) getEntity());
+            entityForm.validate();
         }
 
         resetContextMenu();

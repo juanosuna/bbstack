@@ -1,15 +1,15 @@
 /*
  * BROWN BAG CONFIDENTIAL
  *
- * Brown Bag Consulting LLC
- * Copyright (c) 2011. All Rights Reserved.
+ * Copyright (c) 2011 Brown Bag Consulting LLC
+ * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
  * the property of Brown Bag Consulting LLC and its suppliers,
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
+ * patents in process, and are protected by trade secret or copyrightlaw.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -25,11 +25,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * User: Juan
- * Date: 2/8/11
- * Time: 12:01 AM
- */
 public abstract class EntityQuery<T> {
 
     private Integer pageSize = 10;
@@ -37,6 +32,8 @@ public abstract class EntityQuery<T> {
     private Long resultCount = 0L;
     private String orderByPropertyId;
     private OrderDirection orderDirection = OrderDirection.ASC;
+
+    public abstract List<T> execute();
 
     public Integer getPageSize() {
         return pageSize;
@@ -146,14 +143,6 @@ public abstract class EntityQuery<T> {
         }
     }
 
-    @Override
-    public String toString() {
-        return "EntityQuery{" +
-                "pageSize=" + pageSize +
-                ", firstResult=" + firstResult +
-                '}';
-    }
-
     public enum OrderDirection {
         ASC,
         DESC
@@ -171,5 +160,11 @@ public abstract class EntityQuery<T> {
         return c == null || c.isEmpty();
     }
 
-    public abstract List<T> execute();
+    @Override
+    public String toString() {
+        return "EntityQuery{" +
+                "pageSize=" + pageSize +
+                ", firstResult=" + firstResult +
+                '}';
+    }
 }

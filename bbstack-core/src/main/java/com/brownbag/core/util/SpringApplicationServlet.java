@@ -1,15 +1,15 @@
 /*
  * BROWN BAG CONFIDENTIAL
  *
- * Brown Bag Consulting LLC
- * Copyright (c) 2011. All Rights Reserved.
+ * Copyright (c) 2011 Brown Bag Consulting LLC
+ * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
  * the property of Brown Bag Consulting LLC and its suppliers,
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
+ * patents in process, and are protected by trade secret or copyrightlaw.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -29,51 +29,53 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-public class AutowiringApplicationServlet extends ApplicationServlet {
+public class SpringApplicationServlet extends ApplicationServlet {
 
     private final Logger log = Logger.getLogger(getClass());
 
     private WebApplicationContext webApplicationContext;
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        log.debug("finding containing WebApplicationContext");
+    public void init(ServletConfig servletConfig) throws ServletException {
+        super.init(servletConfig);
+        log.debug("initializing SpringApplicationServlet");
         try {
-            this.webApplicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+            webApplicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletConfig.getServletContext());
         } catch (IllegalStateException e) {
-            throw new ServletException("could not locate containing WebApplicationContext");
+            throw new ServletException(e);
         }
     }
 
     protected final WebApplicationContext getWebApplicationContext() throws ServletException {
-        if (this.webApplicationContext == null)
-            throw new ServletException("can't retrieve WebApplicationContext before init() is invoked");
-        return this.webApplicationContext;
+        if (webApplicationContext == null) {
+            throw new ServletException("init() must be invoked before WebApplicationContext can be retrieved");
+        }
+        return webApplicationContext;
     }
 
     protected final AutowireCapableBeanFactory getAutowireCapableBeanFactory() throws ServletException {
         try {
             return getWebApplicationContext().getAutowireCapableBeanFactory();
         } catch (IllegalStateException e) {
-            throw new ServletException("containing context " + getWebApplicationContext() + " is not autowire-capable", e);
+            throw new ServletException(e);
         }
     }
 
     @Override
     protected Application getNewApplication(HttpServletRequest request) throws ServletException {
-        Class<? extends Application> cl;
+        Class<? extends Application> applicationClass;
         try {
-            cl = getApplicationClass();
+            applicationClass = getApplicationClass();
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new ServletException(e);
         }
-        log.debug("creating new instance of " + cl);
         AutowireCapableBeanFactory beanFactory = getAutowireCapableBeanFactory();
         try {
-            return beanFactory.createBean(cl);
+            Application application = beanFactory.createBean(applicationClass);
+            log.debug("Created new Application of type: " + applicationClass);
+            return application;
         } catch (BeansException e) {
-            throw new ServletException("failed to create new instance of " + cl, e);
+            throw new ServletException(e);
         }
     }
 }

@@ -40,7 +40,7 @@
         </property>
     </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager" />
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
           p:entityManagerFactory-ref="entityManagerFactory"/>
@@ -92,6 +92,6 @@
 
     <bean id="springApplicationContext" class="com.brownbag.core.util.SpringApplicationContext"/>
 
-    <context:annotation-config />
+    <context:annotation-config/>
 
 </beans>

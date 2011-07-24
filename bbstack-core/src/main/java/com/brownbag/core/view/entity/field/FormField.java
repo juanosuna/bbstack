@@ -1,15 +1,15 @@
 /*
  * BROWN BAG CONFIDENTIAL
  *
- * Brown Bag Consulting LLC
- * Copyright (c) 2011. All Rights Reserved.
+ * Copyright (c) 2011 Brown Bag Consulting LLC
+ * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
  * the property of Brown Bag Consulting LLC and its suppliers,
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
+ * patents in process, and are protected by trade secret or copyrightlaw.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -19,7 +19,6 @@ package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.ReferenceEntity;
-import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.BeanPropertyType;
 import com.brownbag.core.util.CurrencyUtil;
 import com.brownbag.core.util.SpringApplicationContext;
@@ -28,7 +27,6 @@ import com.brownbag.core.util.assertion.Assert;
 import com.brownbag.core.view.entity.EntityForm;
 import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.terminal.CompositeErrorMessage;
 import com.vaadin.terminal.ErrorMessage;
@@ -37,11 +35,6 @@ import com.vaadin.ui.*;
 import javax.persistence.Lob;
 import java.util.*;
 
-/**
- * User: Juan
- * Date: 5/10/11
- * Time: 11:10 PM
- */
 public class FormField extends DisplayField {
     public static final String DEFAULT_DISPLAY_PROPERTY_ID = "name";
 
@@ -368,7 +361,7 @@ public class FormField extends DisplayField {
         }
     }
 
-    public void initializeIsRequired(Field field, Object propertyId, Class<?> beanClass) {
+    private void initializeIsRequired(Field field, Object propertyId, Class<?> beanClass) {
         BeanValidationValidator validator = new BeanValidationValidator(beanClass, String.valueOf(propertyId));
         if (validator.isRequired()) {
             field.setRequired(true);
@@ -383,10 +376,7 @@ public class FormField extends DisplayField {
         @Override
         public void valueChange(Property.ValueChangeEvent event) {
             EntityForm entityForm = (EntityForm) getFormFields().getForm();
-            BeanItem beanItem = (BeanItem) entityForm.getForm().getItemDataSource();
-
-            WritableEntity entity = (WritableEntity) beanItem.getBean();
-            entityForm.validate(entity);
+            entityForm.validate();
         }
     }
 

@@ -37,7 +37,7 @@
 
     <!-- Vaadin application controller -->
     <bean id="applicationServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController"
-          p:servletClass="com.brownbag.core.util.AutowiringApplicationServlet">
+          p:servletClass="com.brownbag.core.util.SpringApplicationServlet">
         <property name="initParameters">
             <props>
                 <prop key="application">com.brownbag.core.view.MainApplication</prop>

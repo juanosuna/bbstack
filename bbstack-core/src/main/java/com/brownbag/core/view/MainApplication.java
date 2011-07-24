@@ -1,15 +1,15 @@
 /*
  * BROWN BAG CONFIDENTIAL
  *
- * Brown Bag Consulting LLC
- * Copyright (c) 2011. All Rights Reserved.
+ * Copyright (c) 2011 Brown Bag Consulting LLC
+ * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
  * the property of Brown Bag Consulting LLC and its suppliers,
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
+ * patents in process, and are protected by trade secret or copyrightlaw.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -102,11 +102,11 @@ public class MainApplication extends Application implements HttpServletRequestLi
                     Window.Notification.TYPE_ERROR_MESSAGE);
         } else {
             String fullStackTrace = ExceptionUtils.getFullStackTrace(event.getThrowable());
-            open(fullStackTrace);
+            openErrorWindow(fullStackTrace);
         }
     }
 
-    public void open(String message) {
+    public void openErrorWindow(String message) {
         Window errorWindow = new Window("Error");
         errorWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) errorWindow.getContent();

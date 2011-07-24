@@ -1,15 +1,15 @@
 /*
  * BROWN BAG CONFIDENTIAL
  *
- * Brown Bag Consulting LLC
- * Copyright (c) 2011. All Rights Reserved.
+ * Copyright (c) 2011 Brown Bag Consulting LLC
+ * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
  * the property of Brown Bag Consulting LLC and its suppliers,
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
+ * patents in process, and are protected by trade secret or copyrightlaw.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -42,32 +42,32 @@ public abstract class EntityDao<T, ID extends Serializable> {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private Class<T> persistentClass;
-    private Class<ID> idClass;
+    private Class<T> entityType;
+    private Class<ID> idType;
 
     public EntityDao() {
-        persistentClass = ReflectionUtil.getGenericArgumentType(getClass());
-        idClass = ReflectionUtil.getGenericArgumentType(getClass(), 1);
+        entityType = ReflectionUtil.getGenericArgumentType(getClass());
+        idType = ReflectionUtil.getGenericArgumentType(getClass(), 1);
     }
 
     public EntityManager getEntityManager() {
         return entityManager;
     }
 
-    protected Class<T> getPersistentClass() {
-        if (persistentClass == null) {
+    protected Class<T> getEntityType() {
+        if (entityType == null) {
             throw new UnsupportedOperationException();
         }
 
-        return persistentClass;
+        return entityType;
     }
 
-    protected Class<ID> getIDClass() {
-        if (idClass == null) {
+    protected Class<ID> getIdType() {
+        if (idType == null) {
             throw new UnsupportedOperationException();
         }
 
-        return idClass;
+        return idType;
     }
 
     @Transactional
@@ -79,11 +79,11 @@ public abstract class EntityDao<T, ID extends Serializable> {
 
     public T getReference(T entity) {
         Object primaryKey = ((IdentifiableEntity) entity).getId();
-        return getEntityManager().getReference(getPersistentClass(), primaryKey);
+        return getEntityManager().getReference(getEntityType(), primaryKey);
     }
 
     public List<T> findAll() {
-        return executeQuery("select c from " + getPersistentClass().getSimpleName() + " c");
+        return executeQuery("select c from " + getEntityType().getSimpleName() + " c");
     }
 
     public List<T> findAll(Class<T> t) {
@@ -107,7 +107,7 @@ public abstract class EntityDao<T, ID extends Serializable> {
     }
 
     public T find(ID id) {
-        return getEntityManager().find(getPersistentClass(), id);
+        return getEntityManager().find(getEntityType(), id);
     }
 
     public T find(Class<T> t, ID id) {
@@ -117,7 +117,7 @@ public abstract class EntityDao<T, ID extends Serializable> {
     public T findByBusinessKey(String propertyName, Object propertyValue) {
         Session session = (Session) getEntityManager().getDelegate();
 
-        Criteria criteria = session.createCriteria(getPersistentClass());
+        Criteria criteria = session.createCriteria(getEntityType());
         criteria.add(Restrictions.naturalId().set(propertyName, propertyValue));
         criteria.setCacheable(true);
 
@@ -127,7 +127,7 @@ public abstract class EntityDao<T, ID extends Serializable> {
     @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void delete(T entity) {
-        Query query = getEntityManager().createQuery("delete from " + getPersistentClass().getSimpleName()
+        Query query = getEntityManager().createQuery("delete from " + getEntityType().getSimpleName()
                 + " c where c = :entity");
 
         query.setParameter("entity", entity);
@@ -198,7 +198,7 @@ public abstract class EntityDao<T, ID extends Serializable> {
         private List<ID> executeImpl(boolean isCount) {
             CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
             CriteriaQuery c = builder.createQuery();
-            Root<T> rootEntity = c.from(getPersistentClass());
+            Root<T> rootEntity = c.from(getEntityType());
 
             if (isCount) {
                 c.select(builder.count(rootEntity));
@@ -234,8 +234,8 @@ public abstract class EntityDao<T, ID extends Serializable> {
 
         private List<T> findByIds(List<ID> ids) {
             CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
-            CriteriaQuery<T> c = builder.createQuery(getPersistentClass());
-            Root<T> rootEntity = c.from(getPersistentClass());
+            CriteriaQuery<T> c = builder.createQuery(getEntityType());
+            Root<T> rootEntity = c.from(getEntityType());
             c.select(rootEntity);
 
             structuredQuery.addFetchJoins(rootEntity);

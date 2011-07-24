@@ -1,15 +1,15 @@
 /*
  * BROWN BAG CONFIDENTIAL
  *
- * Brown Bag Consulting LLC
- * Copyright (c) 2011. All Rights Reserved.
+ * Copyright (c) 2011 Brown Bag Consulting LLC
+ * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
  * the property of Brown Bag Consulting LLC and its suppliers,
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
+ * patents in process, and are protected by trade secret or copyrightlaw.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -33,11 +33,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: Juan
- * Date: 2/8/11
- * Time: 7:52 PM
- */
 @Component
 @Scope("prototype")
 public class ContactForm extends EntityForm<Contact> {
@@ -78,8 +73,7 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setWidth("mainPhone.type", 7, Sizeable.UNITS_EM);
 
         formFields.setDescription("mainPhoneFormatted",
-                "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> " +
-                        "Example formats:</strong>" +
+                "<strong>Example formats:</strong>" +
                         "<ul>" +
                         "  <li>US: (919) 975-5331</li>" +
                         "  <li>Germany: +49 30/70248804</li>" +
@@ -124,8 +118,7 @@ public class ContactForm extends EntityForm<Contact> {
 
         if (newCountry != null && newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
             formFields.setDescription(fullZipCodePropertyId,
-                    "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> " +
-                            "Postal code range:</strong>" +
+                    "<strong>Postal code range:</strong>" +
                             "<ul>" +
                             "  <li>" + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode() + "</li>" +
                             "</ul>");
