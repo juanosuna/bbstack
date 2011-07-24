@@ -71,7 +71,7 @@ public abstract class SearchForm<T> extends FormComponent<T> {
 
     @Override
     FormFields createFormFields() {
-        return new FormFields(getEntityType(), entityMessageSource, false);
+        return new FormFields(this);
     }
 
     public void clear() {

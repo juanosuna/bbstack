@@ -21,6 +21,16 @@ import com.brownbag.core.dao.EntityDao;
 import com.brownbag.sample.entity.Contact;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.Query;
+import java.util.List;
+
 @Repository
 public class ContactDao extends EntityDao<Contact, Long> {
+
+    public List<Contact> orderByStateCode() {
+        Query query = getEntityManager().createQuery("select c.id from Contact c left join c.address a left join a.state s" +
+                " order by s.code");
+
+        return query.getResultList();
+    }
 }

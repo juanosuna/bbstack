@@ -18,7 +18,7 @@ public abstract class StructuredEntityQuery<T> extends EntityQuery<T> {
 
     public abstract void setParameters(TypedQuery typedQuery);
 
-    public abstract Path buildOrderByPath(Root<T> rootEntity);
+    public abstract Path buildOrderBy(Root<T> rootEntity);
 
     public abstract void addFetchJoins(Root<T> rootEntity);
 }

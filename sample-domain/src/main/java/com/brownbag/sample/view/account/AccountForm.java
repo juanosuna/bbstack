@@ -89,10 +89,8 @@ public class AccountForm extends EntityForm<Account> {
 
         FormFields formFields = getFormFields();
         formFields.setVisible("address.state", !states.isEmpty());
-        formFields.setRequired("address.state", !states.isEmpty());
         formFields.setSelectItems("address.state", states);
 
-        formFields.setComponentError("address.zipCode", null);
         if (newCountry != null && newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
             formFields.setDescription("address.zipCode",
                     "<strong><img src=\"/sample/VAADIN/themes/customTheme/icons/comment_yellow.gif\"/> " +

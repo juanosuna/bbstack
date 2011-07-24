@@ -118,11 +118,9 @@ public class ContactForm extends EntityForm<Contact> {
         String fullStatePropertyId = addressPropertyId + ".state";
         FormFields formFields = getFormFields();
         formFields.setVisible(fullStatePropertyId, !states.isEmpty());
-        formFields.setRequired(fullStatePropertyId, !states.isEmpty());
         formFields.setSelectItems(fullStatePropertyId, states);
 
         String fullZipCodePropertyId = addressPropertyId + ".zipCode";
-        formFields.setComponentError(fullZipCodePropertyId, null);
 
         if (newCountry != null && newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
             formFields.setDescription(fullZipCodePropertyId,

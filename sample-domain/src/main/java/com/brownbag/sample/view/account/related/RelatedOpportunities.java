@@ -150,10 +150,9 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
         }
 
         @Override
-        public Path buildOrderByPath(Root<Opportunity> rootEntity) {
+        public Path buildOrderBy(Root<Opportunity> rootEntity) {
             if (getOrderByPropertyId().equals("account.name")) {
-                return rootEntity.get("account").get("name");
-
+                return rootEntity.join("account", JoinType.LEFT).get("name");
             } else {
                 return null;
             }

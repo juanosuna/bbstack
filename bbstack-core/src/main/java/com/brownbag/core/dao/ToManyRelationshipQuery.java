@@ -22,7 +22,7 @@ public abstract class ToManyRelationshipQuery<T, P> extends StructuredEntityQuer
 
     public abstract void setParameters(TypedQuery typedQuery);
 
-    public abstract Path buildOrderByPath(Root<T> rootEntity);
+    public abstract Path buildOrderBy(Root<T> rootEntity);
 
     public abstract void addFetchJoins(Root<T> rootEntity);
 

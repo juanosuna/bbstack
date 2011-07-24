@@ -17,12 +17,15 @@
 
 package com.brownbag.core.view.entity;
 
+import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.util.LayoutContextMenu;
+import com.vaadin.data.Buffered;
 import com.vaadin.data.Item;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.NullCapableBeanItem;
 import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
@@ -72,6 +75,10 @@ public abstract class FormComponent<T> extends CustomComponent {
         return uiMessageSource;
     }
 
+    public MessageSource getEntityMessageSource() {
+        return entityMessageSource;
+    }
+
     public Class getEntityType() {
         return ReflectionUtil.getGenericArgumentType(getClass());
     }
@@ -98,7 +105,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         form = new ConfigurableForm();
         form.setSizeUndefined();
 
-        form.setWriteThrough(false);
+        form.setWriteThrough(true);
         form.setInvalidCommitted(true);
         form.setImmediate(true);
         form.setValidationVisibleOnCommit(true);
@@ -277,6 +284,12 @@ public abstract class FormComponent<T> extends CustomComponent {
             setIsRequiredEnable(tabName, false);
             tab.setVisible(false);
         }
+
+        if (this instanceof EntityForm) {
+            EntityForm entityForm = (EntityForm) this;
+            entityForm.validate((WritableEntity) getEntity());
+        }
+
         resetContextMenu();
     }
 
@@ -357,6 +370,11 @@ public abstract class FormComponent<T> extends CustomComponent {
     }
 
     public class ConfigurableForm extends Form {
+
+        @Override
+        public void commit() throws SourceException, Validator.InvalidValueException {
+            super.commit();
+        }
 
         @Override
         protected void attachField(Object propertyId, Field field) {

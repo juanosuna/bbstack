@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import javax.persistence.metamodel.Attribute;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -112,13 +113,13 @@ public class ContactQuery extends StructuredEntityQuery<Contact> {
     }
 
     @Override
-    public Path buildOrderByPath(Root<Contact> rootEntity) {
+    public Path buildOrderBy(Root<Contact> rootEntity) {
         if (getOrderByPropertyId().equals("address.country")) {
-            return rootEntity.get("address").get("country");
+            return rootEntity.join("address", JoinType.LEFT).join("country", JoinType.LEFT);
         } else if (getOrderByPropertyId().equals("address.state.code")) {
-            return rootEntity.get("address").get("state").get("code");
+            return rootEntity.join("address", JoinType.LEFT).join("state", JoinType.LEFT).get("code");
         } else if (getOrderByPropertyId().equals("account.name")) {
-            return rootEntity.get("account").get("name");
+            return rootEntity.join("account", JoinType.LEFT).get("name");
         } else {
             return null;
         }
@@ -126,7 +127,7 @@ public class ContactQuery extends StructuredEntityQuery<Contact> {
 
     @Override
     public void addFetchJoins(Root<Contact> rootEntity) {
-        rootEntity.fetch("address", JoinType.LEFT);
+        rootEntity.fetch("address", JoinType.LEFT).fetch("state", JoinType.LEFT);
         rootEntity.fetch("account", JoinType.LEFT);
     }
 

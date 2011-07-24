@@ -22,6 +22,7 @@ import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.assertion.Assert;
 import com.brownbag.core.validation.ValidPhone;
 import com.google.i18n.phonenumbers.NumberParseException;
+import com.vaadin.data.Validator;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotBlank;
@@ -47,7 +48,7 @@ public class Contact extends WritableEntity {
 
     @Index(name = "IDX_CONTACT_ACCOUNT")
     @ForeignKey(name = "FK_CONTACT_ACCOUNT")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Account account;
 
     @Temporal(TemporalType.DATE)
@@ -137,15 +138,23 @@ public class Contact extends WritableEntity {
 
     public void setMainPhone(Phone mainPhone) {
         this.mainPhone = mainPhone;
+        invalidPhone = null;
     }
+
+    @Transient
+    private String invalidPhone;
 
     @NotNull
     @ValidPhone(defaultRegionCode = DEFAULT_PHONE_COUNTRY)
     public String getMainPhoneFormatted() {
-        if (getMainPhone() == null) {
-            return null;
+        if (invalidPhone != null) {
+            return invalidPhone;
         } else {
-            return getMainPhone().getFormatted(DEFAULT_PHONE_COUNTRY);
+            if (getMainPhone() == null) {
+                return null;
+            } else {
+                return getMainPhone().getFormatted(DEFAULT_PHONE_COUNTRY);
+            }
         }
     }
 
@@ -157,7 +166,7 @@ public class Contact extends WritableEntity {
                 Phone phone = new Phone(mainPhone, DEFAULT_PHONE_COUNTRY);
                 setMainPhone(phone);
             } catch (NumberParseException e) {
-                // ignore, since validation will fail and signal user
+                invalidPhone = mainPhone;
             }
         }
     }

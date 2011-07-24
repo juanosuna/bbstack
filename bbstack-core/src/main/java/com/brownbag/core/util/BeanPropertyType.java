@@ -1,6 +1,7 @@
 package com.brownbag.core.util;
 
 import com.brownbag.core.util.assertion.Assert;
+import com.brownbag.core.validation.AssertTrueForProperties;
 import org.springframework.beans.BeanUtils;
 
 import javax.validation.Valid;
@@ -44,6 +45,35 @@ public class BeanPropertyType {
         } catch (NoSuchFieldException e) {
             // no need to get annotations if field doesn't exist
         }
+    }
+
+    public boolean hasAssertTruePropertyDependency() {
+
+        Method[] publicMethods = containerType.getMethods();
+        Method[] declaredMethods = containerType.getDeclaredMethods();
+        Set<Method> methods = new HashSet<Method>();
+        Collections.addAll(methods, publicMethods);
+        Collections.addAll(methods, declaredMethods);
+
+        for (Method method : methods) {
+            Annotation[] methodAnnotations = method.getAnnotations();
+            for (Annotation methodAnnotation : methodAnnotations) {
+                if (AssertTrueForProperties.class.isAssignableFrom(methodAnnotation.getClass())) {
+                    AssertTrueForProperties assertTrueForProperties = (AssertTrueForProperties) methodAnnotation;
+                    if (assertTrueForProperties.errorProperty().equals(id)) {
+                        return true;
+                    }
+                    String[] dependentProperties = assertTrueForProperties.dependentProperties();
+                    for (String dependentProperty : dependentProperties) {
+                        if (dependentProperty.equals(id)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     public boolean hasAnnotation(Class annotationClass) {

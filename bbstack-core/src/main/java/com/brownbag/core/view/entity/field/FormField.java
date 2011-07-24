@@ -19,18 +19,22 @@ package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.ReferenceEntity;
+import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.BeanPropertyType;
 import com.brownbag.core.util.CurrencyUtil;
 import com.brownbag.core.util.SpringApplicationContext;
+import com.brownbag.core.util.StringUtil;
 import com.brownbag.core.util.assertion.Assert;
+import com.brownbag.core.view.entity.EntityForm;
 import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.terminal.CompositeErrorMessage;
+import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.ui.*;
-import sun.jdbc.odbc.ee.ObjectPool;
 
 import javax.persistence.Lob;
-import java.awt.geom.FlatteningPathIterator;
 import java.util.*;
 
 /**
@@ -187,6 +191,10 @@ public class FormField extends DisplayField {
         getField().setRequired(false);
     }
 
+    public boolean isRequired() {
+        return getField().isRequired();
+    }
+
     public void restoreIsRequired() {
         getField().setRequired(isRequired);
     }
@@ -205,6 +213,54 @@ public class FormField extends DisplayField {
 
     public void setDescription(String description) {
         getField().setDescription(description);
+    }
+
+    public boolean hasError() {
+        if (getField() instanceof AbstractComponent) {
+            AbstractComponent abstractComponent = (AbstractComponent) getField();
+            return abstractComponent.getComponentError() != null || hasIsRequiredError();
+        } else {
+            return false;
+        }
+    }
+
+    public boolean hasIsRequiredError() {
+        return getField().isRequired() && StringUtil.isEmpty(getField().getValue());
+    }
+
+    public void clearError() {
+        if (getField() instanceof AbstractComponent) {
+            AbstractComponent abstractComponent = (AbstractComponent) getField();
+            abstractComponent.setComponentError(null);
+        }
+    }
+
+    public void addError(ErrorMessage errorMessage) {
+        Assert.PROGRAMMING.assertTrue(getField() instanceof AbstractComponent,
+                "Error message cannot be added to field that is not an AbstractComponent");
+
+        AbstractComponent abstractComponent = (AbstractComponent) getField();
+        ErrorMessage existingErrorMessage = abstractComponent.getComponentError();
+        if (existingErrorMessage == null) {
+            abstractComponent.setComponentError(errorMessage);
+        } else if (existingErrorMessage instanceof CompositeErrorMessage) {
+            CompositeErrorMessage existingCompositeErrorMessage = (CompositeErrorMessage) existingErrorMessage;
+            Iterator<ErrorMessage> iterator = existingCompositeErrorMessage.iterator();
+            Set<ErrorMessage> newErrorMessages = new LinkedHashSet<ErrorMessage>();
+            while (iterator.hasNext()) {
+                ErrorMessage next = iterator.next();
+                newErrorMessages.add(next);
+            }
+            newErrorMessages.add(errorMessage);
+            CompositeErrorMessage newCompositeErrorMessage = new CompositeErrorMessage(newErrorMessages);
+            abstractComponent.setComponentError(newCompositeErrorMessage);
+        } else {
+            Set<ErrorMessage> newErrorMessages = new LinkedHashSet<ErrorMessage>();
+            newErrorMessages.add(existingErrorMessage);
+            newErrorMessages.add(errorMessage);
+            CompositeErrorMessage newCompositeErrorMessage = new CompositeErrorMessage(newErrorMessages);
+            abstractComponent.setComponentError(newCompositeErrorMessage);
+        }
     }
 
     private Field generateField() {
@@ -253,15 +309,6 @@ public class FormField extends DisplayField {
         field.setCaption(getLabel());
         field.setInvalidAllowed(true);
 
-        if (getFormFields().attachValidators()) {
-            BeanPropertyType beanProperty = com.brownbag.core.util.BeanPropertyType.getBeanPropertyType(getDisplayFields().getEntityType(),
-                    getPropertyId());
-            if (beanProperty.isValidatable()) {
-                BeanValidationValidator.addValidator(field, beanProperty.getId(), beanProperty.getContainerType());
-                isRequired = field.isRequired();
-            }
-        }
-
         if (field instanceof AbstractField) {
             initAbstractFieldDefaults((AbstractField) field);
         }
@@ -301,13 +348,45 @@ public class FormField extends DisplayField {
             } else if (valueType.isEnum()) {
                 Object[] enumConstants = valueType.getEnumConstants();
                 referenceEntities = Arrays.asList(enumConstants);
-            }
-            else {
+            } else {
                 EntityDao propertyDao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class,
                         valueType);
                 referenceEntities = propertyDao.findAll();
             }
             setSelectItems(referenceEntities);
+        }
+
+
+        if (getFormFields().isEntityForm()) {
+            BeanPropertyType beanPropertyType = com.brownbag.core.util.BeanPropertyType.getBeanPropertyType(getDisplayFields().getEntityType(),
+                    getPropertyId());
+            if (beanPropertyType.isValidatable()) {
+                initializeIsRequired(field, beanPropertyType.getId(), beanPropertyType.getContainerType());
+            }
+
+            field.addListener(new FieldValueChangeListener());
+        }
+    }
+
+    public void initializeIsRequired(Field field, Object propertyId, Class<?> beanClass) {
+        BeanValidationValidator validator = new BeanValidationValidator(beanClass, String.valueOf(propertyId));
+        if (validator.isRequired()) {
+            field.setRequired(true);
+            field.setRequiredError(validator.getRequiredMessage());
+        }
+
+        isRequired = field.isRequired();
+    }
+
+    public class FieldValueChangeListener implements Property.ValueChangeListener {
+
+        @Override
+        public void valueChange(Property.ValueChangeEvent event) {
+            EntityForm entityForm = (EntityForm) getFormFields().getForm();
+            BeanItem beanItem = (BeanItem) entityForm.getForm().getItemDataSource();
+
+            WritableEntity entity = (WritableEntity) beanItem.getBean();
+            entityForm.validate(entity);
         }
     }
 
@@ -315,6 +394,7 @@ public class FormField extends DisplayField {
         field.setRequiredError("Required value is missing");
         field.setImmediate(true);
         field.setInvalidCommitted(true);
+        field.setWriteThrough(true);
     }
 
     public static void initTextFieldDefaults(TextField field) {

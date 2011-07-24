@@ -21,14 +21,13 @@ import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.util.MethodDelegate;
 import com.brownbag.core.util.SpringApplicationContext;
-import com.brownbag.core.validation.AssertTrueForProperty;
+import com.brownbag.core.validation.AssertTrueForProperties;
 import com.brownbag.core.validation.Validation;
 import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.tomanyrelationship.ToManyRelationship;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
@@ -71,7 +70,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     FormFields createFormFields() {
-        return new FormFields(getEntityType(), entityMessageSource, true);
+        return new FormFields(this);
     }
 
     @PostConstruct
@@ -129,11 +128,11 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void load(WritableEntity entity, boolean selectFirstTab) {
-        clearComponentErrors();
-
         WritableEntity loadedEntity = (WritableEntity) getEntityDao().find(entity.getId());
         BeanItem beanItem = createBeanItem(loadedEntity);
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
+
+        validate((WritableEntity) getEntity());
 
         loadToManyRelationships();
         resetTabs(selectFirstTab);
@@ -173,11 +172,11 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     private void createImpl() {
-        clearComponentErrors();
         Object newEntity = createEntity();
         BeanItem beanItem = createBeanItem(newEntity);
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
-        clearComponentErrors();
+
+        validate((WritableEntity) getEntity());
 
         resetTabs();
     }
@@ -337,7 +336,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         }
     }
 
-    private boolean validate(WritableEntity entity) {
+    public boolean validate(WritableEntity entity) {
         clearComponentErrors();
 
         Set<ConstraintViolation<WritableEntity>> constraintViolations = validation.validate(entity);
@@ -348,30 +347,23 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             Annotation annotation = descriptor.getAnnotation();
 
             FormField field;
-            if (annotation instanceof AssertTrueForProperty) {
+            if (annotation instanceof AssertTrueForProperties) {
                 if (propertyPath.lastIndexOf(".") > 0) {
                     propertyPath = propertyPath.substring(0, propertyPath.lastIndexOf(".") + 1);
                 } else {
                     propertyPath = "";
                 }
-                AssertTrueForProperty assertTrueForProperty = (AssertTrueForProperty) annotation;
-                propertyPath += assertTrueForProperty.property();
-                field = getFormFields().getFormField(propertyPath);
-                AbstractComponent fieldComponent = (AbstractComponent) field.getField();
-                UserError userError = new UserError(constraintViolation.getMessage());
-                fieldComponent.setComponentError(userError);
-            } else {
-                field = getFormFields().getFormField(propertyPath);
+                AssertTrueForProperties assertTrueForProperties = (AssertTrueForProperties) annotation;
+                propertyPath += assertTrueForProperties.errorProperty();
             }
-
-            String tabName = field.getTabName();
-            TabSheet.Tab tab = getTabByName(tabName);
-            tab.setComponentError(new UserError("Tab contains invalid values"));
+            field = getFormFields().getFormField(propertyPath);
+            if (!field.hasIsRequiredError()) {
+                UserError userError = new UserError(constraintViolation.getMessage());
+                field.addError(userError);
+            }
         }
 
-        if (!constraintViolations.isEmpty()) {
-            saveButton.setComponentError(new UserError("Form contains invalid values"));
-        }
+        syncTabSaveButtonErrors();
 
         return constraintViolations.isEmpty();
     }
@@ -385,6 +377,36 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         for (String tabName : tabNames) {
             getTabByName(tabName).setComponentError(null);
         }
+    }
+
+    public void syncTabSaveButtonErrors() {
+        Set<String> tabNames = getFormFields().getTabNames();
+        boolean formHasErrors = false;
+        for (String tabName : tabNames) {
+            if (getFormFields().hasError(tabName)) {
+                getTabByName(tabName).setComponentError(new UserError("Tab contains invalid values"));
+                formHasErrors = true;
+            } else {
+                getTabByName(tabName).setComponentError(null);
+            }
+        }
+
+        if (formHasErrors) {
+            saveButton.setComponentError(new UserError("Form contains invalid values"));
+        } else {
+            saveButton.setComponentError(null);
+        }
+    }
+
+    public boolean hasError() {
+        Set<String> tabNames = getFormFields().getTabNames();
+        for (String tabName : tabNames) {
+            if (getFormFields().hasError(tabName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void reset() {

@@ -112,11 +112,11 @@ public class AccountQuery extends StructuredEntityQuery<Account> {
     }
 
     @Override
-    public Path buildOrderByPath(Root<Account> rootEntity) {
+    public Path buildOrderBy(Root<Account> rootEntity) {
         if (getOrderByPropertyId().equals("address.country")) {
-            return rootEntity.get("address").get("country");
+            return rootEntity.join("address", JoinType.LEFT).join("country", JoinType.LEFT);
         } else if (getOrderByPropertyId().equals("address.state.code")) {
-            return rootEntity.get("address").get("state").get("code");
+            return rootEntity.join("address", JoinType.LEFT).join("state", JoinType.LEFT).get("code");
         } else {
             return null;
         }

@@ -16,14 +16,16 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target({METHOD})
 @Retention(RUNTIME)
-@Constraint(validatedBy = AssertTrueForPropertyValidator.class)
+@Constraint(validatedBy = AssertTrueForPropertiesValidator.class)
 @Documented
-public @interface AssertTrueForProperty {
+public @interface AssertTrueForProperties {
     String message() default "{javax.validation.constraints.AssertTrue.message}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    String property();
+    String errorProperty();
+
+    String[] dependentProperties() default {};
 }

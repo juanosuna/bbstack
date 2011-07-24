@@ -39,6 +39,10 @@ public class StringUtil {
     }
 
     public static boolean isEmpty(Object s) {
-        return s == null || s.toString().length() == 0;
+        if (s != null && s instanceof String) {
+            return ((String) s).isEmpty();
+        } else {
+            return s == null;
+        }
     }
 }

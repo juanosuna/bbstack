@@ -210,7 +210,7 @@ public abstract class EntityDao<T, ID extends Serializable> {
             c.where(builder.and(criteria.toArray(new Predicate[0])));
 
             if (!isCount && structuredQuery.getOrderByPropertyId() != null) {
-                Path path = structuredQuery.buildOrderByPath(rootEntity);
+                Path path = structuredQuery.buildOrderBy(rootEntity);
                 if (path == null) {
                     path = rootEntity.get(structuredQuery.getOrderByPropertyId());
                 }
@@ -247,7 +247,7 @@ public abstract class EntityDao<T, ID extends Serializable> {
             c.where(builder.and(criteria.toArray(new Predicate[0])));
 
             if (structuredQuery.getOrderByPropertyId() != null) {
-                Path path = structuredQuery.buildOrderByPath(rootEntity);
+                Path path = structuredQuery.buildOrderBy(rootEntity);
                 if (path == null) {
                     path = rootEntity.get(structuredQuery.getOrderByPropertyId());
                 }

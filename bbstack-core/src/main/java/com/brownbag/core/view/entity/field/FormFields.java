@@ -20,6 +20,8 @@ package com.brownbag.core.view.entity.field;
 import com.brownbag.core.util.MethodDelegate;
 import com.brownbag.core.util.assertion.Assert;
 import com.brownbag.core.view.MessageSource;
+import com.brownbag.core.view.entity.EntityForm;
+import com.brownbag.core.view.entity.FormComponent;
 import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Field;
@@ -34,12 +36,16 @@ import java.util.*;
  */
 public class FormFields extends DisplayFields {
 
-    private boolean attachValidators = false;
+    private FormComponent form;
     private Map<String, AddRemoveMethodDelegate> optionalTabs = new HashMap<String, AddRemoveMethodDelegate>();
 
-    public FormFields(Class type, MessageSource messageSource, boolean attachValidators) {
-        super(type, messageSource);
-        this.attachValidators = attachValidators;
+    public FormFields(FormComponent form) {
+        super(form.getEntityType(), form.getEntityMessageSource());
+        this.form = form;
+    }
+
+    public FormComponent getForm() {
+        return form;
     }
 
     public int getColumns() {
@@ -170,6 +176,32 @@ public class FormFields extends DisplayFields {
         return formFields;
     }
 
+    public void clearErrors() {
+        Collection<DisplayField> fields = getFields();
+        for (DisplayField field : fields) {
+            FormField formField = (FormField) field;
+            formField.clearError();
+        }
+    }
+
+    public void clearErrors(String tabName) {
+        Set<FormField> formFields = getFormFields(tabName);
+        for (FormField formField : formFields) {
+            formField.clearError();
+        }
+    }
+
+    public boolean hasError(String tabName) {
+        Set<FormField> formFields = getFormFields(tabName);
+        for (FormField formField : formFields) {
+            if (formField.hasError()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public Set<String> getTabNames() {
         Set<String> tabNames = new LinkedHashSet<String>();
         Collection<DisplayField> displayFields = getFields();
@@ -234,19 +266,8 @@ public class FormFields extends DisplayFields {
         formField.addValueChangeListener(target, methodName);
     }
 
-    public boolean attachValidators() {
-        return attachValidators;
-    }
-
-    public void clearErrors() {
-        Collection<DisplayField> fields = getFields();
-        for (DisplayField field : fields) {
-            FormField formField = (FormField) field;
-            if (formField.getField() instanceof AbstractComponent) {
-                AbstractComponent fieldComponent = (AbstractComponent) formField.getField();
-                fieldComponent.setComponentError(null);
-            }
-        }
+    public boolean isEntityForm() {
+        return form instanceof EntityForm;
     }
 
     public static class AddRemoveMethodDelegate {

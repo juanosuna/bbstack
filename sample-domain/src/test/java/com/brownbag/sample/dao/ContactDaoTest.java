@@ -44,7 +44,7 @@ public class ContactDaoTest extends AbstractDomainTest {
     @Resource
     private ContactQuery contactQuery;
 
-    @Before
+//    @Before
     public void setup() throws NumberParseException {
 
         Country country = new Country("MX", "Mexico");
@@ -77,6 +77,13 @@ public class ContactDaoTest extends AbstractDomainTest {
         Assert.assertNotNull(contacts);
         Assert.assertTrue(contacts.size() > 0);
         Assert.assertEquals("Osuna", contacts.get(0).getLastName());
+    }
+
+    @Test
+    public void orderByStateCode() {
+        List<Contact> contacts = contactDao.orderByStateCode();
+        Assert.assertNotNull(contacts);
+        Assert.assertTrue(contacts.size() > 0);
     }
 
 }

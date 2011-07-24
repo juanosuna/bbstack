@@ -25,13 +25,13 @@ import javax.validation.ConstraintValidatorContext;
  * Date: 2/13/11
  * Time: 3:12 PM
  */
-public class AssertTrueForPropertyValidator implements ConstraintValidator<AssertTrueForProperty, Object> {
+public class AssertTrueForPropertiesValidator implements ConstraintValidator<AssertTrueForProperties, Object> {
 
-    private AssertTrueForProperty assertTrueForProperty;
+    private AssertTrueForProperties assertTrueForProperties;
 
     @Override
-    public void initialize(AssertTrueForProperty constraintAnnotation) {
-        assertTrueForProperty = constraintAnnotation;
+    public void initialize(AssertTrueForProperties constraintAnnotation) {
+        assertTrueForProperties = constraintAnnotation;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class AssertTrueForPropertyValidator implements ConstraintValidator<Asser
 
         if (!isValid) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(assertTrueForProperty.message()).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(assertTrueForProperties.message()).addConstraintViolation();
         }
 
         return isValid;
