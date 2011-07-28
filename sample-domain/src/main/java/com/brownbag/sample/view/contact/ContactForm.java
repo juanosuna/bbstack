@@ -49,22 +49,23 @@ public class ContactForm extends EntityForm<Contact> {
 
     @Override
     public void configureFields(FormFields formFields) {
-        formFields.setPosition("Overview", "title", 1, 1);
-        formFields.setPosition("Overview", "firstName", 1, 2);
-        formFields.setPosition("Overview", "lastName", 1, 3);
+        formFields.setPosition("Overview", "firstName", 1, 1);
+        formFields.setPosition("Overview", "lastName", 1, 2);
 
-        formFields.setPosition("Overview", "account.name", 2, 1);
-        formFields.setPosition("Overview", "leadSource", 2, 2);
-        formFields.setPosition("Overview", "assignedTo.loginName", 2, 3);
+        formFields.setPosition("Overview", "title", 2, 1);
+        formFields.setPosition("Overview", "birthDate", 2, 2);
 
-        formFields.setPosition("Overview", "birthDate", 3, 1);
-        formFields.setPosition("Overview", "mainPhoneFormatted", 3, 2, 3, 3);
-        formFields.setPosition("Overview", "mainPhone.phoneType", 3, 2);
-        formFields.setPosition("Overview", "doNotCall", 3, 2);
-        formFields.setLabel("mainPhone.phoneType", null);
+        formFields.setPosition("Overview", "account.name", 3, 1);
+        formFields.setPosition("Overview", "leadSource", 3, 2);
 
         formFields.setPosition("Overview", "email", 4, 1);
-//        formFields.setPosition("Overview", "doNotEmail", 4, 1);
+        formFields.setPosition("Overview", "doNotEmail", 4, 2);
+
+        formFields.setPosition("Overview", "mainPhoneFormatted", 5, 1);
+        formFields.setPosition("Overview", "mainPhone.phoneType", 5, 1);
+        formFields.setPosition("Overview", "doNotCall", 5, 2);
+
+        formFields.setPosition("Overview", "assignedTo.loginName", 6, 1);
 
         formFields.setPosition("Mailing Address", "mailingAddress.street", 1, 1);
         formFields.setPosition("Mailing Address", "mailingAddress.city", 1, 2);
@@ -81,6 +82,8 @@ public class ContactForm extends EntityForm<Contact> {
 
         formFields.setPosition("Description", "description", 1, 1);
 
+        formFields.setLabel("description", null);
+        formFields.setLabel("mainPhone.phoneType", null);
         formFields.setLabel("account.name", "Account");
         formFields.setLabel("mainPhoneFormatted", "Main Phone");
         formFields.setWidth("mainPhone.phoneType", 7, Sizeable.UNITS_EM);
@@ -146,12 +149,16 @@ public class ContactForm extends EntityForm<Contact> {
 
     @Override
     public String getEntityCaption() {
-        return "Contact Form";
+        if (getEntity().getName() == null) {
+            return "Contact Form - New";
+        } else {
+            return "Contact Form - " + getEntity().getName();
+        }
     }
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(48, Sizeable.UNITS_EM);
+        popupWindow.setWidth(62, Sizeable.UNITS_EM);
         popupWindow.setHeight(30, Sizeable.UNITS_EM);
     }
 }

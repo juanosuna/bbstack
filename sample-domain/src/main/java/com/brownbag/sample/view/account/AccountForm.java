@@ -65,17 +65,19 @@ public class AccountForm extends EntityForm<Account> {
     public void configureFields(FormFields formFields) {
 
         formFields.setPosition("Overview", "name", 1, 1);
-        formFields.setPosition("Overview", "tickerSymbol", 1, 2);
-        formFields.setPosition("Overview", "assignedTo.loginName", 1, 3);
+        formFields.setPosition("Overview", "website", 1, 2);
 
-        formFields.setPosition("Overview", "website", 2, 1);
-        formFields.setPosition("Overview", "email", 2, 2);
-        formFields.setPosition("Overview", "mainPhoneFormatted", 2, 3);
+        formFields.setPosition("Overview", "mainPhoneFormatted", 2, 1);
+        formFields.setPosition("Overview", "assignedTo.loginName", 2, 2);
 
-        formFields.setPosition("Overview", "numberOfEmployees", 3, 1);
-        formFields.setPosition("Overview", "annualRevenue", 3, 2);
-        formFields.setPosition("Overview", "accountTypes", 3, 3);
-        formFields.setPosition("Overview", "industry", 3, 4);
+        formFields.setPosition("Overview", "email", 3, 1);
+        formFields.setPosition("Overview", "accountTypes", 3, 2);
+
+        formFields.setPosition("Details", "tickerSymbol", 1, 1);
+        formFields.setPosition("Details", "industry", 1, 2);
+
+        formFields.setPosition("Details", "numberOfEmployees", 2, 1);
+        formFields.setPosition("Details", "annualRevenue", 2, 2);
 
         formFields.setPosition("Billing Address", "billingAddress.street", 1, 1);
         formFields.setPosition("Billing Address", "billingAddress.city", 1, 2);
@@ -92,7 +94,11 @@ public class AccountForm extends EntityForm<Account> {
 
         formFields.setMultiSelectDimensions("accountTypes", 3, 10);
 
+        formFields.setLabel("accountTypes", "Types");
+        formFields.setLabel("mainPhoneFormatted", "Phone");
         formFields.setLabel("assignedTo.loginName", "Assigned to");
+        formFields.getFormField("email").getField().setWidth("13em");
+        formFields.getFormField("website").getField().setWidth("17em");
 
         formFields.setSelectItems("billingAddress.state", new ArrayList());
         formFields.addValueChangeListener("billingAddress.country", this, "countryChanged");
@@ -145,12 +151,16 @@ public class AccountForm extends EntityForm<Account> {
 
     @Override
     public String getEntityCaption() {
-        return "Account Form";
+        if (getEntity().getName() == null) {
+            return "Account Form - New";
+        } else {
+            return "Account Form - " + getEntity().getName();
+        }
     }
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
         popupWindow.setWidth(60, Sizeable.UNITS_EM);
-        popupWindow.setHeight(50, Sizeable.UNITS_EM);
+        popupWindow.setHeight(null);
     }
 }

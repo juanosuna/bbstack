@@ -92,6 +92,7 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
             displayFields.setLabel("mailingAddress.state.code", "State");
             displayFields.setLabel("mainPhoneFormatted", "Phone");
             displayFields.setSortable("name", false);
+            displayFields.setSortable("mainPhoneFormatted", false);
         }
 
         @Override
@@ -152,7 +153,7 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
         public Path buildOrderBy(Root<Contact> rootEntity) {
             if (getOrderByPropertyId().equals("mailingAddress.country")) {
                 return rootEntity.join("mailingAddress", JoinType.LEFT).join("country", JoinType.LEFT);
-            } else if (getOrderByPropertyId().equals("address.state.code")) {
+            } else if (getOrderByPropertyId().equals("mailingAddress.state.code")) {
                 return rootEntity.join("mailingAddress", JoinType.LEFT).join("state", JoinType.LEFT).get("code");
             } else {
                 return null;

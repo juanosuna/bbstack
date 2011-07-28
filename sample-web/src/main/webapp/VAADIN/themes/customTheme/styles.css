@@ -77,7 +77,11 @@
     visibility: collapse;
 }
 
-b-required-field-indicator {
+.b-required-field-indicator {
     color: red;
     padding-left: 2px;
+}
+
+.b-formComponent-footer {
+    padding-left: 1em;
 }

@@ -110,6 +110,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         final GridLayout gridLayout = formFields.createGridLayout();
         form.setLayout(gridLayout);
 
+        form.getFooter().addStyleName("b-formComponent-footer");
         createFooterButtons((HorizontalLayout) form.getFooter());
 
         VerticalLayout tabsAndForm = new VerticalLayout();
@@ -238,6 +239,10 @@ public abstract class FormComponent<T> extends CustomComponent {
 
         if (selectFirstTab || !getTabByName(getCurrentTabName()).isVisible()) {
             selectFirstTab();
+        }
+
+        if (this instanceof EntityForm) {
+            ((EntityForm) this).syncTabAndSaveButtonErrors();
         }
     }
 

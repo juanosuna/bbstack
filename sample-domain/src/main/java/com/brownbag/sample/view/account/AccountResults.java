@@ -18,9 +18,11 @@
 package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.Results;
+import com.brownbag.core.view.entity.ResultsTable;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
+import com.vaadin.terminal.Sizeable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -61,7 +63,6 @@ public class AccountResults extends Results<Account> {
                 "billingAddress.state.code",
                 "billingAddress.country",
                 "mainPhoneFormatted",
-                "email",
                 "numberOfEmployees",
                 "annualRevenueFormattedInCurrency",
                 "lastModified",
@@ -73,5 +74,11 @@ public class AccountResults extends Results<Account> {
         displayFields.setLabel("numberOfEmployees", "# of Employees");
         displayFields.setLabel("annualRevenueFormattedInCurrency", "Annual Revenue");
         displayFields.setSortable("annualRevenueFormattedInCurrency", false);
+        displayFields.setSortable("mainPhoneFormatted", false);
+    }
+
+    @Override
+    public void configureTable(ResultsTable resultsTable) {
+        resultsTable.setWidth(70, Sizeable.UNITS_EM);
     }
 }

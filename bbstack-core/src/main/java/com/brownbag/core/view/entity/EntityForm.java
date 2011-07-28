@@ -27,19 +27,19 @@ import com.brownbag.core.view.MainApplication;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.tomanyrelationship.ToManyRelationship;
+import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
+import org.vaadin.jouni.animator.Animator;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.validation.ConstraintViolation;
 import javax.validation.metadata.ConstraintDescriptor;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class EntityForm<T> extends FormComponent<T> {
 
@@ -53,6 +53,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     private Button previousButton;
 
     private Button saveButton;
+    private boolean isValidationEnabled = true;
+    private Animator toManyRelationshipsAnimator;
 
     public void configurePopupWindow(Window popupWindow) {
         popupWindow.setSizeUndefined();
@@ -81,7 +83,17 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             for (ToManyRelationship toManyRelationship : toManyRelationships) {
                 toManyRelationshipTabs.addTab(toManyRelationship);
             }
-            addComponent(toManyRelationshipTabs);
+
+            Layout animateLayout = (Layout) animate(toManyRelationshipTabs);
+            Iterator<Component> componentIterator = animateLayout.getComponentIterator();
+            while (componentIterator.hasNext()) {
+                Component component = componentIterator.next();
+                if (component instanceof Animator) {
+                    toManyRelationshipsAnimator = (Animator) component;
+                    break;
+                }
+            }
+            addComponent(animateLayout);
         }
     }
 
@@ -122,10 +134,20 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         load(entity, true);
     }
 
+    public boolean isValidationEnabled() {
+        return isValidationEnabled;
+    }
+
+    private void setItemDataSource(Item newDataSource, Collection<?> propertyIds) {
+        isValidationEnabled = false;
+        getForm().setItemDataSource(newDataSource, propertyIds);
+        isValidationEnabled = true;
+    }
+
     public void load(WritableEntity entity, boolean selectFirstTab) {
         WritableEntity loadedEntity = (WritableEntity) getEntityDao().find(entity.getId());
         BeanItem beanItem = createBeanItem(loadedEntity);
-        getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
+        setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
         validate();
 
@@ -147,14 +169,14 @@ public abstract class EntityForm<T> extends FormComponent<T> {
                 toManyRelationship.getResultsComponent().search();
 
             }
-            toManyRelationshipTabs.setVisible(true);
             toManyRelationshipTabs.setEnabled(true);
+            toManyRelationshipsAnimator.setRolledUp(toManyRelationshipsAnimator.isRolledUp());
         }
     }
 
     public void clear() {
         clearAllErrors();
-        getForm().setItemDataSource(null, getFormFields().getPropertyIds());
+        setItemDataSource(null, getFormFields().getPropertyIds());
     }
 
     public void create() {
@@ -169,7 +191,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     private void createImpl() {
         Object newEntity = createEntity();
         BeanItem beanItem = createBeanItem(newEntity);
-        getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
+        setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
         validate();
 
@@ -267,14 +289,20 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         }
     }
 
+    public void refreshCaption() {
+        formWindow.setCaption(getEntityCaption());
+    }
+
     public void previousItem() {
         ((Results) getResults()).editPreviousItem();
         refreshNavigationButtonStates();
+        refreshCaption();
     }
 
     public void nextItem() {
         ((Results) getResults()).editNextItem();
         refreshNavigationButtonStates();
+        refreshCaption();
     }
 
     public void close() {

@@ -87,7 +87,7 @@ public class TestDataInitializer {
 
             initializeAccount(contact, i);
             contactDao.persist(contact);
-            contactDao.getEntityManager().flush();
+//            contactDao.getEntityManager().flush();
         }
     }
 

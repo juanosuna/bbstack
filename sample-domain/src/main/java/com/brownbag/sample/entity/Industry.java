@@ -36,10 +36,6 @@ public class Industry extends ReferenceEntity {
     }
 
     public Industry(String id) {
-        super(id);
-    }
-
-    public Industry(String id, String name) {
-        super(id, name);
+        super(id, id);
     }
 }

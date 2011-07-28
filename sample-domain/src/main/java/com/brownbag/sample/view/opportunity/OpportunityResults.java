@@ -18,9 +18,11 @@
 package com.brownbag.sample.view.opportunity;
 
 import com.brownbag.core.view.entity.Results;
+import com.brownbag.core.view.entity.ResultsTable;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.dao.OpportunityDao;
 import com.brownbag.sample.entity.Opportunity;
+import com.vaadin.terminal.Sizeable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -58,7 +60,6 @@ public class OpportunityResults extends Results<Opportunity> {
     public void configureFields(DisplayFields displayFields) {
         displayFields.setPropertyIds(new String[]{
                 "name",
-                "account.name",
                 "salesStage",
                 "expectedCloseDate",
                 "amount",
@@ -67,6 +68,10 @@ public class OpportunityResults extends Results<Opportunity> {
         });
 
         displayFields.setLabel("name", "Name");
-        displayFields.setLabel("account.name", "Account");
+    }
+
+    @Override
+    public void configureTable(ResultsTable resultsTable) {
+        resultsTable.setWidth(70, Sizeable.UNITS_EM);
     }
 }

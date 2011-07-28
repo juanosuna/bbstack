@@ -395,7 +395,9 @@ public class FormField extends DisplayField {
         @Override
         public void valueChange(Property.ValueChangeEvent event) {
             EntityForm entityForm = (EntityForm) getFormFields().getForm();
-            entityForm.validate();
+            if (entityForm.isValidationEnabled()) {
+                entityForm.validate();
+            }
         }
     }
 
