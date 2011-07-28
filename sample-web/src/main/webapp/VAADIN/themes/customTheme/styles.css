@@ -51,8 +51,8 @@
 }
 
 .v-gridlayout .v-gridlayout-spacing-on {
-    padding-left: 1em;
-    padding-right: 1em;
+    padding-left: .5em;
+    padding-right: .5em;
     padding-top: .5em;
     padding-bottom: .5em;
 }
@@ -71,4 +71,13 @@
 
 .v-gridlayout .v-gridlayout-margin-bottom {
     padding-bottom: 1em;
+}
+
+.v-required-field-indicator {
+    visibility: collapse;
+}
+
+b-required-field-indicator {
+    color: red;
+    padding-left: 2px;
 }

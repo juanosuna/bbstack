@@ -196,9 +196,9 @@ public abstract class FormComponent<T> extends CustomComponent {
             @Override
             public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
                 form.getLayout().removeAllComponents();
-                GridLayout gridLayout = (GridLayout) form.getLayout();
+                FormGridLayout gridLayout = (FormGridLayout) form.getLayout();
                 String tabName = getCurrentTabName();
-                gridLayout.setColumns(formFields.getColumns(tabName));
+                gridLayout.setFormColumns(formFields.getColumns(tabName));
                 gridLayout.setRows(formFields.getRows(tabName));
                 Set<FormField> formFields = getFormFields().getFormFields(tabName);
                 for (FormField formField : formFields) {
@@ -373,20 +373,19 @@ public abstract class FormComponent<T> extends CustomComponent {
 
         @Override
         protected void attachField(Object propertyId, Field field) {
-            GridLayout gridLayout = (GridLayout) form.getLayout();
+            FormGridLayout gridLayout = (FormGridLayout) form.getLayout();
             FormFields formFields = getFormFields();
             String currentTabName = getCurrentTabName();
             if (formFields.containsPropertyId(currentTabName, propertyId.toString())) {
-                Integer columnStart = formFields.getFormField(propertyId.toString()).getColumnStart();
-                Integer rowStart = formFields.getFormField(propertyId.toString()).getRowStart();
-                Integer columnEnd = formFields.getFormField(propertyId.toString()).getColumnEnd();
-                Integer rowEnd = formFields.getFormField(propertyId.toString()).getRowEnd();
-                if (columnEnd != null && rowEnd != null) {
-                    gridLayout.addComponent(field, columnStart, rowStart, columnEnd, rowEnd);
-                } else {
-                    gridLayout.addComponent(field, columnStart, rowStart);
-                }
+                gridLayout.addField(getFormFields().getFormField(propertyId.toString()));
             }
+        }
+
+        @Override
+        protected void detachField(final Field field) {
+            FormGridLayout formGridLayout = (FormGridLayout) form.getLayout();
+            FormField formField = getFormFields().findByField(field);
+            formGridLayout.removeField(formField);
         }
     }
 }

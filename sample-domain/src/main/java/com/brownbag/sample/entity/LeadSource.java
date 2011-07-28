@@ -15,25 +15,27 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.dao;
+package com.brownbag.sample.entity;
 
-import com.brownbag.core.dao.EntityDao;
-import com.brownbag.sample.entity.AccountType;
-import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
-import java.util.List;
+import com.brownbag.core.entity.ReferenceEntity;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-@Repository
-public class AccountTypeDao extends EntityDao<AccountType, String> {
+import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
 
-    @Override
-    public List<AccountType> findAll() {
-        Query query = getEntityManager().createQuery("SELECT a FROM AccountType a ORDER BY a.displayName");
-        setReadOnly(query);
+@Entity
+@Table
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = CACHE_REGION)
+public class LeadSource extends ReferenceEntity {
 
-        return query.getResultList();
+    public LeadSource() {
+    }
+
+    public LeadSource(String id) {
+        super(id, id);
     }
 }

@@ -18,7 +18,7 @@
 package com.brownbag.sample.dao;
 
 import com.brownbag.core.dao.EntityDao;
-import com.brownbag.sample.entity.AccountType;
+import com.brownbag.sample.entity.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
@@ -27,13 +27,20 @@ import java.util.List;
 import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
 
 @Repository
-public class AccountTypeDao extends EntityDao<AccountType, String> {
+public class UserDao extends EntityDao<User, Long> {
 
     @Override
-    public List<AccountType> findAll() {
-        Query query = getEntityManager().createQuery("SELECT a FROM AccountType a ORDER BY a.displayName");
+    public List<User> findAll() {
+        Query query = getEntityManager().createQuery("SELECT u FROM User u ORDER BY u.loginName");
         setReadOnly(query);
 
         return query.getResultList();
+    }
+
+    public User findByName(String loginName) {
+        Query query = getEntityManager().createQuery("SELECT u FROM User u WHERE u.loginName = :loginName");
+        query.setParameter("loginName", loginName);
+
+        return (User) query.getSingleResult();
     }
 }

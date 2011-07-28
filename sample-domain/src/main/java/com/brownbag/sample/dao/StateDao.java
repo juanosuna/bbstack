@@ -30,7 +30,7 @@ import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
 @Repository
 public class StateDao extends EntityDao<State, String> {
     public List<State> findByCountry(Country country) {
-        Query query = getEntityManager().createQuery("SELECT s FROM State s WHERE s.country = :country ORDER BY s.name");
+        Query query = getEntityManager().createQuery("SELECT s FROM State s WHERE s.country = :country ORDER BY s.displayName");
         query.setParameter("country", country);
         setReadOnly(query);
 
@@ -39,7 +39,7 @@ public class StateDao extends EntityDao<State, String> {
 
     @Override
     public List<State> findAll() {
-        Query query = getEntityManager().createQuery("SELECT s FROM State s ORDER BY s.name");
+        Query query = getEntityManager().createQuery("SELECT s FROM State s ORDER BY s.displayName");
         setReadOnly(query);
 
         return query.getResultList();

@@ -31,7 +31,7 @@ public class CurrencyDao extends EntityDao<Currency, String> {
 
     @Override
     public List<Currency> findAll() {
-        Query query = getEntityManager().createQuery("SELECT c FROM Currency c ORDER BY c.name");
+        Query query = getEntityManager().createQuery("SELECT c FROM Currency c ORDER BY c.displayName");
         setReadOnly(query);
 
         return query.getResultList();

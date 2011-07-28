@@ -8,25 +8,35 @@
         UUID varchar(255) not null unique,
         VERSION integer,
         ANNUAL_REVENUE decimal(19,2) check (ANNUAL_REVENUE>=0),
-        NAME varchar(16) not null,
+        DESCRIPTION clob,
+        EMAIL varchar(255),
+        MAIN_PHONE_COUNTRY_CODE integer,
+        MAIN_PHONE_PHONE_NUMBER bigint,
+        MAIN_PHONE_PHONE_TYPE varchar(255),
+        NAME varchar(64) not null,
         NUMBER_OF_EMPLOYEES integer check (NUMBER_OF_EMPLOYEES>=0),
-        ADDRESS bigint,
-        CURRENCY varchar(255),
-        INDUSTRY varchar(255),
+        TICKER_SYMBOL varchar(25),
+        WEBSITE varchar(64),
+        ASSIGNED_TO_ID bigint,
+        BILLING_ADDRESS_ID bigint not null,
+        CURRENCY_ID varchar(255),
+        INDUSTRY_ID varchar(255),
+        MAILING_ADDRESS_ID bigint,
         primary key (ID),
         unique (UUID)
     );
 
-    create table SAMPLE.ACCOUNT_TYPE (
-        ID varchar(255) not null,
-        NAME varchar(255),
-        primary key (ID)
+    create table SAMPLE.ACCOUNT_ACCOUNT_TYPE (
+        ACCOUNT_ID bigint not null,
+        ACCOUNT_TYPES_ID varchar(255) not null,
+        primary key (ACCOUNT_ID, ACCOUNT_TYPES_ID)
     );
 
-    create table SAMPLE.ACCOUNT_TYPES (
-        ACCOUNT bigint not null,
-        TYPES varchar(255) not null,
-        primary key (ACCOUNT, TYPES)
+    create table SAMPLE.ACCOUNT_TYPE (
+        ID varchar(255) not null,
+        DISPLAY_NAME varchar(255),
+        SORT_ORDER integer,
+        primary key (ID)
     );
 
     create table SAMPLE.ADDRESS (
@@ -37,12 +47,12 @@
         MODIFIED_BY varchar(255) not null,
         UUID varchar(255) not null unique,
         VERSION integer,
+        ADDRESS_TYPE varchar(255) not null,
         CITY varchar(16) not null,
         STREET varchar(16) not null,
-        TYPE varchar(255) not null,
         ZIP_CODE varchar(255),
-        COUNTRY varchar(255) not null,
-        STATE varchar(255),
+        COUNTRY_ID varchar(255) not null,
+        STATE_ID varchar(255),
         primary key (ID),
         unique (UUID)
     );
@@ -56,39 +66,58 @@
         UUID varchar(255) not null unique,
         VERSION integer,
         BIRTH_DATE date,
+        DEPARTMENT varchar(64),
+        DESCRIPTION clob,
         DO_NOT_CALL boolean not null,
-        FIRST_NAME varchar(16) not null,
-        LAST_NAME varchar(16) not null,
-        COUNTRY_CODE integer,
-        NUMBER bigint,
-        TYPE varchar(255),
-        NOTE clob,
-        TITLE varchar(16),
-        ACCOUNT bigint,
-        ADDRESS bigint not null,
-        OTHER_ADDRESS bigint,
+        DO_NOT_EMAIL boolean not null,
+        EMAIL varchar(255),
+        FIRST_NAME varchar(64) not null,
+        LAST_NAME varchar(64) not null,
+        MAIN_PHONE_COUNTRY_CODE integer,
+        MAIN_PHONE_PHONE_NUMBER bigint,
+        MAIN_PHONE_PHONE_TYPE varchar(255),
+        OTHER_PHONE_COUNTRY_CODE integer,
+        OTHER_PHONE_PHONE_NUMBER bigint,
+        OTHER_PHONE_PHONE_TYPE varchar(255),
+        TITLE varchar(64),
+        ACCOUNT_ID bigint,
+        ASSIGNED_TO_ID bigint,
+        LEAD_SOURCE_ID varchar(255),
+        MAILING_ADDRESS_ID bigint not null,
+        OTHER_ADDRESS_ID bigint,
+        REPORTS_TO_ID bigint,
         primary key (ID),
         unique (UUID)
     );
 
     create table SAMPLE.COUNTRY (
         ID varchar(255) not null,
-        NAME varchar(255),
+        DISPLAY_NAME varchar(255),
+        SORT_ORDER integer,
+        COUNTRY_TYPE varchar(255),
         MAX_POSTAL_CODE varchar(255),
         MIN_POSTAL_CODE varchar(255),
-        TYPE varchar(255),
         primary key (ID)
     );
 
     create table SAMPLE.CURRENCY (
         ID varchar(255) not null,
-        NAME varchar(255),
+        DISPLAY_NAME varchar(255),
+        SORT_ORDER integer,
         primary key (ID)
     );
 
     create table SAMPLE.INDUSTRY (
         ID varchar(255) not null,
-        NAME varchar(255),
+        DISPLAY_NAME varchar(255),
+        SORT_ORDER integer,
+        primary key (ID)
+    );
+
+    create table SAMPLE.LEAD_SOURCE (
+        ID varchar(255) not null,
+        DISPLAY_NAME varchar(255),
+        SORT_ORDER integer,
         primary key (ID)
     );
 
@@ -101,123 +130,190 @@
         UUID varchar(255) not null unique,
         VERSION integer,
         AMOUNT decimal(19,2) check (AMOUNT>=0),
-        COMMISSION float not null,
         DESCRIPTION clob,
         EXPECTED_CLOSE_DATE date,
-        NAME varchar(32) not null,
+        NAME varchar(64) not null,
+        OPPORTUNITY_TYPE varchar(255),
         PROBABILITY float not null,
-        ACCOUNT bigint,
-        CURRENCY varchar(255),
-        SALES_STAGE varchar(255),
+        ACCOUNT_ID bigint,
+        ASSIGNED_TO_ID bigint,
+        CURRENCY_ID varchar(255),
+        LEAD_SOURCE_ID varchar(255),
+        SALES_STAGE_ID varchar(255),
         primary key (ID),
         unique (UUID)
     );
 
     create table SAMPLE.SALES_STAGE (
         ID varchar(255) not null,
-        NAME varchar(255),
+        DISPLAY_NAME varchar(255),
+        SORT_ORDER integer,
         primary key (ID)
     );
 
     create table SAMPLE.STATE (
         ID varchar(255) not null,
-        NAME varchar(255),
+        DISPLAY_NAME varchar(255),
+        SORT_ORDER integer,
         CODE varchar(255),
-        TYPE varchar(255),
-        COUNTRY varchar(255) not null,
+        STATE_TYPE varchar(255),
+        COUNTRY_ID varchar(255) not null,
         primary key (ID)
     );
 
-    create index IDX_ACCOUNT_CURRENCY on SAMPLE.ACCOUNT (CURRENCY);
+    create table SAMPLE.USER (
+        ID bigint generated by default as identity,
+        CREATED timestamp not null,
+        CREATED_BY varchar(255) not null,
+        LAST_MODIFIED timestamp not null,
+        MODIFIED_BY varchar(255) not null,
+        UUID varchar(255) not null unique,
+        VERSION integer,
+        LOGIN_NAME varchar(16) not null,
+        LOGIN_PASSWORD varchar(16) not null,
+        primary key (ID),
+        unique (UUID)
+    );
 
-    create index IDX_ACCOUNT_ADDRESS on SAMPLE.ACCOUNT (ADDRESS);
+    create index IDX_ACCOUNT_ASSIGNED_TO on SAMPLE.ACCOUNT (ASSIGNED_TO_ID);
 
-    create index IDX_ACCOUNT_INDUSTRY on SAMPLE.ACCOUNT (INDUSTRY);
+    create index IDX_ACCOUNT_CURRENCY on SAMPLE.ACCOUNT (CURRENCY_ID);
 
-    alter table SAMPLE.ACCOUNT 
-        add constraint FK_ACCOUNT_ADDRESS 
-        foreign key (ADDRESS) 
-        references SAMPLE.ADDRESS;
+    create index IDX_ACCOUNT_BILLING_ADDRESS on SAMPLE.ACCOUNT (BILLING_ADDRESS_ID);
+
+    create index IDX_ACCOUNT_SHIPPING_ADDRESS on SAMPLE.ACCOUNT (MAILING_ADDRESS_ID);
+
+    create index IDX_ACCOUNT_INDUSTRY on SAMPLE.ACCOUNT (INDUSTRY_ID);
 
     alter table SAMPLE.ACCOUNT 
         add constraint FK_ACCOUNT_CURRENCY 
-        foreign key (CURRENCY) 
+        foreign key (CURRENCY_ID) 
         references SAMPLE.CURRENCY;
 
     alter table SAMPLE.ACCOUNT 
+        add constraint FK_ACCOUNT_SHIPPING_ADDRESS 
+        foreign key (MAILING_ADDRESS_ID) 
+        references SAMPLE.ADDRESS;
+
+    alter table SAMPLE.ACCOUNT 
         add constraint FK_ACCOUNT_INDUSTRY 
-        foreign key (INDUSTRY) 
+        foreign key (INDUSTRY_ID) 
         references SAMPLE.INDUSTRY;
 
-    alter table SAMPLE.ACCOUNT_TYPES 
-        add constraint FKD10D5BA76A1FE44A 
-        foreign key (TYPES) 
-        references SAMPLE.ACCOUNT_TYPE;
+    alter table SAMPLE.ACCOUNT 
+        add constraint FK_ACCOUNT_ASSIGNED_TO 
+        foreign key (ASSIGNED_TO_ID) 
+        references SAMPLE.USER;
 
-    alter table SAMPLE.ACCOUNT_TYPES 
-        add constraint FK_ACCOUNT_TYPE 
-        foreign key (ACCOUNT) 
+    alter table SAMPLE.ACCOUNT 
+        add constraint FK_ACCOUNT_BILLING_ADDRESS 
+        foreign key (BILLING_ADDRESS_ID) 
+        references SAMPLE.ADDRESS;
+
+    alter table SAMPLE.ACCOUNT_ACCOUNT_TYPE 
+        add constraint FK_ACCOUNT_ACCOUNT 
+        foreign key (ACCOUNT_ID) 
         references SAMPLE.ACCOUNT;
 
-    create index IDX_ADDRESS_COUNTRY on SAMPLE.ADDRESS (COUNTRY);
+    alter table SAMPLE.ACCOUNT_ACCOUNT_TYPE 
+        add constraint FK_ACCOUNT_ACCOUNT_TYPES 
+        foreign key (ACCOUNT_TYPES_ID) 
+        references SAMPLE.ACCOUNT_TYPE;
 
-    create index IDX_ADDRESS_STATE on SAMPLE.ADDRESS (STATE);
+    create index IDX_ADDRESS_COUNTRY on SAMPLE.ADDRESS (COUNTRY_ID);
+
+    create index IDX_ADDRESS_STATE on SAMPLE.ADDRESS (STATE_ID);
 
     alter table SAMPLE.ADDRESS 
         add constraint FK_ADDRESS_STATE 
-        foreign key (STATE) 
+        foreign key (STATE_ID) 
         references SAMPLE.STATE;
 
     alter table SAMPLE.ADDRESS 
         add constraint FK_ADDRESS_COUNTRY 
-        foreign key (COUNTRY) 
+        foreign key (COUNTRY_ID) 
         references SAMPLE.COUNTRY;
 
-    create index IDX_CONTACT_OTHER_ADDRESS on SAMPLE.CONTACT (OTHER_ADDRESS);
+    create index IDX_CONTACT_OTHER_ADDRESS on SAMPLE.CONTACT (OTHER_ADDRESS_ID);
 
-    create index IDX_CONTACT_ACCOUNT on SAMPLE.CONTACT (ACCOUNT);
+    create index IDX_CONTACT_ASSIGNED_TO on SAMPLE.CONTACT (ASSIGNED_TO_ID);
 
-    create index IDX_CONTACT_PRIMARY_ADDRESS on SAMPLE.CONTACT (ADDRESS);
+    create index IDX_CONTACT_MAILING_ADDRESS on SAMPLE.CONTACT (MAILING_ADDRESS_ID);
+
+    create index IDX_CONTACT_ACCOUNT on SAMPLE.CONTACT (ACCOUNT_ID);
+
+    create index IDX_CONTACT_LEAD_SOURCE on SAMPLE.CONTACT (LEAD_SOURCE_ID);
+
+    create index IDX_CONTACT_REPORTS_TO on SAMPLE.CONTACT (REPORTS_TO_ID);
 
     alter table SAMPLE.CONTACT 
-        add constraint FK_CONTACT_OTHER_ADDRESS 
-        foreign key (OTHER_ADDRESS) 
+        add constraint FK_CONTACT_MAILING_ADDRESS 
+        foreign key (MAILING_ADDRESS_ID) 
         references SAMPLE.ADDRESS;
 
     alter table SAMPLE.CONTACT 
-        add constraint FK_CONTACT_PRIMARY_ADDRESS 
-        foreign key (ADDRESS) 
-        references SAMPLE.ADDRESS;
+        add constraint FK_CONTACT_REPORTS_TO 
+        foreign key (REPORTS_TO_ID) 
+        references SAMPLE.CONTACT;
+
+    alter table SAMPLE.CONTACT 
+        add constraint FK_CONTACT_ASSIGNED_TO 
+        foreign key (ASSIGNED_TO_ID) 
+        references SAMPLE.USER;
 
     alter table SAMPLE.CONTACT 
         add constraint FK_CONTACT_ACCOUNT 
-        foreign key (ACCOUNT) 
+        foreign key (ACCOUNT_ID) 
         references SAMPLE.ACCOUNT;
 
-    create index IDX_OPPORTUNITY_ACCOUNT on SAMPLE.OPPORTUNITY (ACCOUNT);
+    alter table SAMPLE.CONTACT 
+        add constraint FK_CONTACT_LEAD_SOURCE 
+        foreign key (LEAD_SOURCE_ID) 
+        references SAMPLE.LEAD_SOURCE;
 
-    create index IDX_OPPORTUNITY_SALES_STAGE on SAMPLE.OPPORTUNITY (SALES_STAGE);
+    alter table SAMPLE.CONTACT 
+        add constraint FK_CONTACT_OTHER_ADDRESS 
+        foreign key (OTHER_ADDRESS_ID) 
+        references SAMPLE.ADDRESS;
 
-    create index IDX_OPPORTUNITY_CURRENCY on SAMPLE.OPPORTUNITY (CURRENCY);
+    create index IDX_OPPORTUNITY_LEAD_SOURCE on SAMPLE.OPPORTUNITY (LEAD_SOURCE_ID);
+
+    create index IDX_OPPORTUNITY_USER on SAMPLE.OPPORTUNITY (ASSIGNED_TO_ID);
+
+    create index IDX_OPPORTUNITY_ACCOUNT on SAMPLE.OPPORTUNITY (ACCOUNT_ID);
+
+    create index IDX_OPPORTUNITY_SALES_STAGE on SAMPLE.OPPORTUNITY (SALES_STAGE_ID);
+
+    create index IDX_OPPORTUNITY_CURRENCY on SAMPLE.OPPORTUNITY (CURRENCY_ID);
 
     alter table SAMPLE.OPPORTUNITY 
         add constraint FK_OPPORTUNITY_CURRENCY 
-        foreign key (CURRENCY) 
+        foreign key (CURRENCY_ID) 
         references SAMPLE.CURRENCY;
 
     alter table SAMPLE.OPPORTUNITY 
         add constraint FK_OPPORTUNITY_SALES_STAGE 
-        foreign key (SALES_STAGE) 
+        foreign key (SALES_STAGE_ID) 
         references SAMPLE.SALES_STAGE;
 
     alter table SAMPLE.OPPORTUNITY 
+        add constraint FK_OPPORTUNITY_USER 
+        foreign key (ASSIGNED_TO_ID) 
+        references SAMPLE.USER;
+
+    alter table SAMPLE.OPPORTUNITY 
         add constraint FK_OPPORTUNITY_ACCOUNT 
-        foreign key (ACCOUNT) 
+        foreign key (ACCOUNT_ID) 
         references SAMPLE.ACCOUNT;
 
-    create index IDX_STATE_COUNTRY on SAMPLE.STATE (COUNTRY);
+    alter table SAMPLE.OPPORTUNITY 
+        add constraint FK_OPPORTUNITY_LEAD_SOURCE 
+        foreign key (LEAD_SOURCE_ID) 
+        references SAMPLE.LEAD_SOURCE;
+
+    create index IDX_STATE_COUNTRY on SAMPLE.STATE (COUNTRY_ID);
 
     alter table SAMPLE.STATE 
         add constraint FK_STATE_COUNTRY 
-        foreign key (COUNTRY) 
+        foreign key (COUNTRY_ID) 
         references SAMPLE.COUNTRY;

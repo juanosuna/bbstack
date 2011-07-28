@@ -35,7 +35,7 @@ public class DisplayField {
     private FormLink formLink;
     private Format format;
     private boolean isSortable = true;
-    private String label;
+    private String columnHeader;
 
     public DisplayField(DisplayFields displayFields, String propertyId) {
         this.displayFields = displayFields;
@@ -88,35 +88,35 @@ public class DisplayField {
     }
 
     public String getLabel() {
-        if (label == null) {
-            label = generateLabel();
+        if (columnHeader == null) {
+            columnHeader = generateLabelText();
         }
 
-        return label;
+        return columnHeader;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setLabel(String columnHeader) {
+        this.columnHeader = columnHeader;
     }
 
-    private String generateLabel() {
-        String label = getLabelFromMessageSource();
-        if (label == null) {
-            label = getLabelFromAnnotation();
+    protected String generateLabelText() {
+        String labelText = getLabelTextFromMessageSource();
+        if (labelText == null) {
+            labelText = getLabelTextFromAnnotation();
         }
-        if (label == null) {
-            label = getLabelFromCode();
+        if (labelText == null) {
+            labelText = getLabelTextFromCode();
         }
 
-        return label;
+        return labelText;
     }
 
-    private String getLabelFromMessageSource() {
+    private String getLabelTextFromMessageSource() {
         String fullPropertyPath = displayFields.getEntityType().getName() + "." + propertyId;
         return displayFields.getMessageSource().getMessage(fullPropertyPath);
     }
 
-    private String getLabelFromAnnotation() {
+    private String getLabelTextFromAnnotation() {
         BeanPropertyType beanPropertyType = com.brownbag.core.util.BeanPropertyType.getBeanPropertyType(displayFields.getEntityType(), propertyId);
         Class propertyContainerType = beanPropertyType.getContainerType();
         String propertyIdRelativeToContainerType = beanPropertyType.getId();
@@ -131,7 +131,7 @@ public class DisplayField {
         }
     }
 
-    private String getLabelFromCode() {
+    private String getLabelTextFromCode() {
         String afterPeriod = StringUtil.extractAfterPeriod(propertyId);
         return StringUtil.humanizeCamelCase(afterPeriod);
     }

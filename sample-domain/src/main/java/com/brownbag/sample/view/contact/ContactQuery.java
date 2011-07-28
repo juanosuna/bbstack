@@ -83,11 +83,11 @@ public class ContactQuery extends StructuredEntityQuery<Contact> {
         }
         if (!isEmpty(states)) {
             ParameterExpression<Set> p = builder.parameter(Set.class, "states");
-            criteria.add(builder.in(rootEntity.get("address").get("state")).value(p));
+            criteria.add(builder.in(rootEntity.get("mailingAddress").get("state")).value(p));
         }
         if (!isEmpty(country)) {
             ParameterExpression<Country> p = builder.parameter(Country.class, "country");
-            criteria.add(builder.equal(rootEntity.get("address").get("country"), p));
+            criteria.add(builder.equal(rootEntity.get("mailingAddress").get("country"), p));
         }
 
         return criteria;
@@ -108,10 +108,10 @@ public class ContactQuery extends StructuredEntityQuery<Contact> {
 
     @Override
     public Path buildOrderBy(Root<Contact> rootEntity) {
-        if (getOrderByPropertyId().equals("address.country")) {
-            return rootEntity.join("address", JoinType.LEFT).join("country", JoinType.LEFT);
-        } else if (getOrderByPropertyId().equals("address.state.code")) {
-            return rootEntity.join("address", JoinType.LEFT).join("state", JoinType.LEFT).get("code");
+        if (getOrderByPropertyId().equals("mailingAddress.country")) {
+            return rootEntity.join("mailingAddress", JoinType.LEFT).join("country", JoinType.LEFT);
+        } else if (getOrderByPropertyId().equals("mailingAddress.state.code")) {
+            return rootEntity.join("mailingAddress", JoinType.LEFT).join("state", JoinType.LEFT).get("code");
         } else if (getOrderByPropertyId().equals("account.name")) {
             return rootEntity.join("account", JoinType.LEFT).get("name");
         } else {
@@ -121,7 +121,7 @@ public class ContactQuery extends StructuredEntityQuery<Contact> {
 
     @Override
     public void addFetchJoins(Root<Contact> rootEntity) {
-        rootEntity.fetch("address", JoinType.LEFT).fetch("state", JoinType.LEFT);
+        rootEntity.fetch("mailingAddress", JoinType.LEFT).fetch("state", JoinType.LEFT);
         rootEntity.fetch("account", JoinType.LEFT);
     }
 

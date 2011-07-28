@@ -74,13 +74,14 @@ public class ContactSelect extends EntitySelect<Contact> {
         public void configureFields(DisplayFields displayFields) {
             displayFields.setPropertyIds(new String[]{
                     "name",
-                    "address.state.code",
-                    "address.country",
-                    "lastModified",
-                    "modifiedBy"
+                    "title",
+                    "mailingAddress.state.code",
+                    "mailingAddress.country",
+                    "mainPhoneFormatted"
             });
 
-            displayFields.setLabel("address.state.code", "State");
+            displayFields.setLabel("mailingAddress.state.code", "State");
+            displayFields.setLabel("mainPhoneFormatted", "Phone");
             displayFields.setSortable("name", false);
         }
     }

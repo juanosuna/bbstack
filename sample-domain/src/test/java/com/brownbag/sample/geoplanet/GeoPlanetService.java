@@ -38,7 +38,7 @@ public class GeoPlanetService {
         GeoPlanetResponse geoPlanetResponse = geoPlanetRestClient.getPlaces("select country from geo.countries where view='long'");
         for (GeoPlanetResponse.Place place : geoPlanetResponse.places) {
             Country country = new Country(place.country.code, place.country.name);
-            country.setType(place.country.type);
+            country.setCountryType(place.country.type);
             countries.add(country);
         }
 
@@ -60,7 +60,7 @@ public class GeoPlanetService {
             if (!place.admin1.code.isEmpty()) {
                 Country country = new Country(place.country.code);
                 State state = new State(place.admin1.code, place.admin1.name, country);
-                state.setType(place.admin1.type);
+                state.setStateType(place.admin1.type);
                 states.add(state);
             }
         }

@@ -19,8 +19,11 @@ package com.brownbag.sample.entity;
 
 
 import com.brownbag.core.entity.WritableEntity;
+import com.brownbag.core.validation.ValidPhone;
+import com.google.i18n.phonenumbers.NumberParseException;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -40,29 +43,52 @@ public class Account extends WritableEntity {
 
     private String name;
 
+    private String website;
+
+    private String tickerSymbol;
+
+    private String email;
+
+    private Phone mainPhone;
+
+    @Transient
+    private String invalidMainPhone;
+
     private Integer numberOfEmployees;
 
     private BigDecimal annualRevenue;
+
+    @Lob
+    private String description;
 
     @Index(name = "IDX_ACCOUNT_CURRENCY")
     @ForeignKey(name = "FK_ACCOUNT_CURRENCY")
     @ManyToOne(fetch = FetchType.LAZY)
     private Currency currency;
 
-    @Index(name = "IDX_ACCOUNT_TYPE")
-    @ForeignKey(name = "FK_ACCOUNT_TYPE")
+    @ForeignKey(name = "FK_ACCOUNT_ACCOUNT", inverseName = "FK_ACCOUNT_ACCOUNT_TYPES")
     @ManyToMany(fetch = FetchType.LAZY)
-    private Set<AccountType> types = new HashSet<AccountType>();
+    private Set<AccountType> accountTypes = new HashSet<AccountType>();
+
+    @Index(name = "IDX_ACCOUNT_ASSIGNED_TO")
+    @ForeignKey(name = "FK_ACCOUNT_ASSIGNED_TO")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    private User assignedTo;
 
     @Index(name = "IDX_ACCOUNT_INDUSTRY")
     @ForeignKey(name = "FK_ACCOUNT_INDUSTRY")
     @ManyToOne(fetch = FetchType.LAZY)
     private Industry industry;
 
-    @Index(name = "IDX_ACCOUNT_ADDRESS")
-    @ForeignKey(name = "FK_ACCOUNT_ADDRESS")
+    @Index(name = "IDX_ACCOUNT_BILLING_ADDRESS")
+    @ForeignKey(name = "FK_ACCOUNT_BILLING_ADDRESS")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Address address = new Address();
+    private Address billingAddress = new Address(AddressType.BILLING);
+
+    @Index(name = "IDX_ACCOUNT_SHIPPING_ADDRESS")
+    @ForeignKey(name = "FK_ACCOUNT_SHIPPING_ADDRESS")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Address mailingAddress;
 
     @OneToMany(mappedBy = "account")
     private Set<Contact> contacts = new HashSet<Contact>();
@@ -75,13 +101,76 @@ public class Account extends WritableEntity {
 
     @NotBlank
     @NotNull
-    @Size(min = 1, max = 16)
+    @Size(min = 1, max = 64)
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Size(min = 4, max = 64)
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    @Size(min = 1, max = 25)
+    public String getTickerSymbol() {
+        return tickerSymbol;
+    }
+
+    public void setTickerSymbol(String tickerSymbol) {
+        this.tickerSymbol = tickerSymbol;
+    }
+
+    @Email
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Phone getMainPhone() {
+        return mainPhone;
+    }
+
+    public void setMainPhone(Phone mainPhone) {
+        this.mainPhone = mainPhone;
+        invalidMainPhone = null;
+    }
+
+    @NotNull
+    @ValidPhone(defaultRegionCode = Contact.DEFAULT_PHONE_COUNTRY)
+    public String getMainPhoneFormatted() {
+        if (invalidMainPhone != null) {
+            return invalidMainPhone;
+        } else {
+            if (getMainPhone() == null) {
+                return null;
+            } else {
+                return getMainPhone().getFormatted(Contact.DEFAULT_PHONE_COUNTRY);
+            }
+        }
+    }
+
+    public void setMainPhoneFormatted(@ValidPhone(defaultRegionCode = Contact.DEFAULT_PHONE_COUNTRY) String mainPhone) {
+        if (mainPhone == null) {
+            setMainPhone(null);
+        } else {
+            try {
+                Phone phone = new Phone(mainPhone, Contact.DEFAULT_PHONE_COUNTRY);
+                setMainPhone(phone);
+            } catch (NumberParseException e) {
+                invalidMainPhone = mainPhone;
+            }
+        }
     }
 
     @Min(0)
@@ -127,16 +216,32 @@ public class Account extends WritableEntity {
         }
     }
 
-    public Set<AccountType> getTypes() {
-        return types;
+    public String getDescription() {
+        return description;
     }
 
-    public void setTypes(Set<AccountType> type) {
-        this.types = type;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void addType(AccountType type) {
-        getTypes().add(type);
+    public Set<AccountType> getAccountTypes() {
+        return accountTypes;
+    }
+
+    public void setAccountTypes(Set<AccountType> accountType) {
+        this.accountTypes = accountType;
+    }
+
+    public void addAccountType(AccountType accountType) {
+        getAccountTypes().add(accountType);
+    }
+
+    public User getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(User assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
     public Industry getIndustry() {
@@ -148,12 +253,28 @@ public class Account extends WritableEntity {
     }
 
     @Valid
-    public Address getAddress() {
-        return address;
+    @NotNull
+    public Address getBillingAddress() {
+        return billingAddress;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setBillingAddress(Address billingAddress) {
+        if (billingAddress != null) {
+            billingAddress.setAddressType(AddressType.BILLING);
+        }
+        this.billingAddress = billingAddress;
+    }
+
+    @Valid
+    public Address getMailingAddress() {
+        return mailingAddress;
+    }
+
+    public void setMailingAddress(Address mailingAddress) {
+        if (mailingAddress != null) {
+            mailingAddress.setAddressType(AddressType.MAILING);
+        }
+        this.mailingAddress = mailingAddress;
     }
 
     public Set<Contact> getContacts() {

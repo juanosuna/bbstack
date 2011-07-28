@@ -31,7 +31,7 @@ public class CountryDao extends EntityDao<Country, String> {
 
     @Override
     public List<Country> findAll() {
-        Query query = getEntityManager().createQuery("SELECT c FROM Country c ORDER BY c.name");
+        Query query = getEntityManager().createQuery("SELECT c FROM Country c ORDER BY c.displayName");
         setReadOnly(query);
 
         return query.getResultList();

@@ -23,6 +23,7 @@ import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.select.AccountSelect;
+import com.brownbag.sample.view.select.UserSelect;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Window;
@@ -41,36 +42,49 @@ public class ContactForm extends EntityForm<Contact> {
     private StateDao stateDao;
 
     @Resource
+    private UserSelect userSelect;
+
+    @Resource
     private AccountSelect accountSelect;
 
     @Override
     public void configureFields(FormFields formFields) {
-        formFields.setPosition("Overview", "firstName", 0, 0);
-        formFields.setPosition("Overview", "lastName", 0, 1);
-        formFields.setPosition("Overview", "birthDate", 1, 0);
-        formFields.setPosition("Overview", "mainPhoneFormatted", 1, 1);
-        formFields.setPosition("Overview", "mainPhone.type", 1, 2);
-        formFields.setPosition("Overview", "account.name", 2, 0);
-        formFields.setPosition("Overview", "doNotCall", 2, 1);
+        formFields.setPosition("Overview", "title", 1, 1);
+        formFields.setPosition("Overview", "firstName", 1, 2);
+        formFields.setPosition("Overview", "lastName", 1, 3);
 
-        formFields.setPosition("Primary Address", "address.street", 0, 0);
-        formFields.setPosition("Primary Address", "address.city", 0, 1);
-        formFields.setPosition("Primary Address", "address.country", 1, 0);
-        formFields.setPosition("Primary Address", "address.zipCode", 1, 1);
-        formFields.setPosition("Primary Address", "address.state", 2, 0);
+        formFields.setPosition("Overview", "account.name", 2, 1);
+        formFields.setPosition("Overview", "leadSource", 2, 2);
+        formFields.setPosition("Overview", "assignedTo.loginName", 2, 3);
 
-        formFields.setPosition("Other Address", "otherAddress.street", 0, 0);
-        formFields.setPosition("Other Address", "otherAddress.city", 0, 1);
-        formFields.setPosition("Other Address", "otherAddress.country", 1, 0);
-        formFields.setPosition("Other Address", "otherAddress.zipCode", 1, 1);
-        formFields.setPosition("Other Address", "otherAddress.state", 2, 0);
+        formFields.setPosition("Overview", "birthDate", 3, 1);
+        formFields.setPosition("Overview", "mainPhoneFormatted", 3, 2, 3, 3);
+        formFields.setPosition("Overview", "mainPhone.phoneType", 3, 2);
+        formFields.setPosition("Overview", "doNotCall", 3, 2);
+        formFields.setLabel("mainPhone.phoneType", null);
+
+        formFields.setPosition("Overview", "email", 4, 1);
+//        formFields.setPosition("Overview", "doNotEmail", 4, 1);
+
+        formFields.setPosition("Mailing Address", "mailingAddress.street", 1, 1);
+        formFields.setPosition("Mailing Address", "mailingAddress.city", 1, 2);
+        formFields.setPosition("Mailing Address", "mailingAddress.country", 2, 1);
+        formFields.setPosition("Mailing Address", "mailingAddress.zipCode", 2, 2);
+        formFields.setPosition("Mailing Address", "mailingAddress.state", 3, 1);
+
+        formFields.setPosition("Other Address", "otherAddress.street", 1, 1);
+        formFields.setPosition("Other Address", "otherAddress.city", 1, 2);
+        formFields.setPosition("Other Address", "otherAddress.country", 2, 1);
+        formFields.setPosition("Other Address", "otherAddress.zipCode", 2, 2);
+        formFields.setPosition("Other Address", "otherAddress.state", 3, 1);
         formFields.setTabOptional("Other Address", this, "addOtherAddress", this, "removeOtherAddress");
 
-        formFields.setPosition("Note", "note", 0, 0);
+        formFields.setPosition("Description", "description", 1, 1);
 
         formFields.setLabel("account.name", "Account");
         formFields.setLabel("mainPhoneFormatted", "Main Phone");
-        formFields.setWidth("mainPhone.type", 7, Sizeable.UNITS_EM);
+        formFields.setWidth("mainPhone.phoneType", 7, Sizeable.UNITS_EM);
+        formFields.setLabel("assignedTo.loginName", "Assigned to");
 
         formFields.setDescription("mainPhoneFormatted",
                 "<strong>Example formats:</strong>" +
@@ -79,13 +93,16 @@ public class ContactForm extends EntityForm<Contact> {
                         "  <li>Germany: +49 30/70248804</li>" +
                         "</ul>");
 
-        formFields.setSelectItems("address.state", new ArrayList());
-        formFields.addValueChangeListener("address.country", this, "countryChanged");
+        formFields.setSelectItems("mailingAddress.state", new ArrayList());
+        formFields.addValueChangeListener("mailingAddress.country", this, "countryChanged");
 
         formFields.setSelectItems("otherAddress.state", new ArrayList());
         formFields.addValueChangeListener("otherAddress.country", this, "otherCountryChanged");
 
-        SelectField selectField = new SelectField(this, "account", accountSelect);
+        SelectField selectField = new SelectField(this, "assignedTo", userSelect);
+        formFields.setField("assignedTo.loginName", selectField);
+
+        selectField = new SelectField(this, "account", accountSelect);
         formFields.setField("account.name", selectField);
     }
 
@@ -98,7 +115,7 @@ public class ContactForm extends EntityForm<Contact> {
     }
 
     public void countryChanged(Property.ValueChangeEvent event) {
-        countryChangedImpl(event, "address");
+        countryChangedImpl(event, "mailingAddress");
     }
 
     public void otherCountryChanged(Property.ValueChangeEvent event) {

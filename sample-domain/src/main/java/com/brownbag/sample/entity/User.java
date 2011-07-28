@@ -15,25 +15,22 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.dao;
+package com.brownbag.sample.entity;
 
-import com.brownbag.core.dao.EntityDao;
-import com.brownbag.sample.entity.AccountType;
-import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
-import java.util.List;
+import com.brownbag.core.entity.AbstractUser;
 
-import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-@Repository
-public class AccountTypeDao extends EntityDao<AccountType, String> {
+@Entity
+@Table
+public class User extends AbstractUser {
 
-    @Override
-    public List<AccountType> findAll() {
-        Query query = getEntityManager().createQuery("SELECT a FROM AccountType a ORDER BY a.displayName");
-        setReadOnly(query);
+    public User() {
+    }
 
-        return query.getResultList();
+    public User(String loginName, String loginPassword) {
+        super(loginName, loginPassword);
     }
 }

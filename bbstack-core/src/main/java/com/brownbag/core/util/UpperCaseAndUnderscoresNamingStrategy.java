@@ -17,10 +17,10 @@
 
 package com.brownbag.core.util;
 
-import org.hibernate.cfg.ImprovedNamingStrategy;
+import org.hibernate.AssertionFailure;
+import org.hibernate.cfg.DefaultComponentSafeNamingStrategy;
 
-// DefaultComponentSafeNamingStrategy
-public class UpperCaseAndUnderscoresNamingStrategy extends ImprovedNamingStrategy {
+public class UpperCaseAndUnderscoresNamingStrategy extends DefaultComponentSafeNamingStrategy {
 
     public static final String TABLE_PREFIX = "";
 
@@ -28,29 +28,67 @@ public class UpperCaseAndUnderscoresNamingStrategy extends ImprovedNamingStrateg
         super();
     }
 
+    protected String insertUnderscores(String name) {
+        StringBuffer buf = new StringBuffer(name.replace('.', '_'));
+        for (int i = 1; i < buf.length() - 1; i++) {
+            if (
+                    Character.isLowerCase(buf.charAt(i - 1)) &&
+                            Character.isUpperCase(buf.charAt(i)) &&
+                            Character.isLowerCase(buf.charAt(i + 1))
+                    ) {
+                buf.insert(i++, '_');
+            }
+        }
+        return buf.toString().toLowerCase();
+    }
+
+    @Override
+    public String classToTableName(String className) {
+        return TABLE_PREFIX + insertUnderscores(className).toUpperCase();
+    }
+
     @Override
     public String propertyToColumnName(String propertyName) {
-        return super.propertyToColumnName(propertyName).toUpperCase();
+        return insertUnderscores(propertyName).toUpperCase();
+    }
+
+    @Override
+    public String tableName(String tableName) {
+        return TABLE_PREFIX + insertUnderscores(tableName).toUpperCase();
+    }
+
+    @Override
+    public String columnName(String columnName) {
+        return insertUnderscores(columnName).toUpperCase();
     }
 
     @Override
     public String collectionTableName(String ownerEntity, String ownerEntityTable, String associatedEntity, String associatedEntityTable, String propertyName) {
-        return super.collectionTableName(ownerEntity, ownerEntityTable, associatedEntity, associatedEntityTable, propertyName).toUpperCase();
+        return tableName(
+                new StringBuilder(ownerEntityTable).append("_")
+                        .append(
+                                associatedEntityTable != null ?
+                                        associatedEntityTable :
+                                        insertUnderscores(propertyName)
+                        ).toString()
+        ).toUpperCase();
     }
 
     @Override
     public String foreignKeyColumnName(String propertyName, String propertyEntityName, String propertyTableName, String referencedColumnName) {
-        return super.foreignKeyColumnName(propertyName, propertyEntityName, propertyTableName, referencedColumnName).toUpperCase();
+        String header = propertyName != null ? insertUnderscores(propertyName) : propertyTableName;
+        if (header == null) throw new AssertionFailure("NamingStrategy not properly filled");
+        return columnName(header + "_" + referencedColumnName).toUpperCase();
     }
 
     @Override
     public String logicalColumnName(String columnName, String propertyName) {
-        return super.logicalColumnName(columnName, propertyName).toUpperCase();
+        return insertUnderscores(super.logicalColumnName(columnName, propertyName)).toUpperCase();
     }
 
     @Override
     public String logicalCollectionTableName(String tableName, String ownerEntityTable, String associatedEntityTable, String propertyName) {
-        return TABLE_PREFIX + super.logicalCollectionTableName(tableName, ownerEntityTable, associatedEntityTable, propertyName).toUpperCase();
+        return (TABLE_PREFIX + super.logicalCollectionTableName(tableName, ownerEntityTable, associatedEntityTable, propertyName)).toUpperCase();
     }
 
     @Override
@@ -58,20 +96,6 @@ public class UpperCaseAndUnderscoresNamingStrategy extends ImprovedNamingStrateg
         return super.logicalCollectionColumnName(columnName, propertyName, referencedColumn).toUpperCase();
     }
 
-    @Override
-    public String classToTableName(String className) {
-        return TABLE_PREFIX + super.classToTableName(className).toUpperCase();
-    }
-
-    @Override
-    public String tableName(String tableName) {
-        return TABLE_PREFIX + super.tableName(tableName).toUpperCase();
-    }
-
-    @Override
-    public String columnName(String columnName) {
-        return super.columnName(columnName).toUpperCase();
-    }
 
     @Override
     public String joinKeyColumnName(String joinedColumn, String joinedTable) {

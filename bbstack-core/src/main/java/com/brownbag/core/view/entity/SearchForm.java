@@ -76,6 +76,7 @@ public abstract class SearchForm<T> extends FormComponent<T> {
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
         getResults().search();
+        requestRepaintAll();
     }
 
     public void search() {

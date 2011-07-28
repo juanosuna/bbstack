@@ -15,27 +15,46 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.opportunity;
+package com.brownbag.sample.view.user;
 
-import com.brownbag.core.view.entity.SearchForm;
+import com.brownbag.core.view.entity.EntityForm;
 import com.brownbag.core.view.entity.field.FormFields;
+import com.brownbag.core.view.entity.field.SelectField;
+import com.brownbag.sample.dao.UserDao;
+import com.brownbag.sample.entity.*;
+import com.brownbag.sample.view.select.AccountSelect;
+import com.vaadin.data.Property;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @Scope("prototype")
-public class OpportunitySearchForm extends SearchForm<OpportunityQuery> {
+public class UserForm extends EntityForm<User> {
+
+    @Resource
+    private UserDao userDao;
 
     @Override
     public void configureFields(FormFields formFields) {
-        formFields.setPosition("accountName", 1, 1);
-        formFields.setPosition("salesStages", 1, 2);
-
-        formFields.setMultiSelectDimensions("salesStages", 3, 10);
+        formFields.setPosition("loginName", 1, 1);
+        formFields.setPosition("loginPassword", 2, 1);
     }
+
 
     @Override
     public String getEntityCaption() {
-        return "Opportunity Search Form";
+        return "User Form";
+    }
+
+    @Override
+    public void configurePopupWindow(Window popupWindow) {
+        popupWindow.setWidth(48, Sizeable.UNITS_EM);
+        popupWindow.setHeight(30, Sizeable.UNITS_EM);
     }
 }

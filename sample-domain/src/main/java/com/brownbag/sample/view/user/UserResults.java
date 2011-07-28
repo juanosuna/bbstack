@@ -15,14 +15,13 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.contact;
+package com.brownbag.sample.view.user;
 
 import com.brownbag.core.view.entity.Results;
 import com.brownbag.core.view.entity.ResultsTable;
 import com.brownbag.core.view.entity.field.DisplayFields;
-import com.brownbag.sample.dao.ContactDao;
-import com.brownbag.sample.entity.Contact;
-import com.brownbag.sample.view.account.AccountForm;
+import com.brownbag.sample.dao.UserDao;
+import com.brownbag.sample.entity.User;
 import com.vaadin.terminal.Sizeable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -31,50 +30,39 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
-public class ContactResults extends Results<Contact> {
+public class UserResults extends Results<User> {
 
     @Resource
-    private ContactDao contactDao;
+    private UserDao userDao;
 
     @Resource
-    private ContactQuery contactQuery;
+    private UserQuery userQuery;
 
     @Resource
-    private ContactForm contactForm;
-
-    @Resource
-    private AccountForm accountForm;
+    private UserForm userForm;
 
     @Override
-    public ContactDao getEntityDao() {
-        return contactDao;
+    public UserDao getEntityDao() {
+        return userDao;
     }
 
     @Override
-    public ContactQuery getEntityQuery() {
-        return contactQuery;
+    public UserQuery getEntityQuery() {
+        return userQuery;
     }
 
     @Override
-    public ContactForm getEntityForm() {
-        return contactForm;
+    public UserForm getEntityForm() {
+        return userForm;
     }
 
     @Override
     public void configureFields(DisplayFields displayFields) {
         displayFields.setPropertyIds(new String[]{
-                "firstName",
-                "lastName",
-                "account.name",
-                "mailingAddress.state.code",
-                "mailingAddress.country",
+                "loginName",
                 "lastModified",
                 "modifiedBy"
         });
-
-        displayFields.setLabel("mailingAddress.state.code", "State");
-        displayFields.setLabel("account.name", "Account");
-        displayFields.setFormLink("account.name", "account", accountForm);
     }
 
     @Override

@@ -40,9 +40,9 @@ public class ContactSearchForm extends SearchForm<ContactQuery> {
     @Override
     public void configureFields(FormFields formFields) {
 
-        formFields.setPosition("lastName", 0, 0);
-        formFields.setPosition("country", 0, 1);
-        formFields.setPosition("states", 0, 2);
+        formFields.setPosition("lastName", 1, 1);
+        formFields.setPosition("country", 1, 2);
+        formFields.setPosition("states", 1, 3);
 
         formFields.setSelectItems("states", new ArrayList());
         formFields.setVisible("states", false);

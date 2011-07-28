@@ -22,6 +22,7 @@ import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.sample.entity.Opportunity;
 import com.brownbag.sample.view.select.AccountSelect;
+import com.brownbag.sample.view.select.UserSelect;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -34,23 +35,35 @@ public class OpportunityForm extends EntityForm<Opportunity> {
     @Resource
     private AccountSelect accountSelect;
 
+    @Resource
+    private UserSelect userSelect;
+
     @Override
     public void configureFields(FormFields formFields) {
 
-        formFields.setPosition("Overview", "name", 0, 0);
-        formFields.setPosition("Overview", "account.name", 0, 1);
-        formFields.setPosition("Overview", "salesStage", 0, 2);
-        formFields.setPosition("Overview", "amount", 1, 0);
-        formFields.setPosition("Overview", "currency", 1, 1);
-        formFields.setPosition("Overview", "probability", 2, 0);
-        formFields.setPosition("Overview", "commission", 2, 1);
-        formFields.setPosition("Overview", "expectedCloseDate", 2, 2);
+        formFields.setPosition("Overview", "name", 1, 1);
+        formFields.setPosition("Overview", "opportunityType", 1, 2);
+        formFields.setPosition("Overview", "account.name", 1, 3);
 
-        formFields.setPosition("Description", "description", 0, 0);
+        formFields.setPosition("Overview", "salesStage", 2, 1);
+        formFields.setPosition("Overview", "leadSource", 2, 2);
+        formFields.setPosition("Overview", "assignedTo.loginName", 2, 3);
 
+        formFields.setPosition("Overview", "amount", 3, 1);
+        formFields.setPosition("Overview", "currency", 3, 2);
+        formFields.setPosition("Overview", "probability", 3, 3);
+        formFields.setPosition("Overview", "expectedCloseDate", 3, 4);
+
+        formFields.setPosition("Description", "description", 1, 1);
+
+        formFields.setLabel("opportunityType", "Type");
         formFields.setLabel("account.name", "Account");
+        formFields.setLabel("assignedTo.loginName", "Assigned to");
 
-        SelectField selectField = new SelectField(this, "account", accountSelect);
+        SelectField selectField = new SelectField(this, "assignedTo", userSelect);
+        formFields.setField("assignedTo.loginName", selectField);
+
+        selectField = new SelectField(this, "account", accountSelect);
         formFields.setField("account.name", selectField);
     }
 

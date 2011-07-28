@@ -86,9 +86,7 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
                     "account.name",
                     "salesStage",
                     "expectedCloseDate",
-                    "amount",
-                    "lastModified",
-                    "modifiedBy"
+                    "amount"
             });
 
             displayFields.setLabel("name", "Name");

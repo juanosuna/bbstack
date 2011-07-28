@@ -32,7 +32,7 @@ import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = CACHE_REGION)
 public class Country extends ReferenceEntity {
 
-    private String type;
+    private String countryType;
     private String minPostalCode;
     private String maxPostalCode;
 
@@ -47,12 +47,12 @@ public class Country extends ReferenceEntity {
         super(id, name);
     }
 
-    public String getType() {
-        return type;
+    public String getCountryType() {
+        return countryType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCountryType(String countryType) {
+        this.countryType = countryType;
     }
 
     public String getMinPostalCode() {

@@ -15,27 +15,26 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.opportunity;
+package com.brownbag.sample.dao;
 
-import com.brownbag.core.view.entity.SearchForm;
-import com.brownbag.core.view.entity.field.FormFields;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import com.brownbag.core.dao.EntityDao;
+import com.brownbag.sample.entity.AccountType;
+import com.brownbag.sample.entity.LeadSource;
+import org.springframework.stereotype.Repository;
 
-@Component
-@Scope("prototype")
-public class OpportunitySearchForm extends SearchForm<OpportunityQuery> {
+import javax.persistence.Query;
+import java.util.List;
 
-    @Override
-    public void configureFields(FormFields formFields) {
-        formFields.setPosition("accountName", 1, 1);
-        formFields.setPosition("salesStages", 1, 2);
+import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
 
-        formFields.setMultiSelectDimensions("salesStages", 3, 10);
-    }
+@Repository
+public class LeadSourceDao extends EntityDao<LeadSource, String> {
 
     @Override
-    public String getEntityCaption() {
-        return "Opportunity Search Form";
+    public List<LeadSource> findAll() {
+        Query query = getEntityManager().createQuery("SELECT l FROM LeadSource l ORDER BY l.sortOrder");
+        setReadOnly(query);
+
+        return query.getResultList();
     }
 }

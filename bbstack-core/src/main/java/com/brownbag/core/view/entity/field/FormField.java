@@ -36,7 +36,7 @@ import javax.persistence.Lob;
 import java.util.*;
 
 public class FormField extends DisplayField {
-    public static final String DEFAULT_DISPLAY_PROPERTY_ID = "name";
+    public static final String DEFAULT_DISPLAY_PROPERTY_ID = "displayName";
 
     private String tabName = "";
     private Field field;
@@ -45,9 +45,27 @@ public class FormField extends DisplayField {
     private Integer columnEnd;
     private Integer rowEnd;
     private boolean isRequired;
+    private com.vaadin.ui.Label label;
 
     public FormField(FormFields formFields, String propertyId) {
         super(formFields, propertyId);
+    }
+
+    public com.vaadin.ui.Label getFieldLabel() {
+        if (label == null) {
+            String labelText = generateLabelText();
+            if (isRequired()) {
+                labelText = "<span class=\"b-required-field-indicator\">*</span>" + labelText;
+            }
+            label = new com.vaadin.ui.Label(labelText, com.vaadin.ui.Label.CONTENT_XHTML);
+            label.setSizeUndefined();
+        }
+
+        return label;
+    }
+
+    public void setFieldLabel(String labelText) {
+        getFieldLabel().setValue(labelText);
     }
 
     public String getTabName() {
@@ -174,6 +192,7 @@ public class FormField extends DisplayField {
 
     public void setVisible(boolean isVisible) {
         getField().setVisible(isVisible);
+        getFieldLabel().setVisible(isVisible);
     }
 
     public void setRequired(boolean isRequired) {
@@ -299,7 +318,7 @@ public class FormField extends DisplayField {
             return;
         }
 
-        field.setCaption(getLabel());
+//        field.setCaption(getLabel());
         field.setInvalidAllowed(true);
 
         if (field instanceof AbstractField) {

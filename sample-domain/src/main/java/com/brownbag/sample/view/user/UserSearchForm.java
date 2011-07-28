@@ -15,27 +15,33 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.opportunity;
+package com.brownbag.sample.view.user;
 
 import com.brownbag.core.view.entity.SearchForm;
 import com.brownbag.core.view.entity.field.FormFields;
+import com.brownbag.sample.dao.StateDao;
+import com.brownbag.sample.entity.Country;
+import com.brownbag.sample.entity.State;
+import com.brownbag.sample.view.contact.ContactQuery;
+import com.vaadin.data.Property;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @Scope("prototype")
-public class OpportunitySearchForm extends SearchForm<OpportunityQuery> {
+public class UserSearchForm extends SearchForm<UserQuery> {
 
     @Override
     public void configureFields(FormFields formFields) {
-        formFields.setPosition("accountName", 1, 1);
-        formFields.setPosition("salesStages", 1, 2);
-
-        formFields.setMultiSelectDimensions("salesStages", 3, 10);
+        formFields.setPosition("loginName", 1, 1);
     }
 
     @Override
     public String getEntityCaption() {
-        return "Opportunity Search Form";
+        return "User Search Form";
     }
 }

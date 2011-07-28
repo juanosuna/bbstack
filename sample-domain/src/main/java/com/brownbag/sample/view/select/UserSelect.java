@@ -20,10 +20,10 @@ package com.brownbag.sample.view.select;
 import com.brownbag.core.view.entity.entityselect.EntitySelect;
 import com.brownbag.core.view.entity.entityselect.EntitySelectResults;
 import com.brownbag.core.view.entity.field.DisplayFields;
-import com.brownbag.sample.dao.AccountDao;
-import com.brownbag.sample.entity.Account;
-import com.brownbag.sample.view.account.AccountQuery;
-import com.brownbag.sample.view.account.AccountSearchForm;
+import com.brownbag.sample.dao.UserDao;
+import com.brownbag.sample.entity.User;
+import com.brownbag.sample.view.user.UserQuery;
+import com.brownbag.sample.view.user.UserSearchForm;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -31,57 +31,52 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
-public class AccountSelect extends EntitySelect<Account> {
+public class UserSelect extends EntitySelect<User> {
 
     @Resource
-    private AccountSearchForm accountSearchForm;
+    private UserSearchForm userSearchForm;
 
     @Resource
-    private AccountSelectResults accountSelectResults;
+    private UserSelectResults userSelectResults;
 
     @Override
-    public AccountSearchForm getSearchForm() {
-        return accountSearchForm;
+    public UserSearchForm getSearchForm() {
+        return userSearchForm;
     }
 
     @Override
-    public AccountSelectResults getResultsComponent() {
-        return accountSelectResults;
+    public UserSelectResults getResultsComponent() {
+        return userSelectResults;
     }
 
 
     @Component
     @Scope("prototype")
-    public static class AccountSelectResults extends EntitySelectResults<Account> {
+    public static class UserSelectResults extends EntitySelectResults<User> {
 
         @Resource
-        private AccountDao accountDao;
+        private UserDao userDao;
 
         @Resource
-        private AccountQuery accountQuery;
+        private UserQuery userQuery;
 
         @Override
-        public AccountDao getEntityDao() {
-            return accountDao;
+        public UserDao getEntityDao() {
+            return userDao;
         }
 
         @Override
-        public AccountQuery getEntityQuery() {
-            return accountQuery;
+        public UserQuery getEntityQuery() {
+            return userQuery;
         }
 
         @Override
         public void configureFields(DisplayFields displayFields) {
             displayFields.setPropertyIds(new String[]{
-                    "name",
-                    "tickerSymbol",
-                    "website",
-                    "billingAddress.state.code",
-                    "billingAddress.country"
+                    "loginName",
+                    "lastModified",
+                    "modifiedBy"
             });
-
-            displayFields.setLabel("billingAddress.state.code", "State");
-            displayFields.getField("name").setSortable(false);
         }
     }
 }

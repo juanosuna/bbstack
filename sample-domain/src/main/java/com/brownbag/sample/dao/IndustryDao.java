@@ -31,7 +31,7 @@ public class IndustryDao extends EntityDao<Industry, String> {
 
     @Override
     public List<Industry> findAll() {
-        Query query = getEntityManager().createQuery("SELECT i FROM Industry i ORDER BY i.name");
+        Query query = getEntityManager().createQuery("SELECT i FROM Industry i ORDER BY i.displayName");
         setReadOnly(query);
 
         return query.getResultList();

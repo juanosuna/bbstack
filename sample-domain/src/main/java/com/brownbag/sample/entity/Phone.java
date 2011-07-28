@@ -34,10 +34,10 @@ import java.io.Serializable;
 @Embeddable
 public class Phone implements Serializable {
     private Integer countryCode;
-    private Long number;
+    private Long phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    private PhoneType type = PhoneType.BUSINESS;
+    private PhoneType phoneType = PhoneType.BUSINESS;
 
     public Phone() {
     }
@@ -51,13 +51,13 @@ public class Phone implements Serializable {
         Phonenumber.PhoneNumber phoneNumber = phoneUtil.parse(fullNumber, defaultRegionCode);
 
         this.countryCode = phoneNumber.getCountryCode();
-        this.number = phoneNumber.getNationalNumber();
+        this.phoneNumber = phoneNumber.getNationalNumber();
     }
 
     public String getFormatted(String defaultRegionCode) {
         Phonenumber.PhoneNumber phoneNumber = new Phonenumber.PhoneNumber();
         phoneNumber.setCountryCode(countryCode);
-        phoneNumber.setNationalNumber(number);
+        phoneNumber.setNationalNumber(this.phoneNumber);
 
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         PhoneNumberUtil.PhoneNumberFormat format;
@@ -80,20 +80,20 @@ public class Phone implements Serializable {
     }
 
     @NotNull
-    public Long getNumber() {
-        return number;
+    public Long getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setNumber(Long number) {
-        this.number = number;
+    public void setPhoneNumber(Long phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @NotNull
-    public PhoneType getType() {
-        return type;
+    public PhoneType getPhoneType() {
+        return phoneType;
     }
 
-    public void setType(PhoneType type) {
-        this.type = type;
+    public void setPhoneType(PhoneType phoneType) {
+        this.phoneType = phoneType;
     }
 }

@@ -28,7 +28,9 @@ public abstract class ReferenceEntity implements IdentifiableEntity, Comparable 
     @Id
     private String id;
 
-    private String name;
+    private String displayName;
+
+    private Integer sortOrder;
 
     protected ReferenceEntity() {
     }
@@ -37,9 +39,9 @@ public abstract class ReferenceEntity implements IdentifiableEntity, Comparable 
         this.id = id;
     }
 
-    protected ReferenceEntity(String id, String name) {
+    protected ReferenceEntity(String id, String displayName) {
         this.id = id;
-        this.name = name;
+        this.displayName = displayName;
     }
 
     public String getId() {
@@ -50,12 +52,20 @@ public abstract class ReferenceEntity implements IdentifiableEntity, Comparable 
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public Integer getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(Integer order) {
+        this.sortOrder = order;
     }
 
     @Override

@@ -130,7 +130,7 @@ public class BeanPropertyType {
         for (String property : properties) {
             Class propertyType = BeanUtils.findPropertyType(property, new Class[]{currentPropertyType});
             Assert.PROGRAMMING.assertTrue(propertyType != null && !propertyType.equals(Object.class),
-                    "Invalid property path:" + clazz + "." + property);
+                    "Invalid property path: " + clazz + "." + property);
 
             Class propertyPathType;
             Class collectionValueType = null;

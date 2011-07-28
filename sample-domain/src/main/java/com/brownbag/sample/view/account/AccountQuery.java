@@ -83,11 +83,11 @@ public class AccountQuery extends StructuredEntityQuery<Account> {
         }
         if (!isEmpty(states)) {
             ParameterExpression<Set> p = builder.parameter(Set.class, "states");
-            criteria.add(builder.in(rootEntity.get("address").get("state")).value(p));
+            criteria.add(builder.in(rootEntity.get("billingAddress").get("state")).value(p));
         }
         if (!isEmpty(country)) {
             ParameterExpression<Country> p = builder.parameter(Country.class, "country");
-            criteria.add(builder.equal(rootEntity.get("address").get("country"), p));
+            criteria.add(builder.equal(rootEntity.get("billingAddress").get("country"), p));
         }
 
         return criteria;
@@ -108,10 +108,10 @@ public class AccountQuery extends StructuredEntityQuery<Account> {
 
     @Override
     public Path buildOrderBy(Root<Account> rootEntity) {
-        if (getOrderByPropertyId().equals("address.country")) {
-            return rootEntity.join("address", JoinType.LEFT).join("country", JoinType.LEFT);
-        } else if (getOrderByPropertyId().equals("address.state.code")) {
-            return rootEntity.join("address", JoinType.LEFT).join("state", JoinType.LEFT).get("code");
+        if (getOrderByPropertyId().equals("billingAddress.country")) {
+            return rootEntity.join("billingAddress", JoinType.LEFT).join("country", JoinType.LEFT);
+        } else if (getOrderByPropertyId().equals("billingAddress.state.code")) {
+            return rootEntity.join("billingAddress", JoinType.LEFT).join("state", JoinType.LEFT).get("code");
         } else {
             return null;
         }
@@ -119,7 +119,7 @@ public class AccountQuery extends StructuredEntityQuery<Account> {
 
     @Override
     public void addFetchJoins(Root<Account> rootEntity) {
-        rootEntity.fetch("address", JoinType.LEFT);
+        rootEntity.fetch("billingAddress", JoinType.LEFT);
     }
 
     @Override

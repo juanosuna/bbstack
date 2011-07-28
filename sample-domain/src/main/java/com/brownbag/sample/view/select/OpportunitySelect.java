@@ -76,9 +76,7 @@ public class OpportunitySelect extends EntitySelect<Opportunity> {
                     "account.name",
                     "salesStage",
                     "expectedCloseDate",
-                    "amount",
-                    "lastModified",
-                    "modifiedBy"
+                    "amount"
             });
 
             displayFields.setLabel("name", "Name");

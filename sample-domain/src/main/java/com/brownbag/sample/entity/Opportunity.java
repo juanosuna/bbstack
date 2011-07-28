@@ -36,15 +36,8 @@ public class Opportunity extends WritableEntity {
 
     private String name;
 
-    @Index(name = "IDX_OPPORTUNITY_ACCOUNT")
-    @ForeignKey(name = "FK_OPPORTUNITY_ACCOUNT")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    private Account account;
-
-    @Index(name = "IDX_OPPORTUNITY_SALES_STAGE")
-    @ForeignKey(name = "FK_OPPORTUNITY_SALES_STAGE")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private SalesStage salesStage;
+    @Enumerated(EnumType.STRING)
+    private OpportunityType opportunityType = OpportunityType.NEW;
 
     @Temporal(TemporalType.DATE)
     private Date expectedCloseDate;
@@ -58,10 +51,28 @@ public class Opportunity extends WritableEntity {
 
     private float probability;
 
-    private float commission;
-
     @Lob
     private String description;
+
+    @Index(name = "IDX_OPPORTUNITY_LEAD_SOURCE")
+    @ForeignKey(name = "FK_OPPORTUNITY_LEAD_SOURCE")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LeadSource leadSource;
+
+    @Index(name = "IDX_OPPORTUNITY_SALES_STAGE")
+    @ForeignKey(name = "FK_OPPORTUNITY_SALES_STAGE")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SalesStage salesStage;
+
+    @Index(name = "IDX_OPPORTUNITY_ACCOUNT")
+    @ForeignKey(name = "FK_OPPORTUNITY_ACCOUNT")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    private Account account;
+
+    @Index(name = "IDX_OPPORTUNITY_USER")
+    @ForeignKey(name = "FK_OPPORTUNITY_USER")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    private User assignedTo;
 
     public Opportunity() {
     }
@@ -72,7 +83,7 @@ public class Opportunity extends WritableEntity {
 
     @NotBlank
     @NotNull
-    @Size(min = 1, max = 32)
+    @Size(min = 1, max = 64)
     public String getName() {
         return name;
     }
@@ -81,20 +92,12 @@ public class Opportunity extends WritableEntity {
         this.name = name;
     }
 
-    public Account getAccount() {
-        return account;
+    public OpportunityType getOpportunityType() {
+        return opportunityType;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-    public SalesStage getSalesStage() {
-        return salesStage;
-    }
-
-    public void setSalesStage(SalesStage salesStage) {
-        this.salesStage = salesStage;
+    public void setOpportunityType(OpportunityType opportunityType) {
+        this.opportunityType = opportunityType;
     }
 
     public Date getExpectedCloseDate() {
@@ -134,20 +137,44 @@ public class Opportunity extends WritableEntity {
         this.probability = probability;
     }
 
-    public float getCommission() {
-        return commission;
-    }
-
-    public void setCommission(float commission) {
-        this.commission = commission;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LeadSource getLeadSource() {
+        return leadSource;
+    }
+
+    public void setLeadSource(LeadSource leadSource) {
+        this.leadSource = leadSource;
+    }
+
+    public SalesStage getSalesStage() {
+        return salesStage;
+    }
+
+    public void setSalesStage(SalesStage salesStage) {
+        this.salesStage = salesStage;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public User getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(User assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
     @PreRemove

@@ -19,13 +19,13 @@ package com.brownbag.sample.view.account;
 
 import com.brownbag.core.view.entity.EntityForm;
 import com.brownbag.core.view.entity.field.FormFields;
+import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.core.view.entity.tomanyrelationship.ToManyRelationship;
 import com.brownbag.sample.dao.StateDao;
-import com.brownbag.sample.entity.Account;
-import com.brownbag.sample.entity.Country;
-import com.brownbag.sample.entity.State;
+import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.account.related.RelatedContacts;
 import com.brownbag.sample.view.account.related.RelatedOpportunities;
+import com.brownbag.sample.view.select.UserSelect;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Window;
@@ -49,6 +49,9 @@ public class AccountForm extends EntityForm<Account> {
     @Resource
     private RelatedOpportunities relatedOpportunities;
 
+    @Resource
+    private UserSelect userSelect;
+
     @Override
     public List<ToManyRelationship> getToManyRelationships() {
         List<ToManyRelationship> toManyRelationships = new ArrayList<ToManyRelationship>();
@@ -61,41 +64,84 @@ public class AccountForm extends EntityForm<Account> {
     @Override
     public void configureFields(FormFields formFields) {
 
-        formFields.setPosition("Overview", "name", 0, 0);
-        formFields.setPosition("Overview", "types", 0, 1);
-        formFields.setPosition("Overview", "numberOfEmployees", 1, 0);
-        formFields.setPosition("Overview", "annualRevenue", 1, 1);
+        formFields.setPosition("Overview", "name", 1, 1);
+        formFields.setPosition("Overview", "tickerSymbol", 1, 2);
+        formFields.setPosition("Overview", "assignedTo.loginName", 1, 3);
 
-        formFields.setPosition("Address", "address.street", 0, 0);
-        formFields.setPosition("Address", "address.city", 0, 1);
-        formFields.setPosition("Address", "address.country", 1, 0);
-        formFields.setPosition("Address", "address.zipCode", 1, 1);
-        formFields.setPosition("Address", "address.state", 2, 0);
+        formFields.setPosition("Overview", "website", 2, 1);
+        formFields.setPosition("Overview", "email", 2, 2);
+        formFields.setPosition("Overview", "mainPhoneFormatted", 2, 3);
 
-        formFields.setMultiSelectDimensions("types", 3, 10);
+        formFields.setPosition("Overview", "numberOfEmployees", 3, 1);
+        formFields.setPosition("Overview", "annualRevenue", 3, 2);
+        formFields.setPosition("Overview", "accountTypes", 3, 3);
+        formFields.setPosition("Overview", "industry", 3, 4);
 
-        formFields.setSelectItems("address.state", new ArrayList());
-        formFields.addValueChangeListener("address.country", this, "countryChanged");
+        formFields.setPosition("Billing Address", "billingAddress.street", 1, 1);
+        formFields.setPosition("Billing Address", "billingAddress.city", 1, 2);
+        formFields.setPosition("Billing Address", "billingAddress.country", 2, 1);
+        formFields.setPosition("Billing Address", "billingAddress.zipCode", 2, 2);
+        formFields.setPosition("Billing Address", "billingAddress.state", 3, 1);
+
+        formFields.setPosition("Mailing Address", "mailingAddress.street", 1, 1);
+        formFields.setPosition("Mailing Address", "mailingAddress.city", 1, 2);
+        formFields.setPosition("Mailing Address", "mailingAddress.country", 2, 1);
+        formFields.setPosition("Mailing Address", "mailingAddress.zipCode", 2, 2);
+        formFields.setPosition("Mailing Address", "mailingAddress.state", 3, 1);
+        formFields.setTabOptional("Mailing Address", this, "addMailingAddress", this, "removeMailingAddress");
+
+        formFields.setMultiSelectDimensions("accountTypes", 3, 10);
+
+        formFields.setLabel("assignedTo.loginName", "Assigned to");
+
+        formFields.setSelectItems("billingAddress.state", new ArrayList());
+        formFields.addValueChangeListener("billingAddress.country", this, "countryChanged");
+
+        formFields.setSelectItems("mailingAddress.state", new ArrayList());
+        formFields.addValueChangeListener("mailingAddress.country", this, "otherCountryChanged");
+
+        SelectField selectField = new SelectField(this, "assignedTo", userSelect);
+        formFields.setField("assignedTo.loginName", selectField);
+    }
+
+    public void addMailingAddress() {
+        getEntity().setMailingAddress(new Address(AddressType.MAILING));
+    }
+
+    public void removeMailingAddress() {
+        getEntity().setMailingAddress(null);
     }
 
     public void countryChanged(Property.ValueChangeEvent event) {
+        countryChangedImpl(event, "billingAddress");
+    }
+
+    public void otherCountryChanged(Property.ValueChangeEvent event) {
+        countryChangedImpl(event, "mailingAddress");
+    }
+
+    public void countryChangedImpl(Property.ValueChangeEvent event, String addressPropertyId) {
         Country newCountry = (Country) event.getProperty().getValue();
         List<State> states = stateDao.findByCountry(newCountry);
 
+        String fullStatePropertyId = addressPropertyId + ".state";
         FormFields formFields = getFormFields();
-        formFields.setVisible("address.state", !states.isEmpty());
-        formFields.setSelectItems("address.state", states);
+        formFields.setVisible(fullStatePropertyId, !states.isEmpty());
+        formFields.setSelectItems(fullStatePropertyId, states);
+
+        String fullZipCodePropertyId = addressPropertyId + ".zipCode";
 
         if (newCountry != null && newCountry.getMinPostalCode() != null && newCountry.getMaxPostalCode() != null) {
-            formFields.setDescription("address.zipCode",
+            formFields.setDescription(fullZipCodePropertyId,
                     "<strong>Postal code range:</strong>" +
                             "<ul>" +
                             "  <li>" + newCountry.getMinPostalCode() + " - " + newCountry.getMaxPostalCode() + "</li>" +
                             "</ul>");
         } else {
-            formFields.setDescription("address.zipCode", null);
+            formFields.setDescription(fullZipCodePropertyId, null);
         }
     }
+
 
     @Override
     public String getEntityCaption() {

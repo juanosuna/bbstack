@@ -15,27 +15,33 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.view.opportunity;
+package com.brownbag.sample.entity;
 
-import com.brownbag.core.view.entity.SearchForm;
-import com.brownbag.core.view.entity.field.FormFields;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+/**
+ * User: Juan
+ * Date: 6/8/11
+ * Time: 11:23 AM
+ */
+public enum OpportunityType {
+    NEW("New Business"),
+    EXISTING("Existing Business");
 
-@Component
-@Scope("prototype")
-public class OpportunitySearchForm extends SearchForm<OpportunityQuery> {
+    private String displayName;
 
-    @Override
-    public void configureFields(FormFields formFields) {
-        formFields.setPosition("accountName", 1, 1);
-        formFields.setPosition("salesStages", 1, 2);
+    OpportunityType(String displayName) {
+        this.displayName = displayName;
+    }
 
-        formFields.setMultiSelectDimensions("salesStages", 3, 10);
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     @Override
-    public String getEntityCaption() {
-        return "Opportunity Search Form";
+    public String toString() {
+        return displayName;
     }
 }

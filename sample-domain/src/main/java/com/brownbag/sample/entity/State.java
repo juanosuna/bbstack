@@ -38,7 +38,7 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_ONLY;
 public class State extends ReferenceEntity {
 
     private String code;
-    private String type;
+    private String stateType;
 
     @Index(name = "IDX_STATE_COUNTRY")
     @ForeignKey(name = "FK_STATE_COUNTRY")
@@ -77,12 +77,12 @@ public class State extends ReferenceEntity {
         this.code = code;
     }
 
-    public String getType() {
-        return type;
+    public String getStateType() {
+        return stateType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setStateType(String stateType) {
+        this.stateType = stateType;
     }
 
     @NotNull

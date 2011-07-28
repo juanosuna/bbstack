@@ -23,6 +23,7 @@ import com.brownbag.core.validation.ValidPhone;
 import com.google.i18n.phonenumbers.NumberParseException;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -44,23 +45,53 @@ public class Contact extends WritableEntity {
 
     private String title;
 
+    @Temporal(TemporalType.DATE)
+    private Date birthDate;
+
+    private String department;
+
+    private String email;
+
+    private boolean doNotEmail;
+
+    @Embedded
+    private Phone mainPhone;
+
+    @Transient
+    private String invalidMainPhone;
+
+    @Embedded
+    private Phone otherPhone;
+
+    @Transient
+    private String invalidOtherPhone;
+
+    private boolean doNotCall;
+
+    @Index(name = "IDX_CONTACT_LEAD_SOURCE")
+    @ForeignKey(name = "FK_CONTACT_LEAD_SOURCE")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    private LeadSource leadSource;
+
     @Index(name = "IDX_CONTACT_ACCOUNT")
     @ForeignKey(name = "FK_CONTACT_ACCOUNT")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Account account;
 
-    @Temporal(TemporalType.DATE)
-    private Date birthDate;
+    @Index(name = "IDX_CONTACT_ASSIGNED_TO")
+    @ForeignKey(name = "FK_CONTACT_ASSIGNED_TO")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    private User assignedTo;
 
-    @Embedded
-    private Phone mainPhone;
+    @Index(name = "IDX_CONTACT_REPORTS_TO")
+    @ForeignKey(name = "FK_CONTACT_REPORTS_TO")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    private Contact reportsTo;
 
-    private boolean doNotCall;
-
-    @Index(name = "IDX_CONTACT_PRIMARY_ADDRESS")
-    @ForeignKey(name = "FK_CONTACT_PRIMARY_ADDRESS")
+    @Index(name = "IDX_CONTACT_MAILING_ADDRESS")
+    @ForeignKey(name = "FK_CONTACT_MAILING_ADDRESS")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Address address = new Address(AddressType.PRIMARY);
+    private Address mailingAddress = new Address(AddressType.MAILING);
 
     @Index(name = "IDX_CONTACT_OTHER_ADDRESS")
     @ForeignKey(name = "FK_CONTACT_OTHER_ADDRESS")
@@ -68,7 +99,7 @@ public class Contact extends WritableEntity {
     private Address otherAddress;
 
     @Lob
-    private String note;
+    private String description;
 
     public Contact() {
     }
@@ -80,7 +111,7 @@ public class Contact extends WritableEntity {
 
     @NotBlank
     @NotNull
-    @Size(min = 1, max = 16)
+    @Size(min = 1, max = 64)
     public String getFirstName() {
         return firstName;
     }
@@ -91,7 +122,7 @@ public class Contact extends WritableEntity {
 
     @NotBlank
     @NotNull
-    @Size(min = 1, max = 16)
+    @Size(min = 1, max = 64)
     public String getLastName() {
         return lastName;
     }
@@ -104,21 +135,13 @@ public class Contact extends WritableEntity {
         return getLastName() + ", " + getFirstName();
     }
 
-    @Size(min = 1, max = 16)
+    @Size(min = 1, max = 64)
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
     }
 
     @Past
@@ -130,23 +153,46 @@ public class Contact extends WritableEntity {
         this.birthDate = birthDate;
     }
 
+    @Size(min = 1, max = 64)
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    @Email
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isDoNotEmail() {
+        return doNotEmail;
+    }
+
+    public void setDoNotEmail(boolean doNotEmail) {
+        this.doNotEmail = doNotEmail;
+    }
+
     public Phone getMainPhone() {
         return mainPhone;
     }
 
     public void setMainPhone(Phone mainPhone) {
         this.mainPhone = mainPhone;
-        invalidPhone = null;
+        invalidMainPhone = null;
     }
-
-    @Transient
-    private String invalidPhone;
 
     @NotNull
     @ValidPhone(defaultRegionCode = DEFAULT_PHONE_COUNTRY)
     public String getMainPhoneFormatted() {
-        if (invalidPhone != null) {
-            return invalidPhone;
+        if (invalidMainPhone != null) {
+            return invalidMainPhone;
         } else {
             if (getMainPhone() == null) {
                 return null;
@@ -164,7 +210,42 @@ public class Contact extends WritableEntity {
                 Phone phone = new Phone(mainPhone, DEFAULT_PHONE_COUNTRY);
                 setMainPhone(phone);
             } catch (NumberParseException e) {
-                invalidPhone = mainPhone;
+                invalidMainPhone = mainPhone;
+            }
+        }
+    }
+
+    public Phone getOtherPhone() {
+        return otherPhone;
+    }
+
+    public void setOtherPhone(Phone otherPhone) {
+        this.otherPhone = otherPhone;
+        invalidOtherPhone = null;
+    }
+
+    @ValidPhone(defaultRegionCode = DEFAULT_PHONE_COUNTRY)
+    public String getOtherPhoneFormatted() {
+        if (invalidOtherPhone != null) {
+            return invalidOtherPhone;
+        } else {
+            if (getOtherPhone() == null) {
+                return null;
+            } else {
+                return getOtherPhone().getFormatted(DEFAULT_PHONE_COUNTRY);
+            }
+        }
+    }
+
+    public void setOtherPhoneFormatted(@ValidPhone(defaultRegionCode = DEFAULT_PHONE_COUNTRY) String otherPhone) {
+        if (otherPhone == null) {
+            setOtherPhone(null);
+        } else {
+            try {
+                Phone phone = new Phone(otherPhone, DEFAULT_PHONE_COUNTRY);
+                setOtherPhone(phone);
+            } catch (NumberParseException e) {
+                invalidOtherPhone = otherPhone;
             }
         }
     }
@@ -177,17 +258,49 @@ public class Contact extends WritableEntity {
         this.doNotCall = doNotCall;
     }
 
-    @Valid
-    @NotNull
-    public Address getAddress() {
-        return address;
+    public LeadSource getLeadSource() {
+        return leadSource;
     }
 
-    public void setAddress(Address address) {
-        if (address != null) {
-            address.setType(AddressType.PRIMARY);
+    public void setLeadSource(LeadSource leadSource) {
+        this.leadSource = leadSource;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public User getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(User assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public Contact getReportsTo() {
+        return reportsTo;
+    }
+
+    public void setReportsTo(Contact reportsTo) {
+        this.reportsTo = reportsTo;
+    }
+
+    @Valid
+    @NotNull
+    public Address getMailingAddress() {
+        return mailingAddress;
+    }
+
+    public void setMailingAddress(Address mailingAddress) {
+        if (mailingAddress != null) {
+            mailingAddress.setAddressType(AddressType.MAILING);
         }
-        this.address = address;
+        this.mailingAddress = mailingAddress;
     }
 
     @Valid
@@ -197,22 +310,21 @@ public class Contact extends WritableEntity {
 
     public void setOtherAddress(Address otherAddress) {
         if (otherAddress != null) {
-            otherAddress.setType(AddressType.OTHER);
+            otherAddress.setAddressType(AddressType.OTHER);
         }
         this.otherAddress = otherAddress;
     }
 
-    public String getNote() {
-        return note;
+    public String getDescription() {
+        return description;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @PreRemove
     public void preRemove() {
         setAccount(null);
     }
-
 }

@@ -19,8 +19,7 @@ package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.util.MethodDelegate;
 import com.brownbag.core.util.assertion.Assert;
-import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.FormComponent;
+import com.brownbag.core.view.entity.*;
 import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Field;
@@ -52,9 +51,9 @@ public class FormFields extends DisplayFields {
         for (DisplayField field : fields) {
             FormField formField = (FormField) field;
             if (formField.getTabName().equals(tabName)) {
-                columns = Math.max(columns, formField.getColumnStart());
+                columns = Math.max(columns, formField.getColumnStart() - 1);
                 if (formField.getColumnEnd() != null) {
-                    columns = Math.max(columns, formField.getColumnEnd());
+                    columns = Math.max(columns, formField.getColumnEnd() - 1);
                 }
             }
         }
@@ -72,9 +71,9 @@ public class FormFields extends DisplayFields {
         for (DisplayField field : fields) {
             FormField formField = (FormField) field;
             if (formField.getTabName().equals(tabName)) {
-                rows = Math.max(rows, formField.getRowStart());
+                rows = Math.max(rows, formField.getRowStart() - 1);
                 if (formField.getRowEnd() != null) {
-                    rows = Math.max(rows, formField.getRowEnd());
+                    rows = Math.max(rows, formField.getRowEnd() - 1);
                 }
             }
         }
@@ -91,7 +90,12 @@ public class FormFields extends DisplayFields {
     }
 
     public GridLayout createGridLayout(String tabName) {
-        GridLayout gridLayout = new GridLayout(getColumns(tabName), getRows(tabName));
+        GridLayout gridLayout;
+        if (form instanceof EntityForm) {
+            gridLayout = new LeftLabelGridLayout(getColumns(tabName), getRows(tabName));
+        } else {
+            gridLayout = new TopLabelGridLayout(getColumns(tabName), getRows(tabName));
+        }
         gridLayout.setMargin(true, true, true, true);
         gridLayout.setSpacing(true);
         gridLayout.setSizeUndefined();
@@ -117,12 +121,29 @@ public class FormFields extends DisplayFields {
     }
 
     public void setPosition(String tabName, String propertyId, int rowStart, int columnStart, Integer rowEnd, Integer columnEnd) {
+        Assert.PROGRAMMING.assertTrue(rowStart > 0,
+                "rowStart arg must be greater than 0 for property " + propertyId + (tabName.isEmpty() ? "" : ", for tab " + tabName));
+        Assert.PROGRAMMING.assertTrue(columnStart > 0,
+                "columnStart arg must be greater than 0 for property " + propertyId + (tabName.isEmpty() ? "" : ", for tab " + tabName));
+
         FormField formField = (FormField) getField(propertyId);
         formField.setTabName(tabName);
         formField.setColumnStart(columnStart);
         formField.setRowStart(rowStart);
         formField.setColumnEnd(columnEnd);
         formField.setRowEnd(rowEnd);
+    }
+
+    public FormField findByField(Field field) {
+        Collection<DisplayField> displayFields = getFields();
+        for (DisplayField displayField : displayFields) {
+            FormField formField = (FormField) displayField;
+            if (formField.getField().equals(field)) {
+                return formField;
+            }
+        }
+
+        return null;
     }
 
     public AddRemoveMethodDelegate getTabAddRemoveDelegate(String tabName) {
@@ -208,11 +229,11 @@ public class FormFields extends DisplayFields {
     }
 
     public String getLabel(String propertyId) {
-        return getField(propertyId).getLabel();
+        return ((FormField) getField(propertyId)).getFieldLabel().getValue().toString();
     }
 
     public void setLabel(String propertyId, String label) {
-        getField(propertyId).setLabel(label);
+        ((FormField) getField(propertyId)).setFieldLabel(label);
     }
 
     public float getWidth(String propertyId) {

@@ -99,14 +99,18 @@ public class PhoneValidator implements ConstraintValidator<ValidPhone, Object> {
         }
     }
 
-    private String getExampleNumber(String regionCode) {
+    public String getExampleNumber(String regionCode) {
+        return getExampleNumber(validPhone.defaultRegionCode(), regionCode);
+    }
+
+    public static String getExampleNumber(String defaultRegionCode, String regionCode) {
         if (regionCode == null) {
-            regionCode = validPhone.defaultRegionCode();
+            regionCode = defaultRegionCode;
         }
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         Phonenumber.PhoneNumber example = phoneUtil.getExampleNumber(regionCode);
         PhoneNumberUtil.PhoneNumberFormat format;
-        if (regionCode.equals(validPhone.defaultRegionCode())) {
+        if (regionCode.equals(defaultRegionCode)) {
             format = PhoneNumberUtil.PhoneNumberFormat.NATIONAL;
         } else {
             format = PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL;

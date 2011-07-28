@@ -30,7 +30,7 @@ import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
 public class SalesStageDao extends EntityDao<SalesStage, String> {
     @Override
     public List<SalesStage> findAll() {
-        Query query = getEntityManager().createQuery("SELECT s FROM SalesStage s ORDER BY s.name");
+        Query query = getEntityManager().createQuery("SELECT s FROM SalesStage s ORDER BY s.sortOrder");
         setReadOnly(query);
 
         return query.getResultList();

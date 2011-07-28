@@ -83,13 +83,14 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
         public void configureFields(DisplayFields displayFields) {
             displayFields.setPropertyIds(new String[]{
                     "name",
-                    "address.state.code",
-                    "address.country",
-                    "lastModified",
-                    "modifiedBy"
+                    "title",
+                    "mailingAddress.state.code",
+                    "mailingAddress.country",
+                    "mainPhoneFormatted"
             });
 
-            displayFields.setLabel("address.state.code", "State");
+            displayFields.setLabel("mailingAddress.state.code", "State");
+            displayFields.setLabel("mainPhoneFormatted", "Phone");
             displayFields.setSortable("name", false);
         }
 
@@ -149,10 +150,10 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
 
         @Override
         public Path buildOrderBy(Root<Contact> rootEntity) {
-            if (getOrderByPropertyId().equals("address.country")) {
-                return rootEntity.join("address", JoinType.LEFT).join("country", JoinType.LEFT);
+            if (getOrderByPropertyId().equals("mailingAddress.country")) {
+                return rootEntity.join("mailingAddress", JoinType.LEFT).join("country", JoinType.LEFT);
             } else if (getOrderByPropertyId().equals("address.state.code")) {
-                return rootEntity.join("address", JoinType.LEFT).join("state", JoinType.LEFT).get("code");
+                return rootEntity.join("mailingAddress", JoinType.LEFT).join("state", JoinType.LEFT).get("code");
             } else {
                 return null;
             }
@@ -160,7 +161,7 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
 
         @Override
         public void addFetchJoins(Root<Contact> rootEntity) {
-            rootEntity.fetch("address", JoinType.LEFT);
+            rootEntity.fetch("mailingAddress", JoinType.LEFT);
             rootEntity.fetch("account", JoinType.LEFT);
         }
 

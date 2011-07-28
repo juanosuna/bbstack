@@ -27,18 +27,18 @@ public enum PhoneType {
     MOBILE("Mobile"),
     BUSINESS("Business");
 
-    private String name;
+    private String displayName;
 
-    PhoneType(String name) {
-        this.name = name;
+    PhoneType(String displayName) {
+        this.displayName = displayName;
     }
 
-    public String getName() {
-        return name;
+    public String getDisplayName() {
+        return displayName;
     }
 
     @Override
     public String toString() {
-        return name;
+        return displayName;
     }
 }

@@ -36,7 +36,7 @@ import static com.brownbag.core.util.StringUtil.isEqual;
 public class Address extends WritableEntity {
 
     @Enumerated(EnumType.STRING)
-    private AddressType type = AddressType.PRIMARY;
+    private AddressType addressType;
 
     private String street;
 
@@ -57,17 +57,17 @@ public class Address extends WritableEntity {
     public Address() {
     }
 
-    public Address(AddressType type) {
-        this.type = type;
+    public Address(AddressType addressType) {
+        this.addressType = addressType;
     }
 
     @NotNull
-    public AddressType getType() {
-        return type;
+    public AddressType getAddressType() {
+        return addressType;
     }
 
-    public void setType(AddressType type) {
-        this.type = type;
+    public void setAddressType(AddressType type) {
+        this.addressType = type;
     }
 
     @NotNull
