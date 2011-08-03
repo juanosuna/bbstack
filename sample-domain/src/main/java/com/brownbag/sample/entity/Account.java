@@ -21,7 +21,7 @@ package com.brownbag.sample.entity;
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.validation.ValidPhone;
 import com.brownbag.core.view.entity.field.format.DefaultFormat;
-import com.brownbag.sample.service.ecbfx.EcbfxServiceNew;
+import com.brownbag.sample.service.ecbfx.EcbfxService;
 import com.google.i18n.phonenumbers.NumberParseException;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
@@ -78,7 +78,7 @@ public class Account extends WritableEntity {
 
     @Resource
     @Transient
-    private EcbfxServiceNew ecbfxService;
+    private EcbfxService ecbfxService;
 
     @ForeignKey(name = "FK_ACCOUNT_ACCOUNT", inverseName = "FK_ACCOUNT_ACCOUNT_TYPES")
     @ManyToMany(fetch = FetchType.LAZY)

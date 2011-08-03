@@ -40,7 +40,7 @@ import java.util.*;
 
 @Configuration
 @Service
-public class EcbfxServiceNew extends RestClientService {
+public class EcbfxService extends RestClientService {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private Date rateDay;

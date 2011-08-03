@@ -19,7 +19,7 @@ package com.brownbag.sample.dao;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.sample.entity.Currency;
-import com.brownbag.sample.service.ecbfx.EcbfxServiceNew;
+import com.brownbag.sample.service.ecbfx.EcbfxService;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -32,7 +32,7 @@ import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
 public class CurrencyDao extends EntityDao<Currency, String> {
 
     @Resource
-    private EcbfxServiceNew ecbfxService;
+    private EcbfxService ecbfxService;
 
     @Override
     public List<Currency> findAll() {
