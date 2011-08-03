@@ -26,7 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = {
         "classpath:/spring/applicationContext-data-access.xml",
         "classpath:/spring/applicationContext-test.xml",
-        "classpath:/spring/applicationContext-scan.xml"
+        "classpath:/spring/applicationContext-scan.xml",
+        "classpath:/spring/applicationContext-service.xml"
 })
 @Transactional
 public abstract class AbstractDomainTest {
