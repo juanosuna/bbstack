@@ -19,7 +19,19 @@ package com.brownbag.core.util;
 
 import org.apache.commons.lang.StringUtils;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class StringUtil {
+
+    public static final FontMetrics FONT_METRICS;
+
+    static {
+        JTextField jTextField = new JTextField("");
+        Font font = new Font("Helvetica", Font.PLAIN, 12);
+        FONT_METRICS = jTextField.getFontMetrics(font);
+    }
+
 
     public static boolean isEqual(String s, String... args) {
         for (String arg : args) {
@@ -29,6 +41,10 @@ public class StringUtil {
         }
 
         return false;
+    }
+
+    public static int approximateColumnWidth(String s) {
+        return (int) Math.ceil(FONT_METRICS.stringWidth(s)* 0.083);
     }
 
     public static String extractAfterPeriod(String str) {

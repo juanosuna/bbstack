@@ -43,10 +43,6 @@ import java.util.List;
 
 public class ResultsTable extends Table {
 
-    public static final SimpleDateFormat DEFAULT_DAY_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    public static final SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    public static final DecimalFormat DEFAULT_MONEY_FORMAT = new DecimalFormat("###,###.##");
-    public static final DecimalFormat DEFAULT_NUMBER_FORMAT = new DecimalFormat();
 
     private ResultsComponent results;
 
@@ -69,7 +65,8 @@ public class ResultsTable extends Table {
         setEditable(true);
         setTableFieldFactory(new TableButtonLinkFactory());
 
-        NullCapableBeanItemContainer dataSource = new NullCapableBeanItemContainer(getEntityType());
+        NullCapableBeanItemContainer dataSource = new NullCapableBeanItemContainer(getEntityType(),
+                results.getDisplayFields());
         dataSource.setNonSortablePropertyIds(results.getDisplayFields().getNonSortablePropertyIds());
         String[] propertyIds = getEntityFields().getPropertyIdsAsArray();
         for (String propertyId : propertyIds) {
@@ -180,22 +177,6 @@ public class ResultsTable extends Table {
         if (property.getValue() != null) {
             DisplayField displayField = results.getDisplayFields().getField(colId.toString());
             format = displayField.getFormat();
-
-            if (format == null) {
-                if (property.getType() == Date.class) {
-                    Temporal temporal = displayField.getAnnotation(Temporal.class);
-                    if (temporal != null && temporal.value().equals(TemporalType.DATE)) {
-                        format = DEFAULT_DAY_FORMAT;
-                    } else {
-                        format = DEFAULT_TIME_FORMAT;
-                    }
-                } else if (property.getType() == BigDecimal.class) {
-                    format = DEFAULT_MONEY_FORMAT;
-                    return format.format(property.getValue());
-                } else if (Number.class.isAssignableFrom(property.getType())) {
-                    format = DEFAULT_NUMBER_FORMAT;
-                }
-            }
         }
 
         if (format == null) {

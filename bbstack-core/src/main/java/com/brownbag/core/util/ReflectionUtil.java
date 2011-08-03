@@ -153,4 +153,14 @@ public class ReflectionUtil {
 
         return complexProperties;
     }
+
+    public static <T> T convertValue(Object value, Class<T> type) throws InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
+        if (null == value || type.isAssignableFrom(value.getClass())) {
+            return (T) value;
+        }
+
+        Constructor<T> constructor = type.getConstructor(new Class[]{String.class});
+
+        return constructor.newInstance(new Object[]{value.toString()});
+    }
 }

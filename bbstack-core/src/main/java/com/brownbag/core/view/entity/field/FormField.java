@@ -19,24 +19,32 @@ package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.ReferenceEntity;
-import com.brownbag.core.util.BeanPropertyType;
-import com.brownbag.core.util.CurrencyUtil;
-import com.brownbag.core.util.SpringApplicationContext;
-import com.brownbag.core.util.StringUtil;
+import com.brownbag.core.util.*;
 import com.brownbag.core.util.assertion.Assert;
+import com.brownbag.core.validation.ConversionValidator;
 import com.brownbag.core.view.entity.EntityForm;
+import com.brownbag.core.view.entity.FormComponent;
+import com.brownbag.core.view.entity.field.format.DefaultFormat;
 import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.terminal.CompositeErrorMessage;
 import com.vaadin.terminal.ErrorMessage;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
 import javax.persistence.Lob;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.text.Format;
 import java.util.*;
 
 public class FormField extends DisplayField {
     public static final String DEFAULT_DISPLAY_PROPERTY_ID = "displayName";
+    public static final Integer DEFAULT_TEXT_FIELD_WIDTH = 11;
 
     private String tabName = "";
     private Field field;
@@ -46,6 +54,9 @@ public class FormField extends DisplayField {
     private Integer rowEnd;
     private boolean isRequired;
     private com.vaadin.ui.Label label;
+    private AutoAdjustWidthMode autoAdjustWidthMode = AutoAdjustWidthMode.PARTIAL;
+    private Integer defaultWidth;
+    private boolean hasConversionError;
 
     public FormField(FormFields formFields, String propertyId) {
         super(formFields, propertyId);
@@ -126,6 +137,50 @@ public class FormField extends DisplayField {
         if (initializeDefaults) {
             initializeFieldDefaults();
         }
+    }
+
+    public void initWidthAndMaxLengthDefaults(AbstractTextField abstractTextField) {
+        defaultWidth = MathUtil.maxIgnoreNull(DEFAULT_TEXT_FIELD_WIDTH, getBeanPropertyType().getMinimumLength());
+        abstractTextField.setWidth(defaultWidth, Sizeable.UNITS_EM);
+
+        Integer maxWidth = getBeanPropertyType().getMaximumLength();
+        if (maxWidth != null) {
+            abstractTextField.setMaxLength(maxWidth);
+        }
+    }
+
+    public AutoAdjustWidthMode getAutoAdjustWidthMode() {
+        return autoAdjustWidthMode;
+    }
+
+    public void setAutoAdjustWidthMode(AutoAdjustWidthMode autoAdjustWidthMode) {
+        this.autoAdjustWidthMode = autoAdjustWidthMode;
+    }
+
+    public void autoAdjustWidth() {
+        Assert.PROGRAMMING.assertTrue(getField() instanceof AbstractTextField,
+                "FormField.autoAdjustWidth can only be called on text fields");
+
+        if (autoAdjustWidthMode == AutoAdjustWidthMode.NONE) return;
+
+        Object value = getField().getPropertyDataSource().getValue();
+        if (value != null) {
+            AbstractTextField textField = (AbstractTextField) getField();
+            int approximateWidth = StringUtil.approximateColumnWidth(value.toString());
+            if (autoAdjustWidthMode == AutoAdjustWidthMode.FULL) {
+                textField.setWidth(approximateWidth, Sizeable.UNITS_EM);
+            } else if (autoAdjustWidthMode == AutoAdjustWidthMode.PARTIAL) {
+                textField.setWidth(MathUtil.maxIgnoreNull(approximateWidth, defaultWidth), Sizeable.UNITS_EM);
+            }
+        }
+    }
+
+    public float getWidth() {
+        return getField().getWidth();
+    }
+
+    public void setWidth(float width, int unit) {
+        getField().setWidth(width, unit);
     }
 
     public void setSelectItems(List items) {
@@ -211,14 +266,6 @@ public class FormField extends DisplayField {
         getField().setRequired(isRequired);
     }
 
-    public float getWidth() {
-        return getField().getWidth();
-    }
-
-    public void setWidth(float width, int unit) {
-        getField().setWidth(width, unit);
-    }
-
     public String getDescription() {
         return getField().getDescription();
     }
@@ -228,11 +275,21 @@ public class FormField extends DisplayField {
     }
 
     public boolean hasError() {
-        if (getField() instanceof AbstractComponent) {
+        if (hasConversionError) {
+            return true;
+        } else if (getField() instanceof AbstractComponent) {
             AbstractComponent abstractComponent = (AbstractComponent) getField();
             return abstractComponent.getComponentError() != null || hasIsRequiredError();
         } else {
             return false;
+        }
+    }
+
+    public Format getFormat() {
+        if (field instanceof AbstractTextField) {
+            return super.getFormat();
+        } else {
+            return null;
         }
     }
 
@@ -241,6 +298,7 @@ public class FormField extends DisplayField {
     }
 
     public void clearError() {
+        hasConversionError = false;
         if (getField() instanceof AbstractComponent) {
             AbstractComponent abstractComponent = (AbstractComponent) getField();
             abstractComponent.setComponentError(null);
@@ -325,8 +383,9 @@ public class FormField extends DisplayField {
             initAbstractFieldDefaults((AbstractField) field);
         }
 
-        if (field instanceof TextField) {
-            initTextFieldDefaults((TextField) field);
+        if (field instanceof AbstractTextField) {
+            initTextFieldDefaults((AbstractTextField) field);
+            initWidthAndMaxLengthDefaults((AbstractTextField) field);
         }
 
         if (field instanceof RichTextArea) {
@@ -370,10 +429,25 @@ public class FormField extends DisplayField {
 
 
         if (getFormFields().isEntityForm()) {
-            BeanPropertyType beanPropertyType = com.brownbag.core.util.BeanPropertyType.getBeanPropertyType(getDisplayFields().getEntityType(),
+            final BeanPropertyType beanPropertyType = com.brownbag.core.util.BeanPropertyType.getBeanPropertyType(getDisplayFields().getEntityType(),
                     getPropertyId());
             if (beanPropertyType.isValidatable()) {
                 initializeIsRequired(field, beanPropertyType.getId(), beanPropertyType.getContainerType());
+                if (field instanceof AbstractTextField && Number.class.isAssignableFrom(beanPropertyType.getType())) {
+                    field.addValidator(new ConversionValidator(beanPropertyType.getType(), getFormat()) {
+                        @Override
+                        public void validate(Object value) throws InvalidValueException {
+                            try {
+                                super.validate(value);
+                            } catch (InvalidValueException e) {
+                                hasConversionError = true;
+                                EntityForm entityForm = (EntityForm) getFormFields().getForm();
+                                entityForm.syncTabAndSaveButtonErrors();
+                                throw e;
+                            }
+                        }
+                    });
+                }
             }
 
             field.addListener(new FieldValueChangeListener());
@@ -395,6 +469,7 @@ public class FormField extends DisplayField {
         @Override
         public void valueChange(Property.ValueChangeEvent event) {
             EntityForm entityForm = (EntityForm) getFormFields().getForm();
+
             if (entityForm.isValidationEnabled()) {
                 entityForm.validate();
             }
@@ -404,11 +479,12 @@ public class FormField extends DisplayField {
     public static void initAbstractFieldDefaults(AbstractField field) {
         field.setRequiredError("Required value is missing");
         field.setImmediate(true);
-        field.setInvalidCommitted(true);
+        field.setInvalidCommitted(false);
         field.setWriteThrough(true);
     }
 
-    public static void initTextFieldDefaults(TextField field) {
+    public static void initTextFieldDefaults(AbstractTextField field) {
+        field.setWidth(DEFAULT_TEXT_FIELD_WIDTH, Sizeable.UNITS_EM);
         field.setNullRepresentation("");
         field.setNullSettingAllowed(false);
     }
@@ -435,5 +511,11 @@ public class FormField extends DisplayField {
 
     public static void initListSelectDefaults(ListSelect field) {
         field.setMultiSelect(true);
+    }
+
+    public enum AutoAdjustWidthMode {
+        FULL,
+        PARTIAL,
+        NONE
     }
 }

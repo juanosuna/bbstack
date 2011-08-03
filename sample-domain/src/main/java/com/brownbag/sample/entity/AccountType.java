@@ -29,7 +29,7 @@ import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
 
 @Entity
 @Table
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = CACHE_REGION)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = CACHE_REGION)
 public class AccountType extends ReferenceEntity {
 
     public AccountType() {

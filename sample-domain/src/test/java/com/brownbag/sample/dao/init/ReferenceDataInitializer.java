@@ -20,8 +20,8 @@ package com.brownbag.sample.dao.init;
 import com.brownbag.sample.dao.*;
 import com.brownbag.sample.entity.*;
 import com.brownbag.sample.entity.Currency;
-import com.brownbag.sample.geonames.GeoNamesService;
-import com.brownbag.sample.geoplanet.GeoPlanetService;
+import com.brownbag.sample.service.geonames.GeoNamesService;
+import com.brownbag.sample.service.geoplanet.GeoPlanetService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,7 +86,6 @@ public class ReferenceDataInitializer {
     @Resource
     private GeoNamesService geoNamesService;
 
-
     public AccountType randomAccountType() {
         return random(accountTypeDao.findAll());
     }
@@ -129,18 +128,8 @@ public class ReferenceDataInitializer {
 
     public void initialize() {
         initializeReferenceEntities();
-        initializeCurrencies();
-        initializeCountries();
+        initializeCountriesAndCurrencies();
         initializeStates();
-    }
-
-    private void initializeCurrencies() {
-        Currency currency = new Currency("CAD", "Canadian Dollar");
-        currencyDao.persist(currency);
-
-        currency = new Currency("USD", "US Dollar");
-        currencyDao.persist(currency);
-        currencyDao.getEntityManager().flush();
     }
 
     private void initializeReferenceEntities() {
@@ -173,15 +162,21 @@ public class ReferenceDataInitializer {
         salesStageDao.getEntityManager().flush();
     }
 
-    private void initializeCountries() {
+    private void initializeCountriesAndCurrencies() {
         Set<Country> countries = geoPlanetService.getCountries();
-        Map<String, Country> countriesWithPostCodeRange = geoNamesService.getCountries();
+        Map<String, Country> geoNamesCountries = geoNamesService.getCountries();
+        Map<String, Currency> geoNamesCurrencies = geoNamesService.getCurrencies();
         for (Country country : countries) {
-            Country countryWithPostalCodeRange = countriesWithPostCodeRange.get(country.getId());
-            if (countryWithPostalCodeRange != null) {
-                country.setMinPostalCode(countryWithPostalCodeRange.getMinPostalCode());
-                country.setMaxPostalCode(countryWithPostalCodeRange.getMaxPostalCode());
+            Country geoNamesCountry = geoNamesCountries.get(country.getId());
+            if (geoNamesCountry != null) {
+                country.setMinPostalCode(geoNamesCountry.getMinPostalCode());
+                country.setMaxPostalCode(geoNamesCountry.getMaxPostalCode());
+                Currency currency = geoNamesCurrencies.get(country.getId());
+                if (currency != null && !currencyDao.isPersistent(currency)) {
+                    currencyDao.persist(currency);
+                }
             }
+
             countryDao.persist(country);
         }
 

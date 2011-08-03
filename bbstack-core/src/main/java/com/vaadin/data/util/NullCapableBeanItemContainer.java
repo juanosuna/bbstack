@@ -17,6 +17,8 @@
 
 package com.vaadin.data.util;
 
+import com.brownbag.core.view.entity.field.DisplayFields;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -25,21 +27,26 @@ import java.util.Set;
 public class NullCapableBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE> {
     private Class beanType;
     private Set<String> nonSortablePropertyIds = new HashSet<String>();
+    private DisplayFields displayFields;
 
-    public NullCapableBeanItemContainer(Class<? super BEANTYPE> type) throws IllegalArgumentException {
+    public NullCapableBeanItemContainer(Class<? super BEANTYPE> type, DisplayFields displayFields)
+            throws IllegalArgumentException {
         super(type);
         beanType = type;
+        this.displayFields = displayFields;
     }
 
-    public NullCapableBeanItemContainer(Class<? super BEANTYPE> type, Collection<? extends BEANTYPE> beantypes) throws IllegalArgumentException {
+    public NullCapableBeanItemContainer(Class<? super BEANTYPE> type, Collection<? extends BEANTYPE> beantypes, DisplayFields displayFields)
+            throws IllegalArgumentException {
         super(type, beantypes);
         beanType = type;
+        this.displayFields = displayFields;
     }
 
     @Override
     public boolean addNestedContainerProperty(String propertyId) {
         return addContainerProperty(propertyId, new NullCapableNestedPropertyDescriptor(
-                propertyId, beanType));
+                propertyId, beanType, displayFields.getField(propertyId)));
     }
 
     public Set<String> getNonSortablePropertyIds() {

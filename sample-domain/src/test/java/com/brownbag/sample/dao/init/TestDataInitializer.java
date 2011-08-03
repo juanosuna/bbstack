@@ -17,17 +17,19 @@
 
 package com.brownbag.sample.dao.init;
 
-import com.brownbag.sample.dao.UserDao;
 import com.brownbag.core.validation.PhoneValidator;
 import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.dao.OpportunityDao;
+import com.brownbag.sample.dao.UserDao;
 import com.brownbag.sample.entity.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 @Service
 @Transactional
@@ -87,7 +89,10 @@ public class TestDataInitializer {
 
             initializeAccount(contact, i);
             contactDao.persist(contact);
-//            contactDao.getEntityManager().flush();
+            if (i % 50 == 0) {
+                contactDao.getEntityManager().flush();
+                contactDao.getEntityManager().clear();
+            }
         }
     }
 
@@ -148,7 +153,11 @@ public class TestDataInitializer {
         State state = referenceDataInitializer.randomState();
         address.setCountry(state.getCountry());
         address.setState(state);
-        address.setZipCode(state.getCountry().getMaxPostalCode());
+        if (state.getCountry().getId().equals("CA")) {
+            address.setZipCode("A0A 0A0");
+        } else {
+            address.setZipCode(state.getCountry().getMinPostalCode());
+        }
 
         return address;
     }

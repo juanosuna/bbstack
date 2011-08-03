@@ -21,6 +21,7 @@ import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
+import com.brownbag.core.view.entity.field.format.DefaultFormat;
 import com.brownbag.core.view.entity.util.LayoutContextMenu;
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
@@ -48,6 +49,9 @@ public abstract class FormComponent<T> extends CustomComponent {
     @Resource
     protected MessageSource entityMessageSource;
 
+    @Resource
+    private DefaultFormat defaultFormat;
+
     private ConfigurableForm form;
     private ResultsComponent results;
     private FormFields formFields;
@@ -69,6 +73,10 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     public MessageSource getEntityMessageSource() {
         return entityMessageSource;
+    }
+
+    public DefaultFormat getDefaultFormat() {
+        return defaultFormat;
     }
 
     public Class getEntityType() {
@@ -305,8 +313,12 @@ public abstract class FormComponent<T> extends CustomComponent {
     }
 
     public TabSheet.Tab getTabByName(String tabName) {
-        Integer position = tabPositions.get(tabName);
-        return tabSheet.getTab(position);
+        if (tabSheet == null) {
+            return null;
+        } else {
+            Integer position = tabPositions.get(tabName);
+            return tabSheet.getTab(position);
+        }
     }
 
     public String getCurrentTabName() {
@@ -347,7 +359,8 @@ public abstract class FormComponent<T> extends CustomComponent {
         List<String> propertyIds = getFormFields().getPropertyIds();
         Map<String, VaadinPropertyDescriptor> descriptors = new HashMap<String, VaadinPropertyDescriptor>();
         for (String propertyId : propertyIds) {
-            VaadinPropertyDescriptor descriptor = new NullCapableNestedPropertyDescriptor(propertyId, getEntityType());
+            VaadinPropertyDescriptor descriptor = new NullCapableNestedPropertyDescriptor(propertyId, getEntityType(),
+                    getFormFields().getField(propertyId));
             descriptors.put(propertyId, descriptor);
         }
         return new NullCapableBeanItem(entity, descriptors);

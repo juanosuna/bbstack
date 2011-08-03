@@ -17,17 +17,20 @@
 
 package com.vaadin.data.util;
 
+import com.brownbag.core.view.entity.field.DisplayField;
 import com.vaadin.data.Property;
 
 public class NullCapableNestedPropertyDescriptor<BT> implements VaadinPropertyDescriptor<BT> {
     private final String name;
     private final Class<?> propertyType;
+    private DisplayField displayField;
 
-    public NullCapableNestedPropertyDescriptor(String name, Class<BT> beanType)
+    public NullCapableNestedPropertyDescriptor(String name, Class<BT> beanType, DisplayField displayField)
             throws IllegalArgumentException {
         this.name = name;
         NullCapableNestedMethodProperty property = new NullCapableNestedMethodProperty(beanType, name);
         this.propertyType = property.getType();
+        this.displayField = displayField;
     }
 
     public String getName() {
@@ -39,6 +42,13 @@ public class NullCapableNestedPropertyDescriptor<BT> implements VaadinPropertyDe
     }
 
     public Property createProperty(BT bean) {
-        return new NullCapableNestedMethodProperty(bean, name);
+        Property property = new NullCapableNestedMethodProperty(bean, name);
+        PropertyFormatter propertyFormatter = displayField.createPropertyFormatter();
+        if (propertyFormatter == null) {
+            return property;
+        } else {
+            propertyFormatter.setPropertyDataSource(property);
+            return propertyFormatter;
+        }
     }
 }

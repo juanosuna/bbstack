@@ -18,7 +18,9 @@
 package com.brownbag.sample.dao.init;
 
 import com.brownbag.sample.dao.AbstractDomainTest;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import javax.annotation.Resource;
@@ -32,10 +34,11 @@ public class TestInitializer extends AbstractDomainTest {
     @Resource
     private TestDataInitializer testDataInitializer;
 
-    //    @IfProfileValue(name="initDB", value="true")
+    @IfProfileValue(name="initDB", value="true")
+//    @Ignore
     @Test
     public void initialize() throws Exception {
         referenceDataInitializer.initialize();
-        testDataInitializer.initialize(100);
+        testDataInitializer.initialize(1000);
     }
 }

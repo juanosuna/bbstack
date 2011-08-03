@@ -26,10 +26,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -159,8 +156,23 @@ public abstract class EntityDao<T, ID extends Serializable> {
         getEntityManager().refresh(entity);
     }
 
+    public T persistOrMerge(T entity) {
+        if (isPersistent(entity)) {
+            return merge(entity);
+        } else {
+            persist(entity);
+            return entity;
+        }
+    }
+
     public boolean isPersistent(T entity) {
-        return getEntityManager().getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(entity) != null;
+        ID id = (ID) getEntityManager().getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(entity);
+        if (id == null) {
+            return false;
+        } else {
+            T existingEntity = find(id);
+            return existingEntity != null;
+        }
     }
 
     public List<T> execute(StructuredEntityQuery structuredEntityQuery) {

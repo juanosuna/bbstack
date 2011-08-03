@@ -97,6 +97,7 @@
         COUNTRY_TYPE varchar(255),
         MAX_POSTAL_CODE varchar(255),
         MIN_POSTAL_CODE varchar(255),
+        CURRENCY_ID varchar(255),
         primary key (ID)
     );
 
@@ -275,6 +276,13 @@
         add constraint FK_CONTACT_OTHER_ADDRESS 
         foreign key (OTHER_ADDRESS_ID) 
         references SAMPLE.ADDRESS;
+
+    create index IDX_COUNTRY_CURRENCY on SAMPLE.COUNTRY (CURRENCY_ID);
+
+    alter table SAMPLE.COUNTRY 
+        add constraint FK_COUNTRY_CURRENCY 
+        foreign key (CURRENCY_ID) 
+        references SAMPLE.CURRENCY;
 
     create index IDX_OPPORTUNITY_LEAD_SOURCE on SAMPLE.OPPORTUNITY (LEAD_SOURCE_ID);
 

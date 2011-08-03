@@ -29,17 +29,17 @@ import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
 
 @Entity
 @Table
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = CACHE_REGION)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = CACHE_REGION)
 public class Currency extends ReferenceEntity {
 
     public Currency() {
     }
 
     public Currency(String id) {
-        super(id);
+        super(id, id);
     }
 
-    public Currency(String id, String name) {
-        super(id, name);
+    public Currency(String id, String displayName) {
+        super(id, displayName);
     }
 }

@@ -20,6 +20,7 @@ package com.brownbag.sample.entity;
 
 import com.brownbag.core.entity.ReferenceEntity;
 import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 
@@ -30,11 +31,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
-import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_ONLY;
 
 @Entity
 @Table
-@Cache(usage = READ_ONLY, region = CACHE_REGION)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = CACHE_REGION)
 public class State extends ReferenceEntity {
 
     private String code;
@@ -52,8 +52,8 @@ public class State extends ReferenceEntity {
         super(id);
     }
 
-    public State(String id, String name, Country country) {
-        super(id, name);
+    public State(String id, String displayName, Country country) {
+        super(id, displayName);
         this.country = country;
         this.code = extractStateCode();
     }

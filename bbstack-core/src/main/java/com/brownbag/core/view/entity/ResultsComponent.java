@@ -22,6 +22,7 @@ import com.brownbag.core.dao.EntityQuery;
 import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.DisplayFields;
+import com.brownbag.core.view.entity.field.format.DefaultFormat;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.data.validator.IntegerValidator;
@@ -41,6 +42,9 @@ public abstract class ResultsComponent<T> extends CustomComponent {
 
     @Resource(name = "entityMessageSource")
     private MessageSource entityMessageSource;
+
+    @Resource
+    private DefaultFormat defaultFormat;
 
     private ResultsTable resultsTable;
     private DisplayFields displayFields;
@@ -82,7 +86,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
 
     @PostConstruct
     public void postConstruct() {
-        displayFields = new DisplayFields(getEntityType(), entityMessageSource);
+        displayFields = new DisplayFields(getEntityType(), entityMessageSource, defaultFormat);
         configureFields(displayFields);
         resultsTable = new ResultsTable(this);
         configureTable(resultsTable);

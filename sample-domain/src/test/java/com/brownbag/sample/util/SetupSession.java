@@ -15,7 +15,7 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.dao;
+package com.brownbag.sample.util;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.mock.web.MockHttpServletRequest;

@@ -9,30 +9,33 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.geonames;
+package com.brownbag.core.view.entity.field.format;
 
-import javax.xml.bind.annotation.*;
-import java.util.List;
+import com.vaadin.data.util.PropertyFormatter;
 
-@XmlRootElement(namespace = "", name="geonames")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class GeoNamesResponse {
+import java.text.Format;
 
-    @XmlElement(name = "country")
-    public List<CountryPostalCodeRange> countries;
+public class TextFormat extends PropertyFormatter {
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    public static class CountryPostalCodeRange {
+    private Format format;
 
-        public String countryCode;
-        public String minPostalCode;
-        public String maxPostalCode;
+    public TextFormat(Format format) {
+        this.format = format;
+    }
+
+    @Override
+    public String format(Object value) {
+        return format.format(value);
+    }
+
+    @Override
+    public Object parse(String formattedValue) throws Exception {
+        return format.parseObject(formattedValue);
     }
 }
-

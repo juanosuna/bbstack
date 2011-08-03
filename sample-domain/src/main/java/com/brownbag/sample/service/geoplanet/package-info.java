@@ -15,16 +15,8 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.geoplanet;
+@javax.xml.bind.annotation.XmlSchema(
+        namespace = "http://where.yahooapis.com/v1/schema.rng",
+        elementFormDefault = XmlNsForm.QUALIFIED) package com.brownbag.sample.service.geoplanet;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-
-@Path("/yql")
-public interface GeoPlanetRestClient {
-    @GET
-    @Produces("application/xml")
-    GeoPlanetResponse getPlaces(@QueryParam("q") String yql);
-}
+import javax.xml.bind.annotation.XmlNsForm;

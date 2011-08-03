@@ -30,18 +30,10 @@
         <property name="scopes">
             <map>
                 <entry key="session">
-                    <bean class="com.brownbag.sample.dao.SetupSession"/>
+                    <bean class="com.brownbag.sample.util.SetupSession"/>
                 </entry>
             </map>
         </property>
     </bean>
-
-    <bean id="geoPlanetRestClient" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean"
-          p:serviceInterface="com.brownbag.sample.geoplanet.GeoPlanetRestClient"
-          p:baseUri="http://query.yahooapis.com/v1/public"/>
-
-    <bean id="geoNamesRestClient" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean"
-          p:serviceInterface="com.brownbag.sample.geonames.GeoNamesRestClient"
-          p:baseUri="http://api.geonames.org"/>
 
 </beans>

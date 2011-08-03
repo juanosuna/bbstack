@@ -29,6 +29,7 @@ import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.tomanyrelationship.ToManyRelationship;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
@@ -148,6 +149,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         WritableEntity loadedEntity = (WritableEntity) getEntityDao().find(entity.getId());
         BeanItem beanItem = createBeanItem(loadedEntity);
         setItemDataSource(beanItem, getFormFields().getPropertyIds());
+        getFormFields().autoAdjustWidths();
 
         validate();
 
@@ -341,10 +343,10 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void save() {
-        getForm().commit();
-
         boolean isValid = validate();
         if (getForm().isValid() && isValid) {
+            getForm().commit();
+
             WritableEntity entity = (WritableEntity) getEntity();
             if (entity.getId() != null) {
                 entity.updateLastModified();
@@ -399,7 +401,14 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
         Set<String> tabNames = getFormFields().getTabNames();
         for (String tabName : tabNames) {
-            getTabByName(tabName).setComponentError(null);
+            setTabError(tabName, null);
+        }
+    }
+
+    public void setTabError(String tabName, ErrorMessage error) {
+        TabSheet.Tab tab = getTabByName(tabName);
+        if (tab != null) {
+            tab.setComponentError(error);
         }
     }
 
@@ -408,10 +417,10 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         boolean formHasErrors = false;
         for (String tabName : tabNames) {
             if (getFormFields().hasError(tabName)) {
-                getTabByName(tabName).setComponentError(new UserError("Tab contains invalid values"));
+                setTabError(tabName, new UserError("Tab contains invalid values"));
                 formHasErrors = true;
             } else {
-                getTabByName(tabName).setComponentError(null);
+                setTabError(tabName, null);
             }
         }
 

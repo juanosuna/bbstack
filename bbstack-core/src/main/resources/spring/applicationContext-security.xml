@@ -25,6 +25,7 @@
            http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
     <http pattern="/mvc/login.do*" security="none"/>
+    <http pattern="/mvc/logout.do*" security="none"/>
     <http pattern="/" security="none"/>
 
     <http>
@@ -33,7 +34,7 @@
         <form-login login-page="/mvc/login.do" authentication-failure-url="/mvc/login.do?login_error=1"
                     default-target-url="/app" always-use-default-target="true"/>
         <http-basic/>
-        <logout logout-url="/mvc/login.do" invalidate-session="true" logout-success-url="/mvc/login.do"
+        <logout logout-url="/mvc/logout.do" invalidate-session="true" logout-success-url="/mvc/login.do"
                 delete-cookies="JSESSIONID"/>
         <remember-me data-source-ref="developmentDataSource"/>
 

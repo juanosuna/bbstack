@@ -9,21 +9,31 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.dao;
+package com.brownbag.core.util;
 
-import com.brownbag.core.dao.EntityDao;
-import com.brownbag.sample.entity.Account;
-import org.springframework.stereotype.Repository;
+/**
+ * User: Juan
+ * Date: 8/2/11
+ */
+public class ExceptionUtil {
 
-@Repository
-public class AccountDao extends EntityDao<Account, Long> {
-    public Object getObject() {
+    public static <T> T findThrowableInChain(Throwable throwable, Class<? extends Throwable> throwableClass) {
+        Throwable currentThrowable = throwable;
+
+        while (currentThrowable != null) {
+            if (throwableClass.isAssignableFrom(currentThrowable.getClass())) {
+                return (T) currentThrowable;
+            } else {
+                currentThrowable = currentThrowable.getCause();
+            }
+        }
+
         return null;
     }
 }

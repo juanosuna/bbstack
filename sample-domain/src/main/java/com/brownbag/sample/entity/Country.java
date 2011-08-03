@@ -21,20 +21,29 @@ package com.brownbag.sample.entity;
 import com.brownbag.core.entity.ReferenceEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.Index;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
 
 @Entity
 @Table
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = CACHE_REGION)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = CACHE_REGION)
 public class Country extends ReferenceEntity {
 
     private String countryType;
     private String minPostalCode;
     private String maxPostalCode;
+
+    @Index(name = "IDX_COUNTRY_CURRENCY")
+    @ForeignKey(name = "FK_COUNTRY_CURRENCY")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Currency currency;
 
     public Country() {
     }
@@ -43,8 +52,8 @@ public class Country extends ReferenceEntity {
         super(id);
     }
 
-    public Country(String id, String name) {
-        super(id, name);
+    public Country(String id, String displayName) {
+        super(id, displayName);
     }
 
     public String getCountryType() {
@@ -69,6 +78,14 @@ public class Country extends ReferenceEntity {
 
     public void setMaxPostalCode(String maxPostalCode) {
         this.maxPostalCode = maxPostalCode;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public boolean isZipCodeValid(String zipCode) {

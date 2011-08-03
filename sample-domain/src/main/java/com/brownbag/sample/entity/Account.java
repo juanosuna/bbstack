@@ -20,12 +20,14 @@ package com.brownbag.sample.entity;
 
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.validation.ValidPhone;
+import com.brownbag.sample.service.ecbfx.EcbfxService;
 import com.google.i18n.phonenumbers.NumberParseException;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.annotation.Resource;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -65,6 +67,10 @@ public class Account extends WritableEntity {
     @ForeignKey(name = "FK_ACCOUNT_CURRENCY")
     @ManyToOne(fetch = FetchType.LAZY)
     private Currency currency;
+
+    @Resource
+    @Transient
+    private EcbfxService ecbfxService;
 
     @ForeignKey(name = "FK_ACCOUNT_ACCOUNT", inverseName = "FK_ACCOUNT_ACCOUNT_TYPES")
     @ManyToMany(fetch = FetchType.LAZY)
@@ -201,6 +207,14 @@ public class Account extends WritableEntity {
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
+    }
+
+    public BigDecimal getAnnualRevenueInUSD() {
+        if (getAnnualRevenue() == null || getCurrency() == null) {
+            return null;
+        } else {
+            return ecbfxService.convert(getAnnualRevenue(), getCurrency().getId(), "USD");
+        }
     }
 
     public String getAnnualRevenueFormattedInCurrency() {

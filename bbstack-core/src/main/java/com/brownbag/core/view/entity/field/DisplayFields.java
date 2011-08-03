@@ -20,6 +20,7 @@ package com.brownbag.core.view.entity.field;
 import com.brownbag.core.util.CollectionsUtil;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.EntityForm;
+import com.brownbag.core.view.entity.field.format.DefaultFormat;
 
 import java.util.*;
 
@@ -28,10 +29,12 @@ public class DisplayFields {
     private Class entityType;
     private MessageSource messageSource;
     private Map<String, DisplayField> fields = new LinkedHashMap<String, DisplayField>();
+    private DefaultFormat defaultFormat;
 
-    public DisplayFields(Class entityType, MessageSource messageSource) {
+    public DisplayFields(Class entityType, MessageSource messageSource, DefaultFormat defaultFormat) {
         this.entityType = entityType;
         this.messageSource = messageSource;
+        this.defaultFormat = defaultFormat;
     }
 
     public void setPropertyIds(String[] propertyIds) {
@@ -43,6 +46,10 @@ public class DisplayFields {
 
     public Class getEntityType() {
         return entityType;
+    }
+
+    public DefaultFormat getDefaultFormat() {
+        return defaultFormat;
     }
 
     public MessageSource getMessageSource() {

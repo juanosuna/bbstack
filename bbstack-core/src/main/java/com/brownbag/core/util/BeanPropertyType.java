@@ -22,6 +22,7 @@ import com.brownbag.core.validation.AssertTrueForProperties;
 import org.springframework.beans.BeanUtils;
 
 import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -111,6 +112,64 @@ public class BeanPropertyType {
         }
 
         return null;
+    }
+
+    public Integer getMinimumLength() {
+        return MathUtil.minDisallowNull(getMinimumLengthImpl(), getMaximumLengthImpl());
+    }
+
+    public Integer getMaximumLength() {
+        return MathUtil.maxDisallowNull(getMinimumLengthImpl(), getMaximumLengthImpl());
+    }
+
+    private Integer getMinimumLengthImpl() {
+        Integer min = null;
+
+        for (Annotation annotation : annotations) {
+            if (Size.class.isAssignableFrom(annotation.getClass())) {
+                Size size = (Size) annotation;
+                min =  MathUtil.minIgnoreNull(min, size.min());
+            } else if (Min.class.isAssignableFrom(annotation.getClass())) {
+                Min m = (Min) annotation;
+                min =  MathUtil.minIgnoreNull(min, String.valueOf(m.value()).length());
+            } else if (Digits.class.isAssignableFrom(annotation.getClass())) {
+                Digits digits = (Digits) annotation;
+                min =  MathUtil.minIgnoreNull(min, digits.integer() + digits.fraction() + 1);
+            } else if (DecimalMin.class.isAssignableFrom(annotation.getClass())) {
+                DecimalMin m = (DecimalMin) annotation;
+                min =  MathUtil.minIgnoreNull(min, String.valueOf(m.value()).length());
+            } else if (DecimalMax.class.isAssignableFrom(annotation.getClass())) {
+                DecimalMax m = (DecimalMax) annotation;
+                min =  MathUtil.minIgnoreNull(min, String.valueOf(m.value()).length());
+            }
+        }
+
+        return min;
+    }
+
+    private Integer getMaximumLengthImpl() {
+        Integer max = null;
+
+        for (Annotation annotation : annotations) {
+            if (Size.class.isAssignableFrom(annotation.getClass())) {
+                Size size = (Size) annotation;
+                max =  MathUtil.maxIgnoreNull(max, size.max());
+            } else if (Max.class.isAssignableFrom(annotation.getClass())) {
+                Max m = (Max) annotation;
+                max =  MathUtil.maxIgnoreNull(max, String.valueOf(m.value()).length());
+            } else if (Digits.class.isAssignableFrom(annotation.getClass())) {
+                Digits digits = (Digits) annotation;
+                max =  MathUtil.maxIgnoreNull(max, digits.integer() + digits.fraction() + 1);
+            } else if (DecimalMin.class.isAssignableFrom(annotation.getClass())) {
+                DecimalMin m = (DecimalMin) annotation;
+                max =  MathUtil.maxIgnoreNull(max, String.valueOf(m.value()).length());
+            } else if (DecimalMax.class.isAssignableFrom(annotation.getClass())) {
+                DecimalMax m = (DecimalMax) annotation;
+                max =  MathUtil.maxIgnoreNull(max, String.valueOf(m.value()).length());
+            }
+        }
+
+        return max;
     }
 
     public static BeanPropertyType getBeanPropertyType(Class clazz, String propertyPath) {

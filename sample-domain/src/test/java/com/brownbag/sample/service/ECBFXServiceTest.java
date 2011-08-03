@@ -9,25 +9,31 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.sample.geonames;
+package com.brownbag.sample.service;
 
-import com.brownbag.sample.geoplanet.GeoPlanetResponse;
+import org.junit.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-@Path("/")
-public interface GeoNamesRestClient {
-    @Path("/postalCodeCountryInfo")
-    @GET
-    @Produces("application/xml")
-    GeoNamesResponse getPostalCodeCountryInfo(@QueryParam("username") String username);
+/**
+ * User: Juan
+ * Date: 7/30/11
+ */
+public class EcbfxServiceTest extends AbstractServiceTest {
+//    @Resource
+//    private ECBFXService ecbfxService;
+
+    @Test
+    public void getFXRates() {
+//        Map<String, String> fxRates = ecbfxService.getFXRates();
+//        assertNotNull(fxRates);
+//        assertTrue(fxRates.size() > 0);
+    }
 }

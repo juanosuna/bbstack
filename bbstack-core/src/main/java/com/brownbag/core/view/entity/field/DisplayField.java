@@ -20,12 +20,18 @@ package com.brownbag.core.view.entity.field;
 import com.brownbag.core.util.BeanPropertyType;
 import com.brownbag.core.util.StringUtil;
 import com.brownbag.core.view.entity.EntityForm;
+import com.brownbag.core.view.entity.field.format.DefaultFormat;
+import com.brownbag.core.view.entity.field.format.TextFormat;
+import com.vaadin.data.util.PropertyFormatter;
 import org.springframework.beans.BeanUtils;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.Format;
+import java.util.Date;
 
 public class DisplayField {
     private DisplayFields displayFields;
@@ -34,6 +40,7 @@ public class DisplayField {
     private BeanPropertyType beanPropertyType;
     private FormLink formLink;
     private Format format;
+    private Format defaultFormat;
     private boolean isSortable = true;
     private String columnHeader;
 
@@ -41,6 +48,7 @@ public class DisplayField {
         this.displayFields = displayFields;
         this.propertyId = propertyId;
         beanPropertyType = BeanPropertyType.getBeanPropertyType(getDisplayFields().getEntityType(), getPropertyId());
+        defaultFormat = createDefaultFormat();
     }
 
     public DisplayFields getDisplayFields() {
@@ -49,6 +57,10 @@ public class DisplayField {
 
     public String getPropertyId() {
         return propertyId;
+    }
+
+    protected BeanPropertyType getBeanPropertyType() {
+        return beanPropertyType;
     }
 
     public Class getPropertyType() {
@@ -72,11 +84,40 @@ public class DisplayField {
     }
 
     public Format getFormat() {
-        return format;
+        if (format == null) {
+            return defaultFormat;
+        } else {
+            return format;
+        }
     }
 
     public void setFormat(Format format) {
         this.format = format;
+    }
+
+    public Format createDefaultFormat() {
+        DefaultFormat defaultFormat = getDisplayFields().getDefaultFormat();
+
+        if (getBeanPropertyType().getType() == Date.class) {
+            Temporal temporal = getAnnotation(Temporal.class);
+            if (temporal != null && temporal.value().equals(TemporalType.DATE)) {
+                format = defaultFormat.getDateFormat();
+            } else {
+                format = defaultFormat.getDateTimeFormat();
+            }
+        } else if (Number.class.isAssignableFrom(getBeanPropertyType().getType())) {
+            format = defaultFormat.getNumberFormat();
+        }
+
+        return null;
+    }
+
+    public PropertyFormatter createPropertyFormatter() {
+        if (getFormat() == null) {
+            return null;
+        } else {
+            return new TextFormat(getFormat());
+        }
     }
 
     public boolean isSortable() {

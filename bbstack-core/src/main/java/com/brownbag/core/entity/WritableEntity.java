@@ -17,6 +17,7 @@
 
 package com.brownbag.core.entity;
 
+import com.brownbag.core.util.SpringApplicationContext;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -68,6 +69,10 @@ public abstract class WritableEntity implements IdentifiableEntity {
 
     protected WritableEntity() {
         uuid = UUID.randomUUID().toString();
+        if (SpringApplicationContext.getApplicationContext() != null &&
+                SpringApplicationContext.getApplicationContext().getAutowireCapableBeanFactory() != null) {
+            SpringApplicationContext.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(this);
+        }
     }
 
     public Long getId() {

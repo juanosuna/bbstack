@@ -33,6 +33,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +79,8 @@ public class AccountForm extends EntityForm<Account> {
 
         formFields.setPosition("Details", "numberOfEmployees", 2, 1);
         formFields.setPosition("Details", "annualRevenue", 2, 2);
+        formFields.setPosition("Details", "annualRevenueInUSD", 3, 1);
+        formFields.setPosition("Details", "currency", 3, 2);
 
         formFields.setPosition("Billing Address", "billingAddress.street", 1, 1);
         formFields.setPosition("Billing Address", "billingAddress.city", 1, 2);
@@ -97,8 +100,10 @@ public class AccountForm extends EntityForm<Account> {
         formFields.setLabel("accountTypes", "Types");
         formFields.setLabel("mainPhoneFormatted", "Phone");
         formFields.setLabel("assignedTo.loginName", "Assigned to");
-        formFields.getFormField("email").getField().setWidth("13em");
-        formFields.getFormField("website").getField().setWidth("17em");
+
+//        formFields.getFormField("annualRevenue").setFormat(new DecimalFormat("###,###.##"));
+//        formFields.getFormField("email").getField().setWidth("13em");
+//        formFields.getFormField("website").getField().setWidth("17em");
 
         formFields.setSelectItems("billingAddress.state", new ArrayList());
         formFields.addValueChangeListener("billingAddress.country", this, "countryChanged");

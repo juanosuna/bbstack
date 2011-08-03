@@ -19,11 +19,12 @@ package com.brownbag.core.view.entity.field;
 
 import com.brownbag.core.util.MethodDelegate;
 import com.brownbag.core.util.assertion.Assert;
-import com.brownbag.core.view.entity.*;
+import com.brownbag.core.view.entity.EntityForm;
+import com.brownbag.core.view.entity.FormComponent;
+import com.brownbag.core.view.entity.LeftLabelGridLayout;
+import com.brownbag.core.view.entity.TopLabelGridLayout;
 import com.vaadin.terminal.ErrorMessage;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.*;
 
 import java.util.*;
 
@@ -33,7 +34,7 @@ public class FormFields extends DisplayFields {
     private Map<String, AddRemoveMethodDelegate> optionalTabs = new HashMap<String, AddRemoveMethodDelegate>();
 
     public FormFields(FormComponent form) {
-        super(form.getEntityType(), form.getEntityMessageSource());
+        super(form.getEntityType(), form.getEntityMessageSource(), form.getDefaultFormat());
         this.form = form;
     }
 
@@ -191,6 +192,17 @@ public class FormFields extends DisplayFields {
         return formFields;
     }
 
+    public Set<FormField> getFormFields() {
+        Set<FormField> formFields = new HashSet<FormField>();
+        Collection<DisplayField> displayFields = getFields();
+        for (DisplayField displayField : displayFields) {
+            FormField formField = (FormField) displayField;
+            formFields.add(formField);
+        }
+
+        return formFields;
+    }
+
     public void clearErrors() {
         Collection<DisplayField> fields = getFields();
         for (DisplayField field : fields) {
@@ -242,6 +254,15 @@ public class FormFields extends DisplayFields {
 
     public void setWidth(String propertyId, float width, int unit) {
         getFormField(propertyId).setWidth(width, unit);
+    }
+
+    public void autoAdjustWidths() {
+        Set<FormField> formFields = getFormFields();
+        for (FormField formField : formFields) {
+            if (formField.getField() instanceof AbstractTextField) {
+                formField.autoAdjustWidth();
+            }
+        }
     }
 
     public String getDescription(String propertyId) {
