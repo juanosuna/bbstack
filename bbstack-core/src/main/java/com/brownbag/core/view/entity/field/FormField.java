@@ -286,7 +286,7 @@ public class FormField extends DisplayField {
     }
 
     public Format getFormat() {
-        if (field instanceof AbstractTextField) {
+        if (getField() instanceof AbstractTextField) {
             return super.getFormat();
         } else {
             return null;

@@ -339,6 +339,12 @@
                 <version>2.2.1.GA</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.joda</groupId>
+                <artifactId>joda-money</artifactId>
+                <version>0.6</version>
+            </dependency>
+
             <!-- JEE APIs -->
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>

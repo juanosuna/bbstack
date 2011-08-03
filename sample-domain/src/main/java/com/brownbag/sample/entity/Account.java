@@ -20,12 +20,14 @@ package com.brownbag.sample.entity;
 
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.validation.ValidPhone;
-import com.brownbag.sample.service.ecbfx.EcbfxService;
+import com.brownbag.core.view.entity.field.format.DefaultFormat;
+import com.brownbag.sample.service.ecbfx.ECBFXService;
 import com.google.i18n.phonenumbers.NumberParseException;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
+import org.joda.money.IllegalCurrencyException;
 
 import javax.annotation.Resource;
 import javax.persistence.*;
@@ -34,14 +36,17 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.Format;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table
 public class Account extends WritableEntity {
+
+    @Resource
+    @Transient
+    private DefaultFormat defaultFormat;
 
     private String name;
 
@@ -60,6 +65,9 @@ public class Account extends WritableEntity {
 
     private BigDecimal annualRevenue;
 
+    @Transient
+    private BigDecimal annualRevenueInUSD;
+
     @Lob
     private String description;
 
@@ -70,7 +78,7 @@ public class Account extends WritableEntity {
 
     @Resource
     @Transient
-    private EcbfxService ecbfxService;
+    private ECBFXService ecbfxService;
 
     @ForeignKey(name = "FK_ACCOUNT_ACCOUNT", inverseName = "FK_ACCOUNT_ACCOUNT_TYPES")
     @ManyToMany(fetch = FetchType.LAZY)
@@ -195,6 +203,7 @@ public class Account extends WritableEntity {
 
     public void setAnnualRevenue(BigDecimal annualRevenue) {
         this.annualRevenue = annualRevenue;
+        annualRevenueInUSD = null;
     }
 
     public void setAnnualRevenue(double annualRevenue) {
@@ -207,25 +216,35 @@ public class Account extends WritableEntity {
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
+        annualRevenueInUSD = null;
     }
 
-    public BigDecimal getAnnualRevenueInUSD() {
-        if (getAnnualRevenue() == null || getCurrency() == null) {
+    public String getAnnualRevenueInUSDFormatted() {
+        BigDecimal amount = getAnnualRevenueInUSD();
+        if (amount == null) {
             return null;
         } else {
-            return ecbfxService.convert(getAnnualRevenue(), getCurrency().getId(), "USD");
+            return "$" + defaultFormat.getNumberFormat().format(amount);
         }
     }
 
-    public String getAnnualRevenueFormattedInCurrency() {
-        if (getCurrency() == null) {
+    public BigDecimal getAnnualRevenueInUSD() {
+        if (annualRevenueInUSD == null) {
+            annualRevenueInUSD = getAnnualRevenueInUSDImpl();
+        }
+
+        return annualRevenueInUSD;
+    }
+
+    private BigDecimal getAnnualRevenueInUSDImpl() {
+        if (getAnnualRevenue() == null || getCurrency() == null) {
             return null;
         } else {
-            Format format = new DecimalFormat("###,###");
-            if (getCurrency() == null) {
-                return format.format(getAnnualRevenue());
-            } else {
-                return format.format(getAnnualRevenue()) + " " + getCurrency().getId();
+            try {
+                BigDecimal annualRevenueInUSD = ecbfxService.convert(getAnnualRevenue(), getCurrency().getId(), "USD");
+                return annualRevenueInUSD.setScale(0, RoundingMode.HALF_EVEN);
+            } catch (IllegalCurrencyException e) {
+                return null;
             }
         }
     }

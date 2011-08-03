@@ -19,6 +19,9 @@ package com.brownbag.sample.service.ecbfx;
 
 import com.brownbag.sample.service.RestClientService;
 import org.apache.commons.lang.time.DateUtils;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.IllegalCurrencyException;
+import org.joda.money.Money;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
@@ -29,7 +32,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.*;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,7 +40,7 @@ import java.util.*;
 
 @Configuration
 @Service
-public class EcbfxService extends RestClientService {
+public class ECBFXService extends RestClientService {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private Date rateDay;
@@ -48,21 +50,37 @@ public class EcbfxService extends RestClientService {
     @Resource
     private ECBFXClient ecbfxClient;
 
-    public BigDecimal convert(BigDecimal amount, String sourceCurrencyCode, String targetCurrencyCode) {
+    public BigDecimal convert(BigDecimal amount, String sourceCurrencyCode, String targetCurrencyCode)
+            throws IllegalCurrencyException {
+
+        if (sourceCurrencyCode.equals(targetCurrencyCode)) return amount;
+
         Map<String, BigDecimal> rates = getFXRates();
-        BigDecimal sourceRate = rates.get(sourceCurrencyCode);
-        if (sourceRate == null) return null;
+        BigDecimal inverseRate = rates.get(sourceCurrencyCode);
+        if (inverseRate == null)
+            throw new IllegalCurrencyException("Unknown currency: " + sourceCurrencyCode);
 
-        BigDecimal euros = amount.divide(sourceRate, 3, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal sourceRate = new BigDecimal(1).divide(inverseRate, 10, RoundingMode.HALF_EVEN);
+        CurrencyUnit sourceCurrencyUnit = CurrencyUnit.of(sourceCurrencyCode);
+        Money amountInSourceCurrency = Money.of(sourceCurrencyUnit, amount, RoundingMode.HALF_EVEN);
+        Money amountInEuros;
+        if (sourceCurrencyUnit.getCurrencyCode().equals("EUR")) {
+            amountInEuros = amountInSourceCurrency;
+        } else {
+            amountInEuros = amountInSourceCurrency.convertedTo(CurrencyUnit.of("EUR"), sourceRate, RoundingMode.HALF_EVEN);
+        }
+
         BigDecimal targetRate = rates.get(targetCurrencyCode);
-        if (targetRate == null) return null;
+        if (targetRate == null) throw new IllegalCurrencyException("Unknown currency: " + targetCurrencyCode);
 
-        return euros.multiply(targetRate).round(new MathContext(2, RoundingMode.HALF_EVEN));
+        Money amountInTargetCurrency = amountInEuros.convertedTo(CurrencyUnit.of(targetCurrencyCode), targetRate, RoundingMode.HALF_EVEN);
+
+        return amountInTargetCurrency.getAmount();
     }
 
     public Map<String, BigDecimal> getFXRates() {
         if (rateDay == null || (DateUtils.truncatedCompareTo(rateDay, new Date(), Calendar.DAY_OF_MONTH) < 0
-                &&  DateUtils.truncatedCompareTo(fetchDay, new Date(), Calendar.DAY_OF_MONTH) < 0)) {
+                && DateUtils.truncatedCompareTo(fetchDay, new Date(), Calendar.DAY_OF_MONTH) < 0)) {
             fetchFXRates();
         }
 

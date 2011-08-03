@@ -106,6 +106,7 @@
     <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-spring:2.2.1.GA" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-jettison-provider:2.2.1.GA" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jettison:jettison:1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.joda:joda-money:0.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.geronimo.specs:geronimo-servlet_2.5_spec:1.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.geronimo.specs:geronimo-jsp_2.1_spec:1.0.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.gwt:gwt-user:2.3.0" level="project" />

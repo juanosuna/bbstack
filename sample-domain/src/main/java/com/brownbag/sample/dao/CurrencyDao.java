@@ -19,8 +19,10 @@ package com.brownbag.sample.dao;
 
 import com.brownbag.core.dao.EntityDao;
 import com.brownbag.sample.entity.Currency;
+import com.brownbag.sample.service.ecbfx.ECBFXService;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -29,9 +31,15 @@ import static com.brownbag.sample.dao.CacheSettings.setReadOnly;
 @Repository
 public class CurrencyDao extends EntityDao<Currency, String> {
 
+    @Resource
+    private ECBFXService ecbfxService;
+
     @Override
     public List<Currency> findAll() {
-        Query query = getEntityManager().createQuery("SELECT c FROM Currency c ORDER BY c.displayName");
+        Query query = getEntityManager().createQuery("SELECT c FROM Currency c " +
+                " WHERE c.id in :currenciesWithFxRates ORDER BY c.displayName");
+
+        query.setParameter("currenciesWithFxRates", ecbfxService.getFXRates().keySet());
         setReadOnly(query);
 
         return query.getResultList();

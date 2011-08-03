@@ -173,6 +173,13 @@ public class ReferenceDataInitializer {
                 country.setMaxPostalCode(geoNamesCountry.getMaxPostalCode());
                 Currency currency = geoNamesCurrencies.get(country.getId());
                 if (currency != null && !currencyDao.isPersistent(currency)) {
+                    if (currency.getId().equals("EUR")) {
+                        currency.setDisplayName(currency.getId() + "-Europe");
+                    } else if (currency.getId().equals("EUR")) {
+                        currency.setDisplayName(currency.getId() + "-United States");
+                    } else {
+                        currency.setDisplayName(currency.getId() + "-" + country.getDisplayName());
+                    }
                     currencyDao.persist(currency);
                 }
             }

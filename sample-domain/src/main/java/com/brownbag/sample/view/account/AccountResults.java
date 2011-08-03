@@ -64,7 +64,7 @@ public class AccountResults extends Results<Account> {
                 "billingAddress.country",
                 "mainPhoneFormatted",
                 "numberOfEmployees",
-                "annualRevenueFormattedInCurrency",
+                "annualRevenueInUSDFormatted",
                 "lastModified",
                 "modifiedBy"
         });
@@ -72,8 +72,8 @@ public class AccountResults extends Results<Account> {
         displayFields.setLabel("billingAddress.state.code", "State");
         displayFields.setLabel("mainPhoneFormatted", "Phone");
         displayFields.setLabel("numberOfEmployees", "# of Employees");
-        displayFields.setLabel("annualRevenueFormattedInCurrency", "Annual Revenue");
-        displayFields.setSortable("annualRevenueFormattedInCurrency", false);
+        displayFields.setLabel("annualRevenueInUSDFormatted", "Annual Revenue");
+        displayFields.setSortable("annualRevenueInUSDFormatted", false);
         displayFields.setSortable("mainPhoneFormatted", false);
     }
 

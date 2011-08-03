@@ -101,10 +101,6 @@ public class AccountForm extends EntityForm<Account> {
         formFields.setLabel("mainPhoneFormatted", "Phone");
         formFields.setLabel("assignedTo.loginName", "Assigned to");
 
-//        formFields.getFormField("annualRevenue").setFormat(new DecimalFormat("###,###.##"));
-//        formFields.getFormField("email").getField().setWidth("13em");
-//        formFields.getFormField("website").getField().setWidth("17em");
-
         formFields.setSelectItems("billingAddress.state", new ArrayList());
         formFields.addValueChangeListener("billingAddress.country", this, "countryChanged");
 
