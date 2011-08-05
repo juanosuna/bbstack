@@ -25,6 +25,8 @@ import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.view.contact.ContactQuery;
 import com.brownbag.sample.view.contact.ContactSearchForm;
 import com.brownbag.sample.view.field.format.PhonePropertyFormatter;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -86,6 +88,12 @@ public class ContactSelect extends EntitySelect<Contact> {
             displayFields.setSortable("name", false);
             displayFields.setPropertyFormatter("mainPhone", new PhonePropertyFormatter());
         }
+    }
+
+    @Override
+    public void configurePopupWindow(Window popupWindow) {
+        popupWindow.setWidth(45, Sizeable.UNITS_EM);
+        popupWindow.setHeight("95%");
     }
 }
 

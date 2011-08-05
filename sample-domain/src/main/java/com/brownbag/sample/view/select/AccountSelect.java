@@ -24,6 +24,8 @@ import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.view.account.AccountQuery;
 import com.brownbag.sample.view.account.AccountSearchForm;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -82,6 +84,12 @@ public class AccountSelect extends EntitySelect<Account> {
 
             displayFields.setLabel("billingAddress.state.code", "State");
         }
+    }
+
+    @Override
+    public void configurePopupWindow(Window popupWindow) {
+        popupWindow.setWidth(55, Sizeable.UNITS_EM);
+        popupWindow.setHeight("95%");
     }
 }
 
