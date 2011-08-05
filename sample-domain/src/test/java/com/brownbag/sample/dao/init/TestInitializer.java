@@ -39,6 +39,6 @@ public class TestInitializer extends AbstractDomainTest {
     @Test
     public void initialize() throws Exception {
         referenceDataInitializer.initialize();
-        testDataInitializer.initialize(1000);
+        testDataInitializer.initialize(10000);
     }
 }
