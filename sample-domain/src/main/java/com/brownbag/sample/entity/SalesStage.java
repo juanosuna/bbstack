@@ -32,10 +32,20 @@ import static com.brownbag.core.entity.ReferenceEntity.CACHE_REGION;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = CACHE_REGION)
 public class SalesStage extends ReferenceEntity {
 
+    private double probability;
+
     public SalesStage() {
     }
 
     public SalesStage(String id) {
         super(id, id);
+    }
+
+    public double getProbability() {
+        return probability;
+    }
+
+    public void setProbability(double probability) {
+        this.probability = probability;
     }
 }

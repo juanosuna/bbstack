@@ -22,6 +22,8 @@ import com.brownbag.core.view.entity.field.FormFields;
 import com.brownbag.core.view.entity.field.SelectField;
 import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.*;
+import com.brownbag.sample.view.field.format.PhonePropertyFormatter;
+import com.brownbag.sample.view.field.validation.PhoneConversionValidator;
 import com.brownbag.sample.view.select.AccountSelect;
 import com.brownbag.sample.view.select.UserSelect;
 import com.vaadin.data.Property;
@@ -61,7 +63,7 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setPosition("Overview", "email", 4, 1);
         formFields.setPosition("Overview", "doNotEmail", 4, 2);
 
-        formFields.setPosition("Overview", "mainPhoneFormatted", 5, 1);
+        formFields.setPosition("Overview", "mainPhone", 5, 1);
         formFields.setPosition("Overview", "mainPhone.phoneType", 5, 1);
         formFields.setPosition("Overview", "doNotCall", 5, 2);
 
@@ -85,11 +87,13 @@ public class ContactForm extends EntityForm<Contact> {
         formFields.setLabel("description", null);
         formFields.setLabel("mainPhone.phoneType", null);
         formFields.setLabel("account.name", "Account");
-        formFields.setLabel("mainPhoneFormatted", "Main Phone");
         formFields.setWidth("mainPhone.phoneType", 7, Sizeable.UNITS_EM);
         formFields.setLabel("assignedTo.loginName", "Assigned to");
 
-        formFields.setDescription("mainPhoneFormatted",
+        formFields.addValidator("mainPhone", PhoneConversionValidator.class);
+        formFields.setPropertyFormatter("mainPhone", new PhonePropertyFormatter());
+
+        formFields.setDescription("mainPhone",
                 "<strong>Example formats:</strong>" +
                         "<ul>" +
                         "  <li>US: (919) 975-5331</li>" +

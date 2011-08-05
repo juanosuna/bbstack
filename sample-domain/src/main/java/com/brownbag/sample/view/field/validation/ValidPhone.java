@@ -15,7 +15,7 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.brownbag.core.validation;
+package com.brownbag.sample.view.field.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

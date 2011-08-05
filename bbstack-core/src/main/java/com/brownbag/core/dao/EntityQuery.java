@@ -17,7 +17,9 @@
 
 package com.brownbag.core.dao;
 
+import com.brownbag.core.util.ReflectionUtil;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.util.ReflectionUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
@@ -126,7 +128,7 @@ public abstract class EntityQuery<T> {
                         && !writeMethod.getDeclaringClass().equals(Object.class)) {
                     Class type = descriptor.getPropertyType();
                     if (type.isPrimitive() && !type.isArray()) {
-                        if (Number.class.isAssignableFrom(type)) {
+                        if (ReflectionUtil.isNumberType(type)) {
                             writeMethod.invoke(this, 0);
                         } else if (Boolean.class.isAssignableFrom(type)) {
                             writeMethod.invoke(this, false);

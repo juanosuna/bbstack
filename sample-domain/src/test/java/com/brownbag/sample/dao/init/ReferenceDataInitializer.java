@@ -49,8 +49,22 @@ public class ReferenceDataInitializer {
             "Other"};
 
     public static final String[] SALES_STAGES = {"Prospecting", "Qualification", "Needs Analysis", "Value Proposition",
-            "Id. Decision Makers", "Perception Analysis", "Proposal/Price Quote", "Negotiation/Review", "Closed One",
+            "Id. Decision Makers", "Perception Analysis", "Proposal/Price Quote", "Negotiation/Review", "Closed Won",
             "Closed Lost"};
+
+    public static final Map<String, Double> SALES_STAGE_PROBABILITIES = new HashMap<String, Double>();
+    static {
+        SALES_STAGE_PROBABILITIES.put("Prospecting", .10);
+        SALES_STAGE_PROBABILITIES.put("Qualification", .20);
+        SALES_STAGE_PROBABILITIES.put("Needs Analysis", .25);
+        SALES_STAGE_PROBABILITIES.put("Value Proposition", .30);
+        SALES_STAGE_PROBABILITIES.put("Id. Decision Makers", .40);
+        SALES_STAGE_PROBABILITIES.put("Perception Analysis", .50);
+        SALES_STAGE_PROBABILITIES.put("Proposal/Price Quote", .65);
+        SALES_STAGE_PROBABILITIES.put("Negotiation/Review", .80);
+        SALES_STAGE_PROBABILITIES.put("Closed Won", 1.0);
+        SALES_STAGE_PROBABILITIES.put("Closed Lost", 0.0);
+    }
 
     public static Set<String> COUNTRIES_WITH_STATES = new HashSet<String>(Arrays.asList(
             "United States",
@@ -154,9 +168,10 @@ public class ReferenceDataInitializer {
         leadSourceDao.getEntityManager().flush();
 
         for (int i = 0, sales_stagesLength = SALES_STAGES.length; i < sales_stagesLength; i++) {
-            String leadSource = SALES_STAGES[i];
-            SalesStage referenceEntity = new SalesStage(leadSource);
+            String salesStage = SALES_STAGES[i];
+            SalesStage referenceEntity = new SalesStage(salesStage);
             referenceEntity.setSortOrder(i);
+            referenceEntity.setProbability(SALES_STAGE_PROBABILITIES.get(salesStage));
             salesStageDao.persist(referenceEntity);
         }
         salesStageDao.getEntityManager().flush();
@@ -175,7 +190,7 @@ public class ReferenceDataInitializer {
                 if (currency != null && !currencyDao.isPersistent(currency)) {
                     if (currency.getId().equals("EUR")) {
                         currency.setDisplayName(currency.getId() + "-Europe");
-                    } else if (currency.getId().equals("EUR")) {
+                    } else if (currency.getId().equals("USD")) {
                         currency.setDisplayName(currency.getId() + "-United States");
                     } else {
                         currency.setDisplayName(currency.getId() + "-" + country.getDisplayName());

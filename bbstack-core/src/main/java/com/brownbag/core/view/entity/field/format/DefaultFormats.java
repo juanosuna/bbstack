@@ -17,6 +17,7 @@
 
 package com.brownbag.core.view.entity.field.format;
 
+import com.vaadin.data.util.PropertyFormatter;
 import org.springframework.stereotype.Component;
 
 import java.text.Format;
@@ -24,30 +25,35 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
 @Component
-public class DefaultFormat {
+public class DefaultFormats {
 
+    private PropertyFormatter emptyFormat = new EmptyPropertyFormatter();
     private Format numberFormat = NumberFormat.getNumberInstance();
     private Format dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private Format dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-    public Format getNumberFormat() {
-        return numberFormat;
+    public PropertyFormatter getEmptyFormat() {
+        return emptyFormat;
+    }
+
+    public PropertyFormatter getNumberFormat() {
+        return new JDKFormatPropertyFormatter(numberFormat);
     }
 
     public void setNumberFormat(Format numberFormat) {
         this.numberFormat = numberFormat;
     }
 
-    public Format getDateFormat() {
-        return dateFormat;
+    public PropertyFormatter getDateFormat() {
+        return new JDKFormatPropertyFormatter(dateFormat);
     }
 
     public void setDateFormat(Format dateFormat) {
         this.dateFormat = dateFormat;
     }
 
-    public Format getDateTimeFormat() {
-        return dateTimeFormat;
+    public PropertyFormatter getDateTimeFormat() {
+        return new JDKFormatPropertyFormatter(dateTimeFormat);
     }
 
     public void setDateTimeFormat(Format dateTimeFormat) {

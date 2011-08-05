@@ -20,13 +20,17 @@ package com.brownbag.core.util;
 import com.brownbag.core.util.assertion.Assert;
 import com.brownbag.core.validation.AssertTrueForProperties;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.NumberUtils;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class BeanPropertyType {
@@ -37,6 +41,7 @@ public class BeanPropertyType {
     private Class type;
     private Class containerType;
     private Class collectionValueType;
+    private BusinessType businessType;
     private Set<Annotation> annotations = new HashSet<Annotation>();
 
     private BeanPropertyType(BeanPropertyType parent, String id, Class type, Class containerType, Class collectionValueType) {
@@ -47,6 +52,7 @@ public class BeanPropertyType {
         this.collectionValueType = collectionValueType;
 
         initAnnotations();
+        businessType = createBusinessType();
     }
 
     private void initAnnotations() {
@@ -128,19 +134,19 @@ public class BeanPropertyType {
         for (Annotation annotation : annotations) {
             if (Size.class.isAssignableFrom(annotation.getClass())) {
                 Size size = (Size) annotation;
-                min =  MathUtil.minIgnoreNull(min, size.min());
+                min = MathUtil.minIgnoreNull(min, size.min());
             } else if (Min.class.isAssignableFrom(annotation.getClass())) {
                 Min m = (Min) annotation;
-                min =  MathUtil.minIgnoreNull(min, String.valueOf(m.value()).length());
+                min = MathUtil.minIgnoreNull(min, String.valueOf(m.value()).length());
             } else if (Digits.class.isAssignableFrom(annotation.getClass())) {
                 Digits digits = (Digits) annotation;
-                min =  MathUtil.minIgnoreNull(min, digits.integer() + digits.fraction() + 1);
+                min = MathUtil.minIgnoreNull(min, digits.integer() + digits.fraction() + 1);
             } else if (DecimalMin.class.isAssignableFrom(annotation.getClass())) {
                 DecimalMin m = (DecimalMin) annotation;
-                min =  MathUtil.minIgnoreNull(min, String.valueOf(m.value()).length());
+                min = MathUtil.minIgnoreNull(min, String.valueOf(m.value()).length());
             } else if (DecimalMax.class.isAssignableFrom(annotation.getClass())) {
                 DecimalMax m = (DecimalMax) annotation;
-                min =  MathUtil.minIgnoreNull(min, String.valueOf(m.value()).length());
+                min = MathUtil.minIgnoreNull(min, String.valueOf(m.value()).length());
             }
         }
 
@@ -153,19 +159,19 @@ public class BeanPropertyType {
         for (Annotation annotation : annotations) {
             if (Size.class.isAssignableFrom(annotation.getClass())) {
                 Size size = (Size) annotation;
-                max =  MathUtil.maxIgnoreNull(max, size.max());
+                max = MathUtil.maxIgnoreNull(max, size.max());
             } else if (Max.class.isAssignableFrom(annotation.getClass())) {
                 Max m = (Max) annotation;
-                max =  MathUtil.maxIgnoreNull(max, String.valueOf(m.value()).length());
+                max = MathUtil.maxIgnoreNull(max, String.valueOf(m.value()).length());
             } else if (Digits.class.isAssignableFrom(annotation.getClass())) {
                 Digits digits = (Digits) annotation;
-                max =  MathUtil.maxIgnoreNull(max, digits.integer() + digits.fraction() + 1);
+                max = MathUtil.maxIgnoreNull(max, digits.integer() + digits.fraction() + 1);
             } else if (DecimalMin.class.isAssignableFrom(annotation.getClass())) {
                 DecimalMin m = (DecimalMin) annotation;
-                max =  MathUtil.maxIgnoreNull(max, String.valueOf(m.value()).length());
+                max = MathUtil.maxIgnoreNull(max, String.valueOf(m.value()).length());
             } else if (DecimalMax.class.isAssignableFrom(annotation.getClass())) {
                 DecimalMax m = (DecimalMax) annotation;
-                max =  MathUtil.maxIgnoreNull(max, String.valueOf(m.value()).length());
+                max = MathUtil.maxIgnoreNull(max, String.valueOf(m.value()).length());
             }
         }
 
@@ -226,6 +232,33 @@ public class BeanPropertyType {
         return type;
     }
 
+    public BusinessType getBusinessType() {
+        return businessType;
+    }
+
+    private BusinessType createBusinessType() {
+        if (getType() == Date.class) {
+            Temporal temporal = getAnnotation(Temporal.class);
+            if (temporal != null && temporal.value().equals(TemporalType.DATE)) {
+                return BusinessType.DATE;
+            } else {
+                return BusinessType.DATE_TIME;
+            }
+        }
+        if (ReflectionUtil.isNumberType(getType())) {
+            return BusinessType.NUMBER;
+        }
+        if (String.class.isAssignableFrom(getType())) {
+            return BusinessType.TEXT;
+        }
+
+        if (BigDecimal.class.isAssignableFrom(getType())) {
+            return BusinessType.MONEY;
+        }
+
+        return null;
+    }
+
     public Class getContainerType() {
         return containerType;
     }
@@ -275,5 +308,13 @@ public class BeanPropertyType {
         } else {
             return getParent().getRoot();
         }
+    }
+
+    public static enum BusinessType {
+        NUMBER,
+        DATE,
+        DATE_TIME,
+        MONEY,
+        TEXT
     }
 }

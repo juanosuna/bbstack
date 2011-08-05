@@ -20,7 +20,8 @@ package com.brownbag.core.view.entity.field;
 import com.brownbag.core.util.CollectionsUtil;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.field.format.DefaultFormat;
+import com.brownbag.core.view.entity.field.format.DefaultFormats;
+import com.vaadin.data.util.PropertyFormatter;
 
 import java.util.*;
 
@@ -29,12 +30,12 @@ public class DisplayFields {
     private Class entityType;
     private MessageSource messageSource;
     private Map<String, DisplayField> fields = new LinkedHashMap<String, DisplayField>();
-    private DefaultFormat defaultFormat;
+    private DefaultFormats defaultFormats;
 
-    public DisplayFields(Class entityType, MessageSource messageSource, DefaultFormat defaultFormat) {
+    public DisplayFields(Class entityType, MessageSource messageSource, DefaultFormats defaultFormats) {
         this.entityType = entityType;
         this.messageSource = messageSource;
-        this.defaultFormat = defaultFormat;
+        this.defaultFormats = defaultFormats;
     }
 
     public void setPropertyIds(String[] propertyIds) {
@@ -48,8 +49,8 @@ public class DisplayFields {
         return entityType;
     }
 
-    public DefaultFormat getDefaultFormat() {
-        return defaultFormat;
+    public DefaultFormats getDefaultFormats() {
+        return defaultFormats;
     }
 
     public MessageSource getMessageSource() {
@@ -120,5 +121,9 @@ public class DisplayFields {
 
     public void setFormLink(String propertyId, String entityPropertyId, EntityForm entityForm) {
         getField(propertyId).setFormLink(entityPropertyId, entityForm);
+    }
+
+    public void setPropertyFormatter(String propertyId, PropertyFormatter propertyFormatter) {
+        getField(propertyId).setPropertyFormatter(propertyFormatter);
     }
 }

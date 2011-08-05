@@ -62,12 +62,13 @@ public class OpportunityResults extends Results<Opportunity> {
                 "name",
                 "salesStage",
                 "expectedCloseDate",
-                "amount",
+                "amountWeightedInUSDFormatted",
                 "lastModified",
                 "modifiedBy"
         });
 
         displayFields.setLabel("name", "Name");
+        displayFields.setLabel("amountWeightedInUSDFormatted", "Weighted Amount");
     }
 
     @Override

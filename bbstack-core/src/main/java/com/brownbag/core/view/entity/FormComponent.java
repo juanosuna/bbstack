@@ -21,7 +21,7 @@ import com.brownbag.core.util.ReflectionUtil;
 import com.brownbag.core.view.MessageSource;
 import com.brownbag.core.view.entity.field.FormField;
 import com.brownbag.core.view.entity.field.FormFields;
-import com.brownbag.core.view.entity.field.format.DefaultFormat;
+import com.brownbag.core.view.entity.field.format.DefaultFormats;
 import com.brownbag.core.view.entity.util.LayoutContextMenu;
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
@@ -50,7 +50,7 @@ public abstract class FormComponent<T> extends CustomComponent {
     protected MessageSource entityMessageSource;
 
     @Resource
-    private DefaultFormat defaultFormat;
+    private DefaultFormats defaultFormat;
 
     private ConfigurableForm form;
     private ResultsComponent results;
@@ -75,7 +75,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         return entityMessageSource;
     }
 
-    public DefaultFormat getDefaultFormat() {
+    public DefaultFormats getDefaultFormat() {
         return defaultFormat;
     }
 

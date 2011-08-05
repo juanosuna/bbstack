@@ -24,6 +24,7 @@ import com.brownbag.core.view.entity.tomanyrelationship.ToManyRelationshipResult
 import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Account;
 import com.brownbag.sample.entity.Contact;
+import com.brownbag.sample.view.field.format.PhonePropertyFormatter;
 import com.brownbag.sample.view.select.ContactSelect;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -86,13 +87,14 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
                     "title",
                     "mailingAddress.state.code",
                     "mailingAddress.country",
-                    "mainPhoneFormatted"
+                    "mainPhone"
             });
 
             displayFields.setLabel("mailingAddress.state.code", "State");
-            displayFields.setLabel("mainPhoneFormatted", "Phone");
+            displayFields.setLabel("mainPhone", "Phone");
             displayFields.setSortable("name", false);
-            displayFields.setSortable("mainPhoneFormatted", false);
+            displayFields.setSortable("mainPhone", false);
+            displayFields.setPropertyFormatter("mainPhone", new PhonePropertyFormatter());
         }
 
         @Override

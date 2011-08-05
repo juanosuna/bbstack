@@ -19,7 +19,7 @@ package com.brownbag.sample.entity;
 
 
 import com.brownbag.core.entity.WritableEntity;
-import com.brownbag.core.validation.ValidPhone;
+import com.brownbag.sample.view.field.validation.ValidPhone;
 import com.google.i18n.phonenumbers.NumberParseException;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
@@ -57,14 +57,8 @@ public class Contact extends WritableEntity {
     @Embedded
     private Phone mainPhone;
 
-    @Transient
-    private String invalidMainPhone;
-
     @Embedded
     private Phone otherPhone;
-
-    @Transient
-    private String invalidOtherPhone;
 
     private boolean doNotCall;
 
@@ -179,40 +173,14 @@ public class Contact extends WritableEntity {
         this.doNotEmail = doNotEmail;
     }
 
+    @NotNull
+    @ValidPhone
     public Phone getMainPhone() {
         return mainPhone;
     }
 
     public void setMainPhone(Phone mainPhone) {
         this.mainPhone = mainPhone;
-        invalidMainPhone = null;
-    }
-
-    @NotNull
-    @ValidPhone(defaultRegionCode = DEFAULT_PHONE_COUNTRY)
-    public String getMainPhoneFormatted() {
-        if (invalidMainPhone != null) {
-            return invalidMainPhone;
-        } else {
-            if (getMainPhone() == null) {
-                return null;
-            } else {
-                return getMainPhone().getFormatted(DEFAULT_PHONE_COUNTRY);
-            }
-        }
-    }
-
-    public void setMainPhoneFormatted(@ValidPhone(defaultRegionCode = DEFAULT_PHONE_COUNTRY) String mainPhone) {
-        if (mainPhone == null) {
-            setMainPhone(null);
-        } else {
-            try {
-                Phone phone = new Phone(mainPhone, DEFAULT_PHONE_COUNTRY);
-                setMainPhone(phone);
-            } catch (NumberParseException e) {
-                invalidMainPhone = mainPhone;
-            }
-        }
     }
 
     public Phone getOtherPhone() {
@@ -221,33 +189,6 @@ public class Contact extends WritableEntity {
 
     public void setOtherPhone(Phone otherPhone) {
         this.otherPhone = otherPhone;
-        invalidOtherPhone = null;
-    }
-
-    @ValidPhone(defaultRegionCode = DEFAULT_PHONE_COUNTRY)
-    public String getOtherPhoneFormatted() {
-        if (invalidOtherPhone != null) {
-            return invalidOtherPhone;
-        } else {
-            if (getOtherPhone() == null) {
-                return null;
-            } else {
-                return getOtherPhone().getFormatted(DEFAULT_PHONE_COUNTRY);
-            }
-        }
-    }
-
-    public void setOtherPhoneFormatted(@ValidPhone(defaultRegionCode = DEFAULT_PHONE_COUNTRY) String otherPhone) {
-        if (otherPhone == null) {
-            setOtherPhone(null);
-        } else {
-            try {
-                Phone phone = new Phone(otherPhone, DEFAULT_PHONE_COUNTRY);
-                setOtherPhone(phone);
-            } catch (NumberParseException e) {
-                invalidOtherPhone = otherPhone;
-            }
-        }
     }
 
     public boolean isDoNotCall() {

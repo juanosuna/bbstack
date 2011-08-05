@@ -18,24 +18,19 @@
 package com.brownbag.core.view.entity.field.format;
 
 import com.vaadin.data.util.PropertyFormatter;
+import org.hibernate.loader.custom.Return;
 
 import java.text.Format;
 
-public class TextFormat extends PropertyFormatter {
-
-    private Format format;
-
-    public TextFormat(Format format) {
-        this.format = format;
-    }
+public class EmptyPropertyFormatter extends PropertyFormatter {
 
     @Override
     public String format(Object value) {
-        return format.format(value);
+        throw new UnsupportedOperationException("This object represents no formatter and should not actually be called.");
     }
 
     @Override
     public Object parse(String formattedValue) throws Exception {
-        return format.parseObject(formattedValue);
+        throw new UnsupportedOperationException("This object represents no formatter and should not actually be called.");
     }
 }

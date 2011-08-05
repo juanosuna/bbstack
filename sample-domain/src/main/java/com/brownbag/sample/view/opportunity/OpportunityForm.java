@@ -47,16 +47,18 @@ public class OpportunityForm extends EntityForm<Opportunity> {
         formFields.setPosition("Overview", "opportunityType", 1, 2);
 
         formFields.setPosition("Overview", "account.name", 2, 1);
-        formFields.setPosition("Overview", "salesStage", 2, 2);
+        formFields.setPosition("Overview", "leadSource", 2, 2);
 
-        formFields.setPosition("Overview", "leadSource", 3, 1);
+        formFields.setPosition("Overview", "salesStage", 3, 1);
         formFields.setPosition("Overview", "assignedTo.loginName", 3, 2);
 
         formFields.setPosition("Overview", "amount", 4, 1);
         formFields.setPosition("Overview", "currency", 4, 2);
 
         formFields.setPosition("Overview", "probability", 5, 1);
-        formFields.setPosition("Overview", "expectedCloseDate", 5, 2);
+        formFields.setPosition("Overview", "amountWeightedInUSD", 5, 2);
+
+        formFields.setPosition("Overview", "expectedCloseDate", 6, 1);
 
         formFields.setPosition("Description", "description", 1, 1);
 
@@ -83,7 +85,7 @@ public class OpportunityForm extends EntityForm<Opportunity> {
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(62, Sizeable.UNITS_EM);
-        popupWindow.setHeight(29, Sizeable.UNITS_EM);
+        popupWindow.setWidth(68, Sizeable.UNITS_EM);
+        popupWindow.setHeight(32, Sizeable.UNITS_EM);
     }
 }

@@ -22,6 +22,7 @@ import com.brownbag.core.view.entity.ResultsTable;
 import com.brownbag.core.view.entity.field.DisplayFields;
 import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.entity.Account;
+import com.brownbag.sample.view.field.format.PhonePropertyFormatter;
 import com.vaadin.terminal.Sizeable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -62,7 +63,7 @@ public class AccountResults extends Results<Account> {
                 "name",
                 "billingAddress.state.code",
                 "billingAddress.country",
-                "mainPhoneFormatted",
+                "mainPhone",
                 "numberOfEmployees",
                 "annualRevenueInUSDFormatted",
                 "lastModified",
@@ -70,11 +71,11 @@ public class AccountResults extends Results<Account> {
         });
 
         displayFields.setLabel("billingAddress.state.code", "State");
-        displayFields.setLabel("mainPhoneFormatted", "Phone");
+        displayFields.setLabel("mainPhone", "Phone");
         displayFields.setLabel("numberOfEmployees", "# of Employees");
         displayFields.setLabel("annualRevenueInUSDFormatted", "Annual Revenue");
-        displayFields.setSortable("annualRevenueInUSDFormatted", false);
-        displayFields.setSortable("mainPhoneFormatted", false);
+        displayFields.setSortable("mainPhone", false);
+        displayFields.setPropertyFormatter("mainPhone", new PhonePropertyFormatter());
     }
 
     @Override

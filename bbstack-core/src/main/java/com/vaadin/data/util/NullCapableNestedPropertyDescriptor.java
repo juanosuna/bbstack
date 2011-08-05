@@ -18,6 +18,7 @@
 package com.vaadin.data.util;
 
 import com.brownbag.core.view.entity.field.DisplayField;
+import com.brownbag.core.view.entity.field.format.EmptyPropertyFormatter;
 import com.vaadin.data.Property;
 
 public class NullCapableNestedPropertyDescriptor<BT> implements VaadinPropertyDescriptor<BT> {
@@ -43,8 +44,8 @@ public class NullCapableNestedPropertyDescriptor<BT> implements VaadinPropertyDe
 
     public Property createProperty(BT bean) {
         Property property = new NullCapableNestedMethodProperty(bean, name);
-        PropertyFormatter propertyFormatter = displayField.createPropertyFormatter();
-        if (propertyFormatter == null) {
+        PropertyFormatter propertyFormatter = displayField.getPropertyFormatter();
+        if (propertyFormatter.getClass().equals(EmptyPropertyFormatter.class)) {
             return property;
         } else {
             propertyFormatter.setPropertyDataSource(property);

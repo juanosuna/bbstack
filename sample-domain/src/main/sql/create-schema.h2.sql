@@ -8,6 +8,7 @@
         UUID varchar(255) not null unique,
         VERSION integer,
         ANNUAL_REVENUE decimal(19,2) check (ANNUAL_REVENUE>=0),
+        ANNUAL_REVENUE_INUSD decimal(19,2),
         DESCRIPTION clob,
         EMAIL varchar(255),
         MAIN_PHONE_COUNTRY_CODE integer,
@@ -131,11 +132,12 @@
         UUID varchar(255) not null unique,
         VERSION integer,
         AMOUNT decimal(19,2) check (AMOUNT>=0),
+        AMOUNT_WEIGHTED_INUSD decimal(19,2),
         DESCRIPTION clob,
         EXPECTED_CLOSE_DATE date,
         NAME varchar(64) not null,
         OPPORTUNITY_TYPE varchar(255),
-        PROBABILITY float not null,
+        PROBABILITY double not null,
         ACCOUNT_ID bigint,
         ASSIGNED_TO_ID bigint,
         CURRENCY_ID varchar(255),
@@ -149,6 +151,7 @@
         ID varchar(255) not null,
         DISPLAY_NAME varchar(255),
         SORT_ORDER integer,
+        PROBABILITY double not null,
         primary key (ID)
     );
 

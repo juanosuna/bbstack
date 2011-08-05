@@ -21,6 +21,7 @@ import com.brownbag.core.util.assertion.Assert;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.WrapDynaBean;
+import org.apache.commons.lang.ClassUtils;
 import org.springframework.beans.BeanUtils;
 
 import java.beans.PropertyDescriptor;
@@ -155,12 +156,30 @@ public class ReflectionUtil {
     }
 
     public static <T> T convertValue(Object value, Class<T> type) throws InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
-        if (null == value || type.isAssignableFrom(value.getClass())) {
+        Class clazz;
+        if (type.isPrimitive()) {
+            clazz = ClassUtils.primitiveToWrapper(type);
+        } else {
+            clazz = type;
+        }
+
+        if (null == value || clazz.isAssignableFrom(value.getClass())) {
             return (T) value;
         }
 
-        Constructor<T> constructor = type.getConstructor(new Class[]{String.class});
+        Constructor<T> constructor = clazz.getConstructor(new Class[]{String.class});
 
         return constructor.newInstance(new Object[]{value.toString()});
+    }
+
+    public static boolean isNumberType(Class type) {
+        Class clazz;
+        if (type.isPrimitive()) {
+            clazz = ClassUtils.primitiveToWrapper(type);
+        } else {
+            clazz = type;
+        }
+
+        return Number.class.isAssignableFrom(clazz);
     }
 }

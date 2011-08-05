@@ -17,7 +17,8 @@
 
 package com.brownbag.sample.dao.init;
 
-import com.brownbag.core.validation.PhoneValidator;
+import com.brownbag.sample.view.field.format.PhonePropertyFormatter;
+import com.brownbag.sample.view.field.validation.PhoneValidator;
 import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.dao.OpportunityDao;
@@ -77,13 +78,20 @@ public class TestDataInitializer {
                 contact.setOtherAddress(otherAddress);
             }
 
-            contact.setMainPhoneFormatted(PhoneValidator.getExampleNumber("US", address.getCountry().getId()));
-            contact.getMainPhone().setPhoneType(random(PhoneType.class));
+            try {
+                Phone phone = (Phone) new PhonePropertyFormatter().parse(PhoneValidator.getExampleNumber("US", address.getCountry().getId()));
+                contact.setMainPhone(phone);
+                contact.getMainPhone().setPhoneType(random(PhoneType.class));
 
-            if (randomBoolean()) {
-                contact.setOtherPhoneFormatted(PhoneValidator.getExampleNumber("US", address.getCountry().getId()));
-                contact.getOtherPhone().setPhoneType(random(PhoneType.class));
+                if (randomBoolean()) {
+                    phone = (Phone) new PhonePropertyFormatter().parse(PhoneValidator.getExampleNumber("US", address.getCountry().getId()));
+                    contact.setOtherPhone(phone);
+                    contact.getOtherPhone().setPhoneType(random(PhoneType.class));
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
+
 
             contact.setDescription("Description of contact");
 
@@ -115,8 +123,14 @@ public class TestDataInitializer {
         account.setDescription("Description of account");
         account.setEmail("info@companyname.com");
         account.setIndustry(referenceDataInitializer.randomIndustry());
-        account.setMainPhoneFormatted(PhoneValidator.getExampleNumber("US", address.getCountry().getId()));
-        account.getMainPhone().setPhoneType(random(PhoneType.class));
+
+        try {
+            Phone phone = (Phone) new PhonePropertyFormatter().parse(PhoneValidator.getExampleNumber("US", address.getCountry().getId()));
+            account.setMainPhone(phone);
+            account.getMainPhone().setPhoneType(random(PhoneType.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         if (randomBoolean()) {
             Address mailingAddress = randomAddress(i);
@@ -135,7 +149,6 @@ public class TestDataInitializer {
         opportunity.setSalesStage(referenceDataInitializer.randomSalesStage());
         opportunity.setCurrency(referenceDataInitializer.randomCurrency());
         opportunity.setExpectedCloseDate(new Date());
-        opportunity.setProbability(.2f);
         opportunity.setAssignedTo(ReferenceDataInitializer.random(userDao.findAll()));
         opportunity.setLeadSource(referenceDataInitializer.randomLeadSource());
         opportunity.setDescription("Description of opportunity");

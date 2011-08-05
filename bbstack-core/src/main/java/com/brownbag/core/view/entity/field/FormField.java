@@ -21,25 +21,20 @@ import com.brownbag.core.dao.EntityDao;
 import com.brownbag.core.entity.ReferenceEntity;
 import com.brownbag.core.util.*;
 import com.brownbag.core.util.assertion.Assert;
-import com.brownbag.core.validation.ConversionValidator;
+import com.brownbag.core.validation.NumberConversionValidator;
 import com.brownbag.core.view.entity.EntityForm;
-import com.brownbag.core.view.entity.FormComponent;
-import com.brownbag.core.view.entity.field.format.DefaultFormat;
+import com.brownbag.core.view.entity.field.format.EmptyPropertyFormatter;
 import com.vaadin.addon.beanvalidation.BeanValidationValidator;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.terminal.CompositeErrorMessage;
 import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
 import javax.persistence.Lob;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.text.Format;
 import java.util.*;
 
 public class FormField extends DisplayField {
@@ -194,8 +189,8 @@ public class FormField extends DisplayField {
         if (selectField.getContainerDataSource() == null
                 || !(selectField.getContainerDataSource() instanceof BeanItemContainer)) {
             BeanItemContainer container;
-            if (isCollectionType()) {
-                container = new BeanItemContainer(getCollectionValueType(), items);
+            if (getBeanPropertyType().isCollectionType()) {
+                container = new BeanItemContainer(getBeanPropertyType().getCollectionValueType(), items);
             } else {
                 container = new BeanItemContainer(getPropertyType(), items);
             }
@@ -206,7 +201,7 @@ public class FormField extends DisplayField {
             container.removeAllItems();
             container.addAll(items);
 
-            if (!isCollectionType() && !container.containsId(selectedItems)) {
+            if (!getBeanPropertyType().isCollectionType() && !container.containsId(selectedItems)) {
                 selectField.select(selectField.getNullSelectionItemId());
             }
         }
@@ -285,11 +280,12 @@ public class FormField extends DisplayField {
         }
     }
 
-    public Format getFormat() {
+    @Override
+    public PropertyFormatter getPropertyFormatter() {
         if (getField() instanceof AbstractTextField) {
-            return super.getFormat();
+            return super.getPropertyFormatter();
         } else {
-            return null;
+            return new EmptyPropertyFormatter();
         }
     }
 
@@ -364,7 +360,7 @@ public class FormField extends DisplayField {
             return new ListSelect();
         }
 
-        if (hasAnnotation(Lob.class)) {
+        if (getBeanPropertyType().hasAnnotation(Lob.class)) {
             return new RichTextArea();
         }
 
@@ -408,8 +404,8 @@ public class FormField extends DisplayField {
             }
 
             Class valueType = getPropertyType();
-            if (isCollectionType()) {
-                valueType = getCollectionValueType();
+            if (getBeanPropertyType().isCollectionType()) {
+                valueType = getBeanPropertyType().getCollectionValueType();
             }
 
             List referenceEntities;
@@ -429,39 +425,26 @@ public class FormField extends DisplayField {
 
 
         if (getFormFields().isEntityForm()) {
-            final BeanPropertyType beanPropertyType = com.brownbag.core.util.BeanPropertyType.getBeanPropertyType(getDisplayFields().getEntityType(),
-                    getPropertyId());
-            if (beanPropertyType.isValidatable()) {
-                initializeIsRequired(field, beanPropertyType.getId(), beanPropertyType.getContainerType());
-                if (field instanceof AbstractTextField && Number.class.isAssignableFrom(beanPropertyType.getType())) {
-                    field.addValidator(new ConversionValidator(beanPropertyType.getType(), getFormat()) {
-                        @Override
-                        public void validate(Object value) throws InvalidValueException {
-                            try {
-                                super.validate(value);
-                            } catch (InvalidValueException e) {
-                                hasConversionError = true;
-                                EntityForm entityForm = (EntityForm) getFormFields().getForm();
-                                entityForm.syncTabAndSaveButtonErrors();
-                                throw e;
-                            }
-                        }
-                    });
-                }
+            if (getBeanPropertyType().isValidatable()) {
+                initializeIsRequired();
+                initializeValidators();
             }
 
             field.addListener(new FieldValueChangeListener());
         }
     }
 
-    private void initializeIsRequired(Field field, Object propertyId, Class<?> beanClass) {
-        BeanValidationValidator validator = new BeanValidationValidator(beanClass, String.valueOf(propertyId));
-        if (validator.isRequired()) {
-            field.setRequired(true);
-            field.setRequiredError(validator.getRequiredMessage());
+    private void initializeValidators() {
+        if (field instanceof AbstractTextField) {
+            if (getBeanPropertyType().getBusinessType() != null &&
+                    getBeanPropertyType().getBusinessType().equals(BeanPropertyType.BusinessType.NUMBER)) {
+                addValidator(new NumberConversionValidator(this, "Invalid number"));
+            }
         }
+    }
 
-        isRequired = field.isRequired();
+    public void addValidator(Validator validator) {
+        getField().addValidator(validator);
     }
 
     public class FieldValueChangeListener implements Property.ValueChangeListener {
@@ -474,6 +457,25 @@ public class FormField extends DisplayField {
                 entityForm.validate();
             }
         }
+    }
+
+    public boolean isHasConversionError() {
+        return hasConversionError;
+    }
+
+    public void setHasConversionError(boolean hasConversionError) {
+        this.hasConversionError = hasConversionError;
+    }
+
+    private void initializeIsRequired() {
+        BeanValidationValidator validator = new BeanValidationValidator(getBeanPropertyType().getContainerType(),
+                getBeanPropertyType().getId());
+        if (validator.isRequired()) {
+            field.setRequired(true);
+            field.setRequiredError(validator.getRequiredMessage());
+        }
+
+        isRequired = field.isRequired();
     }
 
     public static void initAbstractFieldDefaults(AbstractField field) {

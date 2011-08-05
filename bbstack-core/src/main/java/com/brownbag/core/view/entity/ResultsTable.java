@@ -21,23 +21,18 @@ import com.brownbag.core.dao.EntityQuery;
 import com.brownbag.core.entity.WritableEntity;
 import com.brownbag.core.view.entity.field.DisplayField;
 import com.brownbag.core.view.entity.field.DisplayFields;
+import com.brownbag.core.view.entity.field.format.EmptyPropertyFormatter;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.NullCapableBeanItemContainer;
+import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apache.commons.beanutils.PropertyUtils;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -172,17 +167,17 @@ public class ResultsTable extends Table {
     @Override
     protected String formatPropertyValue(Object rowId, Object colId, Property property) {
 
-        Format format = null;
-
         if (property.getValue() != null) {
             DisplayField displayField = results.getDisplayFields().getField(colId.toString());
-            format = displayField.getFormat();
-        }
+            PropertyFormatter propertyFormatter = displayField.getPropertyFormatter();
 
-        if (format == null) {
-            return super.formatPropertyValue(rowId, colId, property);
+            if (propertyFormatter.getClass().equals(EmptyPropertyFormatter.class)) {
+                return super.formatPropertyValue(rowId, colId, property);
+            } else {
+                return propertyFormatter.format(property.getValue());
+            }
         } else {
-            return format.format(property.getValue());
+            return super.formatPropertyValue(rowId, colId, property);
         }
     }
 

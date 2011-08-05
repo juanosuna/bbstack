@@ -25,6 +25,8 @@ import com.brownbag.sample.dao.StateDao;
 import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.account.related.RelatedContacts;
 import com.brownbag.sample.view.account.related.RelatedOpportunities;
+import com.brownbag.sample.view.field.format.PhonePropertyFormatter;
+import com.brownbag.sample.view.field.validation.PhoneConversionValidator;
 import com.brownbag.sample.view.select.UserSelect;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Sizeable;
@@ -68,7 +70,7 @@ public class AccountForm extends EntityForm<Account> {
         formFields.setPosition("Overview", "name", 1, 1);
         formFields.setPosition("Overview", "website", 1, 2);
 
-        formFields.setPosition("Overview", "mainPhoneFormatted", 2, 1);
+        formFields.setPosition("Overview", "mainPhone", 2, 1);
         formFields.setPosition("Overview", "assignedTo.loginName", 2, 2);
 
         formFields.setPosition("Overview", "email", 3, 1);
@@ -98,8 +100,11 @@ public class AccountForm extends EntityForm<Account> {
         formFields.setMultiSelectDimensions("accountTypes", 3, 10);
 
         formFields.setLabel("accountTypes", "Types");
-        formFields.setLabel("mainPhoneFormatted", "Phone");
+        formFields.setLabel("mainPhone", "Phone");
         formFields.setLabel("assignedTo.loginName", "Assigned to");
+
+        formFields.addValidator("mainPhone", PhoneConversionValidator.class);
+        formFields.setPropertyFormatter("mainPhone", new PhonePropertyFormatter());
 
         formFields.setSelectItems("billingAddress.state", new ArrayList());
         formFields.addValueChangeListener("billingAddress.country", this, "countryChanged");
@@ -161,7 +166,7 @@ public class AccountForm extends EntityForm<Account> {
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(60, Sizeable.UNITS_EM);
+        popupWindow.setWidth(62, Sizeable.UNITS_EM);
         popupWindow.setHeight(null);
     }
 }

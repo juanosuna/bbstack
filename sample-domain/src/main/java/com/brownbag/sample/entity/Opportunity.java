@@ -19,20 +19,37 @@ package com.brownbag.sample.entity;
 
 
 import com.brownbag.core.entity.WritableEntity;
+import com.brownbag.core.util.ObjectUtil;
+import com.brownbag.core.view.entity.field.format.DefaultFormats;
+import com.brownbag.sample.service.ecbfx.EcbfxService;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotBlank;
+import org.joda.money.IllegalCurrencyException;
 
+import javax.annotation.Resource;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
+import java.util.Map;
+
+import static com.brownbag.core.util.ObjectUtil.*;
 
 @Entity
 @Table
 public class Opportunity extends WritableEntity {
+
+    @Resource
+    @Transient
+    private DefaultFormats defaultFormat;
+
+    @Resource
+    @Transient
+    private EcbfxService ecbfxService;
 
     private String name;
 
@@ -49,7 +66,9 @@ public class Opportunity extends WritableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Currency currency;
 
-    private float probability;
+    private double probability;
+
+    private BigDecimal amountWeightedInUSD;
 
     @Lob
     private String description;
@@ -114,7 +133,10 @@ public class Opportunity extends WritableEntity {
     }
 
     public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+        if (!isEqual(this.amount, amount)) {
+            this.amount = amount;
+            amountWeightedInUSD = calculateAmountWeightedInUSD();
+        }
     }
 
     public void setAmount(double amount) {
@@ -126,15 +148,49 @@ public class Opportunity extends WritableEntity {
     }
 
     public void setCurrency(Currency currency) {
-        this.currency = currency;
+        if (!isEqual(this.currency, currency)) {
+            this.currency = currency;
+            amountWeightedInUSD = calculateAmountWeightedInUSD();
+        }
     }
 
-    public float getProbability() {
+    public double getProbability() {
         return probability;
     }
 
-    public void setProbability(float probability) {
-        this.probability = probability;
+    public void setProbability(double probability) {
+        if (this.probability != probability) {
+            this.probability = probability;
+            amountWeightedInUSD = calculateAmountWeightedInUSD();
+        }
+    }
+
+    public BigDecimal getAmountWeightedInUSD() {
+        return amountWeightedInUSD;
+    }
+
+    private BigDecimal calculateAmountWeightedInUSD() {
+        if (getAmount() == null || getCurrency() == null) {
+            return null;
+        } else {
+            try {
+                BigDecimal amountInUSD = ecbfxService.convert(getAmount(), getCurrency().getId(), "USD");
+                amountInUSD = amountInUSD.setScale(0, RoundingMode.HALF_EVEN);
+                BigDecimal amountWeightedInUSD = amountInUSD.multiply(new BigDecimal(getProbability()));
+                return amountWeightedInUSD.setScale(0, RoundingMode.HALF_EVEN);
+            } catch (IllegalCurrencyException e) {
+                return null;
+            }
+        }
+    }
+
+    public String getAmountWeightedInUSDFormatted() {
+        BigDecimal amount = getAmountWeightedInUSD();
+        if (amount == null) {
+            return null;
+        } else {
+            return "$" + defaultFormat.getNumberFormat().format(amount);
+        }
     }
 
     public String getDescription() {
@@ -158,7 +214,10 @@ public class Opportunity extends WritableEntity {
     }
 
     public void setSalesStage(SalesStage salesStage) {
-        this.salesStage = salesStage;
+        if (!isEqual(this.salesStage, salesStage)) {
+            this.salesStage = salesStage;
+            setProbability(salesStage.getProbability());
+        }
     }
 
     public Account getAccount() {

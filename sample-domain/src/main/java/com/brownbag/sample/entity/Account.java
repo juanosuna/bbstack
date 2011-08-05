@@ -19,10 +19,9 @@ package com.brownbag.sample.entity;
 
 
 import com.brownbag.core.entity.WritableEntity;
-import com.brownbag.core.validation.ValidPhone;
-import com.brownbag.core.view.entity.field.format.DefaultFormat;
+import com.brownbag.core.view.entity.field.format.DefaultFormats;
 import com.brownbag.sample.service.ecbfx.EcbfxService;
-import com.google.i18n.phonenumbers.NumberParseException;
+import com.brownbag.sample.view.field.validation.ValidPhone;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.Email;
@@ -40,13 +39,19 @@ import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.brownbag.core.util.ObjectUtil.isEqual;
+
 @Entity
 @Table
 public class Account extends WritableEntity {
 
     @Resource
     @Transient
-    private DefaultFormat defaultFormat;
+    private DefaultFormats defaultFormat;
+
+    @Resource
+    @Transient
+    private EcbfxService ecbfxService;
 
     private String name;
 
@@ -58,14 +63,10 @@ public class Account extends WritableEntity {
 
     private Phone mainPhone;
 
-    @Transient
-    private String invalidMainPhone;
-
     private Integer numberOfEmployees;
 
     private BigDecimal annualRevenue;
 
-    @Transient
     private BigDecimal annualRevenueInUSD;
 
     @Lob
@@ -75,10 +76,6 @@ public class Account extends WritableEntity {
     @ForeignKey(name = "FK_ACCOUNT_CURRENCY")
     @ManyToOne(fetch = FetchType.LAZY)
     private Currency currency;
-
-    @Resource
-    @Transient
-    private EcbfxService ecbfxService;
 
     @ForeignKey(name = "FK_ACCOUNT_ACCOUNT", inverseName = "FK_ACCOUNT_ACCOUNT_TYPES")
     @ManyToMany(fetch = FetchType.LAZY)
@@ -151,40 +148,14 @@ public class Account extends WritableEntity {
         this.email = email;
     }
 
+    @NotNull
+    @ValidPhone
     public Phone getMainPhone() {
         return mainPhone;
     }
 
     public void setMainPhone(Phone mainPhone) {
         this.mainPhone = mainPhone;
-        invalidMainPhone = null;
-    }
-
-    @NotNull
-    @ValidPhone(defaultRegionCode = Contact.DEFAULT_PHONE_COUNTRY)
-    public String getMainPhoneFormatted() {
-        if (invalidMainPhone != null) {
-            return invalidMainPhone;
-        } else {
-            if (getMainPhone() == null) {
-                return null;
-            } else {
-                return getMainPhone().getFormatted(Contact.DEFAULT_PHONE_COUNTRY);
-            }
-        }
-    }
-
-    public void setMainPhoneFormatted(@ValidPhone(defaultRegionCode = Contact.DEFAULT_PHONE_COUNTRY) String mainPhone) {
-        if (mainPhone == null) {
-            setMainPhone(null);
-        } else {
-            try {
-                Phone phone = new Phone(mainPhone, Contact.DEFAULT_PHONE_COUNTRY);
-                setMainPhone(phone);
-            } catch (NumberParseException e) {
-                invalidMainPhone = mainPhone;
-            }
-        }
     }
 
     @Min(0)
@@ -202,8 +173,10 @@ public class Account extends WritableEntity {
     }
 
     public void setAnnualRevenue(BigDecimal annualRevenue) {
-        this.annualRevenue = annualRevenue;
-        annualRevenueInUSD = null;
+        if (!isEqual(this.annualRevenue, annualRevenue)) {
+            this.annualRevenue = annualRevenue;
+            annualRevenueInUSD = calculateAnnualRevenueInUSD();
+        }
     }
 
     public void setAnnualRevenue(double annualRevenue) {
@@ -215,28 +188,17 @@ public class Account extends WritableEntity {
     }
 
     public void setCurrency(Currency currency) {
-        this.currency = currency;
-        annualRevenueInUSD = null;
-    }
-
-    public String getAnnualRevenueInUSDFormatted() {
-        BigDecimal amount = getAnnualRevenueInUSD();
-        if (amount == null) {
-            return null;
-        } else {
-            return "$" + defaultFormat.getNumberFormat().format(amount);
+        if (!isEqual(this.currency, currency)) {
+            this.currency = currency;
+            annualRevenueInUSD = calculateAnnualRevenueInUSD();
         }
     }
 
     public BigDecimal getAnnualRevenueInUSD() {
-        if (annualRevenueInUSD == null) {
-            annualRevenueInUSD = getAnnualRevenueInUSDImpl();
-        }
-
         return annualRevenueInUSD;
     }
 
-    private BigDecimal getAnnualRevenueInUSDImpl() {
+    private BigDecimal calculateAnnualRevenueInUSD() {
         if (getAnnualRevenue() == null || getCurrency() == null) {
             return null;
         } else {
@@ -246,6 +208,15 @@ public class Account extends WritableEntity {
             } catch (IllegalCurrencyException e) {
                 return null;
             }
+        }
+    }
+
+    public String getAnnualRevenueInUSDFormatted() {
+        BigDecimal amount = getAnnualRevenueInUSD();
+        if (amount == null) {
+            return null;
+        } else {
+            return "$" + defaultFormat.getNumberFormat().format(amount);
         }
     }
 

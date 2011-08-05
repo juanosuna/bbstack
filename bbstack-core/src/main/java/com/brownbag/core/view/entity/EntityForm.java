@@ -185,7 +185,11 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         createImpl();
         open(false);
 
-        if (getToManyRelationships().size() > 0) {
+        List<ToManyRelationship> toManyRelationships = getToManyRelationships();
+        if (toManyRelationships.size() > 0) {
+            for (ToManyRelationship toManyRelationship : toManyRelationships) {
+                toManyRelationship.getResultsComponent().getResultsTable().getContainerDataSource().removeAllItems();
+            }
             toManyRelationshipTabs.setEnabled(false);
         }
     }

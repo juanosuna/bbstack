@@ -24,6 +24,7 @@ import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.entity.Contact;
 import com.brownbag.sample.view.contact.ContactQuery;
 import com.brownbag.sample.view.contact.ContactSearchForm;
+import com.brownbag.sample.view.field.format.PhonePropertyFormatter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -77,12 +78,13 @@ public class ContactSelect extends EntitySelect<Contact> {
                     "title",
                     "mailingAddress.state.code",
                     "mailingAddress.country",
-                    "mainPhoneFormatted"
+                    "mainPhone"
             });
 
             displayFields.setLabel("mailingAddress.state.code", "State");
-            displayFields.setLabel("mainPhoneFormatted", "Phone");
+            displayFields.setLabel("mainPhone", "Phone");
             displayFields.setSortable("name", false);
+            displayFields.setPropertyFormatter("mainPhone", new PhonePropertyFormatter());
         }
     }
 }

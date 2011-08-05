@@ -23,9 +23,16 @@ import com.brownbag.core.view.entity.EntityForm;
 import com.brownbag.core.view.entity.FormComponent;
 import com.brownbag.core.view.entity.LeftLabelGridLayout;
 import com.brownbag.core.view.entity.TopLabelGridLayout;
+import com.vaadin.data.Validator;
+import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.terminal.ErrorMessage;
-import com.vaadin.ui.*;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractTextField;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.GridLayout;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class FormFields extends DisplayFields {
@@ -262,6 +269,22 @@ public class FormFields extends DisplayFields {
             if (formField.getField() instanceof AbstractTextField) {
                 formField.autoAdjustWidth();
             }
+        }
+    }
+
+    public void addValidator(String propertyId, Class<? extends Validator> validatorClass) {
+        try {
+            Constructor<? extends Validator> constructor = validatorClass.getConstructor(FormField.class);
+            Validator validator = constructor.newInstance(getFormField(propertyId));
+            getFormField(propertyId).addValidator(validator);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 
