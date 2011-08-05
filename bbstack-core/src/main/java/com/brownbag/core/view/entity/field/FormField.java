@@ -293,8 +293,10 @@ public class FormField extends DisplayField {
         return getField().isRequired() && StringUtil.isEmpty(getField().getValue());
     }
 
-    public void clearError() {
-        hasConversionError = false;
+    public void clearError(boolean clearConversionError) {
+        if (clearConversionError) {
+            hasConversionError = false;
+        }
         if (getField() instanceof AbstractComponent) {
             AbstractComponent abstractComponent = (AbstractComponent) getField();
             abstractComponent.setComponentError(null);
@@ -454,7 +456,7 @@ public class FormField extends DisplayField {
             EntityForm entityForm = (EntityForm) getFormFields().getForm();
 
             if (entityForm.isValidationEnabled()) {
-                entityForm.validate();
+                entityForm.validate(false);
             }
         }
     }

@@ -17,13 +17,13 @@
 
 package com.brownbag.sample.dao.init;
 
-import com.brownbag.sample.view.field.format.PhonePropertyFormatter;
-import com.brownbag.sample.view.field.validation.PhoneValidator;
 import com.brownbag.sample.dao.AccountDao;
 import com.brownbag.sample.dao.ContactDao;
 import com.brownbag.sample.dao.OpportunityDao;
 import com.brownbag.sample.dao.UserDao;
 import com.brownbag.sample.entity.*;
+import com.brownbag.sample.view.field.format.PhonePropertyFormatter;
+import com.brownbag.sample.view.field.validation.PhoneValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +54,9 @@ public class TestDataInitializer {
     public void initializeUsers() {
         User user = new User("admin", "admin");
         userDao.persist(user);
+
+        user = new User("guest", "guest");
+        userDao.persist(user);
         userDao.getEntityManager().flush();
     }
 
@@ -67,7 +70,7 @@ public class TestDataInitializer {
             contact.setAssignedTo(ReferenceDataInitializer.random(userDao.findAll()));
             contact.setTitle("Vice President");
             contact.setDoNotCall(randomBoolean());
-            contact.setEmail("customer@yahoo.com");
+            contact.setEmail("customer@purecrud.com");
             contact.setDoNotEmail(randomBoolean());
             contact.setLeadSource(referenceDataInitializer.randomLeadSource());
             Address address = randomAddress(i);
@@ -106,10 +109,10 @@ public class TestDataInitializer {
 
     private void initializeAccount(Contact contact, int i) {
         Account account = new Account();
-        account.setName("companyName" + i);
+        account.setName("Purebred Solutions" + i);
         contact.setAccount(account);
-        account.setWebsite("http://www.brownbagconsulting.com");
-        account.setTickerSymbol("BROWN");
+        account.setWebsite("http://www.purecrud.com");
+        account.setTickerSymbol("PCRUD");
 
         Address address = randomAddress(i);
         account.setBillingAddress(address);
@@ -121,7 +124,7 @@ public class TestDataInitializer {
         account.setAnnualRevenue(ReferenceDataInitializer.random(1, 1000000000));
         account.setCurrency(referenceDataInitializer.randomCurrency());
         account.setDescription("Description of account");
-        account.setEmail("info@companyname.com");
+        account.setEmail("info@purecrud.com");
         account.setIndustry(referenceDataInitializer.randomIndustry());
 
         try {

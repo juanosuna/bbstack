@@ -25,6 +25,7 @@ import com.brownbag.sample.entity.*;
 import com.brownbag.sample.view.select.AccountSelect;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -44,6 +45,7 @@ public class UserForm extends EntityForm<User> {
     public void configureFields(FormFields formFields) {
         formFields.setPosition("loginName", 1, 1);
         formFields.setPosition("loginPassword", 2, 1);
+        formFields.setField("loginPassword", new PasswordField());
     }
 
 

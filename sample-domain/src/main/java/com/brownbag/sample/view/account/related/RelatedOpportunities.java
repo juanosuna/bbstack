@@ -83,14 +83,12 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
         public void configureFields(DisplayFields displayFields) {
             displayFields.setPropertyIds(new String[]{
                     "name",
-                    "account.name",
                     "salesStage",
-                    "expectedCloseDate",
-                    "amount"
+                    "amountWeightedInUSDFormatted",
+                    "expectedCloseDate"
             });
 
-            displayFields.setLabel("name", "Name");
-            displayFields.setLabel("account.name", "Account");
+            displayFields.setLabel("amountWeightedInUSDFormatted", "Weighted Amount");
         }
 
         @Override
@@ -151,6 +149,8 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
         public Path buildOrderBy(Root<Opportunity> rootEntity) {
             if (getOrderByPropertyId().equals("account.name")) {
                 return rootEntity.join("account", JoinType.LEFT).get("name");
+            } if (getOrderByPropertyId().equals("amountWeightedInUSDFormatted")) {
+                return rootEntity.get("amountWeightedInUSD");
             } else {
                 return null;
             }

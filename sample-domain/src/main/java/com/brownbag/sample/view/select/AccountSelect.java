@@ -81,7 +81,6 @@ public class AccountSelect extends EntitySelect<Account> {
             });
 
             displayFields.setLabel("billingAddress.state.code", "State");
-            displayFields.getField("name").setSortable(false);
         }
     }
 }

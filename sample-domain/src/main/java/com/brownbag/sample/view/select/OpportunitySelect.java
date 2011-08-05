@@ -73,14 +73,11 @@ public class OpportunitySelect extends EntitySelect<Opportunity> {
         public void configureFields(DisplayFields displayFields) {
             displayFields.setPropertyIds(new String[]{
                     "name",
-                    "account.name",
                     "salesStage",
-                    "expectedCloseDate",
-                    "amount"
+                    "amountWeightedInUSDFormatted",
+                    "expectedCloseDate"
             });
 
-            displayFields.setLabel("name", "Name");
-            displayFields.setLabel("account.name", "Account");
         }
     }
 }

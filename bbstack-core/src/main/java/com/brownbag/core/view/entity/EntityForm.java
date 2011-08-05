@@ -151,7 +151,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         setItemDataSource(beanItem, getFormFields().getPropertyIds());
         getFormFields().autoAdjustWidths();
 
-        validate();
+        validate(true);
 
         loadToManyRelationships();
         resetTabs(selectFirstTab);
@@ -177,7 +177,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void clear() {
-        clearAllErrors();
+        clearAllErrors(true);
         setItemDataSource(null, getFormFields().getPropertyIds());
     }
 
@@ -199,7 +199,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         BeanItem beanItem = createBeanItem(newEntity);
         setItemDataSource(beanItem, getFormFields().getPropertyIds());
 
-        validate();
+        validate(true);
 
         resetTabs();
     }
@@ -329,7 +329,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void cancel() {
-        clearAllErrors();
+        clearAllErrors(true);
         getForm().discard();
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         if (beanItem == null) {
@@ -347,7 +347,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void save() {
-        boolean isValid = validate();
+        boolean isValid = validate(false);
         if (getForm().isValid() && isValid) {
             getForm().commit();
 
@@ -364,10 +364,10 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         }
     }
 
-    public boolean validate() {
+    public boolean validate(boolean clearConversionErrors) {
         WritableEntity entity = (WritableEntity) getEntity();
 
-        clearAllErrors();
+        clearAllErrors(clearConversionErrors);
 
         Set<ConstraintViolation<WritableEntity>> constraintViolations = validation.validate(entity);
         for (ConstraintViolation constraintViolation : constraintViolations) {
@@ -398,8 +398,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         return constraintViolations.isEmpty();
     }
 
-    public void clearAllErrors() {
-        getFormFields().clearErrors();
+    public void clearAllErrors(boolean clearConversionErrors) {
+        getFormFields().clearErrors(clearConversionErrors);
         getForm().setComponentError(null);
         saveButton.setComponentError(null);
 
@@ -447,7 +447,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void reset() {
-        clearAllErrors();
+        clearAllErrors(true);
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         if (beanItem == null) {
             createImpl();

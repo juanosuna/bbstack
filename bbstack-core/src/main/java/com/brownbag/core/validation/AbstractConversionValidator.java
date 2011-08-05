@@ -48,16 +48,17 @@ public abstract class AbstractConversionValidator implements Validator {
     public void validate(Object value) throws InvalidValueException {
         try {
             validateImpl(value);
+            formField.setHasConversionError(false);
         } catch (Exception e) {
             formField.setHasConversionError(true);
-            EntityForm entityForm = (EntityForm) formField.getFormFields().getForm();
-            entityForm.syncTabAndSaveButtonErrors();
-
             if (getErrorMessage() != null) {
                 throw new InvalidValueException(getErrorMessage());
             } else {
                 throw new InvalidValueException(e.getMessage());
             }
+        } finally {
+            EntityForm entityForm = (EntityForm) formField.getFormFields().getForm();
+            entityForm.syncTabAndSaveButtonErrors();
         }
     }
 

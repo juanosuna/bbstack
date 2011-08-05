@@ -295,7 +295,7 @@ public abstract class FormComponent<T> extends CustomComponent {
 
         if (this instanceof EntityForm) {
             EntityForm entityForm = (EntityForm) this;
-            entityForm.validate();
+            entityForm.validate(false);
         }
 
         resetContextMenu();

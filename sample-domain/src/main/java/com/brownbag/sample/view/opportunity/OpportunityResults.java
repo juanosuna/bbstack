@@ -61,13 +61,12 @@ public class OpportunityResults extends Results<Opportunity> {
         displayFields.setPropertyIds(new String[]{
                 "name",
                 "salesStage",
-                "expectedCloseDate",
                 "amountWeightedInUSDFormatted",
+                "expectedCloseDate",
                 "lastModified",
                 "modifiedBy"
         });
 
-        displayFields.setLabel("name", "Name");
         displayFields.setLabel("amountWeightedInUSDFormatted", "Weighted Amount");
     }
 

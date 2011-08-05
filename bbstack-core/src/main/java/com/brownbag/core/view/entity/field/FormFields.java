@@ -210,18 +210,18 @@ public class FormFields extends DisplayFields {
         return formFields;
     }
 
-    public void clearErrors() {
+    public void clearErrors(boolean clearConversionErrors) {
         Collection<DisplayField> fields = getFields();
         for (DisplayField field : fields) {
             FormField formField = (FormField) field;
-            formField.clearError();
+            formField.clearError(clearConversionErrors);
         }
     }
 
-    public void clearErrors(String tabName) {
+    public void clearErrors(String tabName, boolean clearConversionErrors) {
         Set<FormField> formFields = getFormFields(tabName);
         for (FormField formField : formFields) {
-            formField.clearError();
+            formField.clearError(clearConversionErrors);
         }
     }
 
